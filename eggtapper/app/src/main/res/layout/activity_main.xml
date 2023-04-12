@@ -39,7 +39,7 @@
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:progressDrawable="@drawable/progress_bar_style"
                 android:progress="0"
-                android:max="10000"
+                android:max="100"
                 ></ProgressBar>
         </LinearLayout>
         
