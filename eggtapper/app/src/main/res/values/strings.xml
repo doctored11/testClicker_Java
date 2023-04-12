@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">EggTapper</string>
+    <string name="txt_money">Money:</string>
+    <string name="tap_tool">Tap tool:</string>
+    <string name="tap_tool_up">tool up</string>
+    <string name="incubator_up">incubator_up</string>
+    <string name="back_to_game">Back</string>
+    <string name="shop">Shop</string>
+    <string name="properties">properties</string>
 </resources>
