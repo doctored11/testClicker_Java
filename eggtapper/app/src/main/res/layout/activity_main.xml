@@ -14,38 +14,10 @@
         android:orientation ="vertical"
         android:padding="8dp">
 
+
+
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:orientation ="vertical">
-            <TextView
-                android:id="@+id/text_count"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="000000"
-                android:textSize="30sp"
-                android:fontFamily="@font/videotype"
-                android:textColor="@color/black"
-                android:shadowColor="@color/black"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="3"/>
-            <ProgressBar
-                android:id="@+id/progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:progressDrawable="@drawable/progress_bar_style"
-                android:progress="0"
-                android:max="100"
-                ></ProgressBar>
-        </LinearLayout>
-        
-
-
-    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -62,13 +34,15 @@
             android:background="@drawable/gold_gradient"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/shop_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:srcCompat="@drawable/ico_dollar"
             app:fabSize="auto"
             app:backgroundTint="@color/gold_1"
-            app:tint="@color/white"/>
+            app:tint="@color/white"
+            />
 
 
     </LinearLayout>
@@ -88,7 +62,55 @@
                 android:src="@drawable/fullegg"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="29dp"
+                android:layout_weight="10"
+                android:max="100"
+                android:progress="0"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"
+
+                android:progressDrawable="@drawable/progress_bar_style"></ProgressBar>
+
+            <TextView
+                android:id="@+id/text_count"
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/videotype"
+                android:gravity="center"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"
+                android:text="100 %"
+                android:textColor="@color/black"
+                android:textSize="30sp"
+                />
+
+        </LinearLayout>
+
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_shop"
+        android:layout_width="match_parent"
+        android:layout_height="589dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="70dp"
+        android:layout_marginBottom="0dp" />
 
 
 </RelativeLayout>

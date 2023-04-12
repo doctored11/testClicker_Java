@@ -2,16 +2,26 @@ package nth11.game.eggtapper;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class MainActivity extends AppCompatActivity {
+    private FloatingActionButton shopBtn;
+    private FrameLayout frameShop;
+    ShopFragment shopFragment = new ShopFragment();
+    Player player;
 
 
     ProgressBar progressBar ;
@@ -24,8 +34,19 @@ public class MainActivity extends AppCompatActivity {
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
-        Player player = new Player(0,new TapTool(5,1,0));
+         player = new Player(0,new TapTool(5,1,0));
         Egg clickEgg = new Egg(1000);
+
+        shopBtn = findViewById(R.id.shop_btn);
+        frameShop = findViewById(R.id.fragment_shop);
+
+//        setFragment(shopFragment);
+        shopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFragment(shopFragment);
+            }
+        });
 
         TextView text_count = findViewById(R.id.text_count);
         text_count.setText(clickEgg.getStrenght()+" ");
@@ -59,5 +80,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private Fragment currentFragment = null;
+
+    private void setFragment(Fragment fragment) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (currentFragment == null) {
+            ft.add(R.id.fragment_shop, fragment);
+            currentFragment = fragment;
+            shopFragment.setPlayer(player);
+        } else if (currentFragment == fragment) {
+            ft.remove(fragment);
+            currentFragment = null;
+        } else {
+            ft.replace(R.id.fragment_shop, fragment);
+            currentFragment = fragment;
+        }
+        ft.commit();
     }
 }

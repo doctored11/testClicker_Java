@@ -7,4 +7,7 @@
     <string name="back_to_game">Back</string>
     <string name="shop">Shop</string>
     <string name="properties">properties</string>
+
+    <string name="click_up">tool upgrade</string>
+
 </resources>

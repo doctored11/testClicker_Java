@@ -23,6 +23,9 @@ public class Player {
     public void  addMoney(int money){
         this.money +=money;
     }
+    public void  spendMoney(int money){
+        this.money -=money;
+    }
     public void  addMoney(){
         this.money ++;
     }
