@@ -14,6 +14,34 @@
         android:scaleType="fitCenter"
         android:scaleX="0.5"
         android:scaleY="0.5"/>
+    <LinearLayout
+        android:id="@+id/mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation ="vertical"
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation ="vertical">
+            <TextView
+                android:id="@+id/text_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="000000"
+                android:textSize="30sp"
+                android:fontFamily="@font/videotype"
+                android:textColor="@color/black"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3"/>
+        </LinearLayout>
+        
+    </LinearLayout>
 
 
 
