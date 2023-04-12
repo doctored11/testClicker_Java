@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
+    public  int eggStrength = 10000;
+    ProgressBar progressBar ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
+        TextView text_count = findViewById(R.id.text_count);
+        text_count.setText(eggStrength+" ");
+        progressBar = findViewById(R.id.progress);
+        progressBar.setProgress(eggStrength);
 
         ImageView egg = findViewById(R.id.egg);
         egg.setOnTouchListener(new View.OnTouchListener() {
@@ -24,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.animate().scaleX(0.97f).scaleY(0.95f).setDuration((long) 0);
+                    eggStrength-=1000;
+                    text_count.setText(eggStrength+" ");
+                    progressBar.setProgress(eggStrength);
+
 
                 } else if ((motionEvent.getAction() == MotionEvent.ACTION_UP)){
                     view.animate().scaleX(1f).scaleY(1f).setDuration((long) 0.1);
