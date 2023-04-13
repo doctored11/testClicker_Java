@@ -1,7 +1,10 @@
 package nth11.game.eggtapper;
 
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 
 class UiState {
@@ -9,6 +12,7 @@ class UiState {
     private Integer strength;
     private Integer toolUpCoast;
     private Boolean shopActive = false;
+
 
 
 
@@ -82,6 +86,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createShopFragment(){
+
         shopFragment = new ShopFragment(this);
 
     }
@@ -90,17 +95,25 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         clickEgg = new Egg(1000);
 
     }
-
+    //TODO
     public void onTap() {
+        if(clickEgg.statusChecker()) {
+            createEgg();
+            player.addMoney(player.getTool().getProfitability()*100) ;//временное решение
+
+        };
         clickEgg.reduceStrength(player.getTool().getTapForce());
         player.addMoney(player.getTool().getProfitability());
         uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()));
     }
 
     public  void onToolUp(){
+        int coast = player.getTool().getCoast();
+        if (player.getMoney()<coast ) return;
+        player.spendMoney(player.getTool().getCoast());
         TapTool newTool = new TapTool(player.getTool().getTapForce() * 2, player.getTool().getProfitability() * 2, player.getTool().getCoast()*4);
         player.setTool(newTool);
-        player.spendMoney(newTool.getCoast());
+
         uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), newTool.getCoast()));
     }
 

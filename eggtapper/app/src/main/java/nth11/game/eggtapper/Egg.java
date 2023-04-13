@@ -23,5 +23,8 @@ public class Egg {
         return strength*100/maxValue;
 
     }
+    public boolean statusChecker(){
+        return strength <= 0;
+    }
 
 }

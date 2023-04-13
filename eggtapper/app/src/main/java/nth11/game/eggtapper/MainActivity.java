@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
         //создание этой вонючей ViewModel
         model = new ViewModelProvider(this).get(ViewModel.class);
 
-
-
         TextView text_count = findViewById(R.id.text_count);
         TextView txt_money = findViewById(R.id.money_txt);
 
@@ -49,22 +47,19 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress);
 
         ImageView egg = findViewById(R.id.egg);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
+
             // update UI
             text_count.setText(uiState.getStrenght() + " ");
             progressBar.setProgress(uiState.getStrenght());
             txt_money.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+
             setFragment(model.getShopFragment(), uiState.getShopActive());
 
 
-//
-//
-
-
         });
-
 
         shopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,13 +85,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     //это логика только отображения - оставляем во View?
-
     private void setFragment(Fragment fragment, Boolean flag) {
         ft = getSupportFragmentManager().beginTransaction();
         ft.remove(fragment);
-
         if (flag) {
             ft.add(R.id.fragment_shop, fragment);
         } else {

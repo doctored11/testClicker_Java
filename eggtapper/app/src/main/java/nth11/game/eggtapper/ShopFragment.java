@@ -37,7 +37,7 @@ public class ShopFragment extends Fragment {
         LinearLayout toolUp = view.findViewById(R.id.toolUp);
         TextView coast = view.findViewById(R.id.text_toolUp_coast);
 
-//        coast.setText("$ = " + model.getUiState().getValue().getToolUpCoast());
+        coast.setText("$ = " + model.getUiState().getValue().getToolUpCoast());
         toolUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
