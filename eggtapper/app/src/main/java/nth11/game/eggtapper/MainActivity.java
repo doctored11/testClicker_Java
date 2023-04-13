@@ -23,9 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frameShop;
 
 
-
     ProgressBar progressBar;
-     ViewModel model;
+    ViewModel model;
+    FragmentTransaction ft;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //создание этой вонючей ViewModel
-        model= new ViewModelProvider(this).get(ViewModel.class);
-        ShopFragment shopFragment = new ShopFragment(model);
+        model = new ViewModelProvider(this).get(ViewModel.class);
+
 
 
         TextView text_count = findViewById(R.id.text_count);
@@ -48,20 +49,29 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress);
 
         ImageView egg = findViewById(R.id.egg);
-
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
             // update UI
-            text_count.setText(uiState.getStrenght()+" ");
+            text_count.setText(uiState.getStrenght() + " ");
             progressBar.setProgress(uiState.getStrenght());
             txt_money.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+            setFragment(model.getShopFragment(), uiState.getShopActive());
+
+
+//
+//
+
 
         });
+
 
         shopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setFragment(shopFragment);
+                boolean fl = model.getUiState().getValue().getShopActive();
+                model.onShopClick(!fl);
+
             }
         });
 
@@ -71,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(@SuppressLint("ClickableViewAccessibility") View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.animate().scaleX(0.97f).scaleY(0.95f).setDuration((long) 0);
-                      model.onTap();
+                    model.onTap();
                 } else if ((motionEvent.getAction() == MotionEvent.ACTION_UP)) {
                     view.animate().scaleX(1f).scaleY(1f).setDuration((long) 0.1);
                 }
@@ -80,21 +90,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private Fragment currentFragment = null;
 
     //это логика только отображения - оставляем во View?
-    private void setFragment(Fragment fragment) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        if (currentFragment == null) {
-            ft.add(R.id.fragment_shop, fragment);
-            currentFragment = fragment;
 
-        } else if (currentFragment == fragment) {
-            ft.remove(fragment);
-            currentFragment = null;
+    private void setFragment(Fragment fragment, Boolean flag) {
+        ft = getSupportFragmentManager().beginTransaction();
+        ft.remove(fragment);
+
+        if (flag) {
+            ft.add(R.id.fragment_shop, fragment);
         } else {
-            ft.replace(R.id.fragment_shop, fragment);
-            currentFragment = fragment;
+            ft.remove(fragment);
         }
         ft.commit();
     }
