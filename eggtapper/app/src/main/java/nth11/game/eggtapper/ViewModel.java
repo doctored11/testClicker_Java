@@ -40,6 +40,11 @@ class UiState {
         this.toolUpCoast= toolUpCoast;
         this.shopActive = shopActive;
     }
+    public UiState(Integer money, Integer strength,  Boolean shopActive) {
+        this.money = money;
+        this.strength = strength;
+        this.shopActive = shopActive;
+    }
     public Boolean getShopActive(){return shopActive;}
     public UiState setShopActive(Boolean shopActive){this.shopActive = shopActive;
         return null;
@@ -139,8 +144,8 @@ public void AutoTap() {
     timer.scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
-            player.addMoney(10);
-            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()));
+            player.addMoney(1);
+            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),uiState.getValue().getShopActive()));
         }
     }, 500, 500);
 }
