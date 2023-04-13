@@ -14,7 +14,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
+
+            android:screenOrientation="sensor"
             android:enableOnBackInvokedCallback="true">
 
             <intent-filter>

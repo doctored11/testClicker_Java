@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -20,27 +21,43 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton shopBtn;
     private FrameLayout frameShop;
-    ShopFragment shopFragment = new ShopFragment();
-    Player player;
 
 
-    ProgressBar progressBar ;
 
+    ProgressBar progressBar;
+     ViewModel model;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("!!!");
         setContentView(R.layout.activity_main);
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        //создание этой вонючей ViewModel
+        model= new ViewModelProvider(this).get(ViewModel.class);
+        ShopFragment shopFragment = new ShopFragment(model);
 
-         player = new Player(0,new TapTool(5,1,0));
-        Egg clickEgg = new Egg(1000);
+
+        TextView text_count = findViewById(R.id.text_count);
+        TextView txt_money = findViewById(R.id.money_txt);
 
         shopBtn = findViewById(R.id.shop_btn);
         frameShop = findViewById(R.id.fragment_shop);
 
-//        setFragment(shopFragment);
+        progressBar = findViewById(R.id.progress);
+
+        ImageView egg = findViewById(R.id.egg);
+
+        //Подписка на изменения uiState из viewModel
+        model.getUiState().observe(this, uiState -> {
+            // update UI
+            text_count.setText(uiState.getStrenght()+" ");
+            progressBar.setProgress(uiState.getStrenght());
+            txt_money.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+
+        });
+
         shopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,48 +65,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        TextView text_count = findViewById(R.id.text_count);
-        text_count.setText(clickEgg.getStrenght()+" ");
-        progressBar = findViewById(R.id.progress);
-        progressBar.setProgress(clickEgg.getStrenght());
-
-        TextView txt_money = findViewById(R.id.money_txt);
-        txt_money.setText(getString(R.string.txt_money)+" "+ player.getMoney());
-
-
-        ImageView egg = findViewById(R.id.egg);
         egg.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
             @Override
             public boolean onTouch(@SuppressLint("ClickableViewAccessibility") View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     view.animate().scaleX(0.97f).scaleY(0.95f).setDuration((long) 0);
-                    clickEgg.reduceStrength(player.getTool().getTapForce());
-                    player.addMoney(player.getTool().getProfitability());
-                    text_count.setText(clickEgg.getPercentStrenght()+" %");
-                    txt_money.setText(getString(R.string.txt_money)+" "+player.getMoney());
-                    progressBar.setProgress(clickEgg.getPercentStrenght());
-
-
-                } else if ((motionEvent.getAction() == MotionEvent.ACTION_UP)){
+                      model.onTap();
+                } else if ((motionEvent.getAction() == MotionEvent.ACTION_UP)) {
                     view.animate().scaleX(1f).scaleY(1f).setDuration((long) 0.1);
                 }
-
                 return true;
             }
         });
-
-
     }
 
     private Fragment currentFragment = null;
 
+    //это логика только отображения - оставляем во View?
     private void setFragment(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if (currentFragment == null) {
             ft.add(R.id.fragment_shop, fragment);
             currentFragment = fragment;
-            shopFragment.setPlayer(player);
+
         } else if (currentFragment == fragment) {
             ft.remove(fragment);
             currentFragment = null;

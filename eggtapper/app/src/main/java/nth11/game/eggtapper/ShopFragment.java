@@ -13,29 +13,25 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 public class ShopFragment extends Fragment {
+    ViewModel model;
     private Player player;
 
+    public ShopFragment(ViewModel model) {
+        this.model = model;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
-
         LinearLayout toolUp = view.findViewById(R.id.toolUp);
         toolUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                    TODO: !!!
-                // тут псевдо улучшение - добавить проверки и тд
-
-                TapTool newTool = new TapTool(player.getTool().getTapForce() * 2, player.getTool().getProfitability() * 2, 50);
-                player.setTool(newTool);
-                player.spendMoney(50);
-
+                model.onToolUp();
             }
         });
-
         return view;
     }
 
