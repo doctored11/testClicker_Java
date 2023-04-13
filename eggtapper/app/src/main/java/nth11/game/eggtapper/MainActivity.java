@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        model.AutoTap();
+
 
         egg.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})

@@ -1,10 +1,15 @@
 package nth11.game.eggtapper;
 
+import android.os.Handler;
+
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 class UiState {
@@ -67,6 +72,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         createPlayer();
         createEgg();
         createShopFragment();
+
+
     }
 
     public ShopFragment getShopFragment(){
@@ -125,5 +132,19 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()).setShopActive(fl
 
     }
+
+//    TODO метод пока сырой - переписать нормально
+public void AutoTap() {
+    Timer timer = new Timer();
+    timer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        public void run() {
+            player.addMoney(10);
+            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()));
+        }
+    }, 500, 500);
+}
+
+
 
 }
