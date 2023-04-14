@@ -17,6 +17,7 @@ class UiState {
     private Integer strength;
     private Integer toolUpCoast;
     private Boolean shopActive = false;
+    private  Integer incubatorUpCoast;
 
 
 
@@ -45,6 +46,19 @@ class UiState {
         this.strength = strength;
         this.shopActive = shopActive;
     }
+    public UiState(Integer money, Integer strength,  Boolean shopActive, int incubatorCoast) {
+        this.money = money;
+        this.strength = strength;
+        this.shopActive = shopActive;
+        this.incubatorUpCoast = incubatorCoast;
+    }
+    public UiState(Integer money, Integer strength, Integer toolUpCoast, Integer incubatorCoast,Boolean shopActive) {
+        this.money = money;
+        this.strength = strength;
+        this.toolUpCoast= toolUpCoast;
+        this.incubatorUpCoast = incubatorCoast;
+        this.shopActive = shopActive;
+    }
     public Boolean getShopActive(){return shopActive;}
     public UiState setShopActive(Boolean shopActive){this.shopActive = shopActive;
         return null;
@@ -59,6 +73,9 @@ class UiState {
 
     public Integer getToolUpCoast() {
         return toolUpCoast;
+    }
+    public Integer getIncubatorUpCoast() {
+        return incubatorUpCoast;
     }
 }
 
@@ -79,7 +96,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         createEgg();
         createShopFragment();
         createIncubator();
-
+        AutoTap();
 
     }
 
@@ -128,17 +145,24 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         int coast = player.getTool().getCoast();
         if (player.getMoney()<coast ) return;
         player.spendMoney(player.getTool().getCoast());
-        TapTool newTool = new TapTool(player.getTool().getTapForce() * 2, player.getTool().getProfitability() * 2, player.getTool().getCoast()*4);
+        TapTool newTool = new TapTool(player.getTool().getTapForce() * 4, player.getTool().getProfitability() * 4, player.getTool().getCoast()*8);//TODO - сделать по человечески
         player.setTool(newTool);
 
         uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), newTool.getCoast()));
+    }
+    public void onIncUp(){
+        int coast = incubator.getCoast();
+        if (player.getMoney()<coast ) return;
+        player.spendMoney(coast);
+        incubator = new Incubator(incubator.getTapForce()*2,incubator.getProfitability()*2, incubator.getCoast()*22,incubator.getTimer()); //TODO - сделать по человечески
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), false, incubator.getCoast() ));
     }
 
     public void onShopClick( boolean fl){
 
         TapTool newTool = new TapTool(player.getTool().getTapForce() , player.getTool().getProfitability() , player.getTool().getCoast());
 
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),newTool.getCoast(),fl));
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),newTool.getCoast(),incubator.getCoast(),fl));
 //        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()).setShopActive(fl
 
     }
