@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         model.AutoTap();
 
 
+
         egg.setOnTouchListener(new View.OnTouchListener() {
             @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
             @Override
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                     model.onTap();
                 } else if ((motionEvent.getAction() == MotionEvent.ACTION_UP)) {
                     view.animate().scaleX(1f).scaleY(1f).setDuration((long) 0.1);
+                    return false;
                 }
                 return true;
             }

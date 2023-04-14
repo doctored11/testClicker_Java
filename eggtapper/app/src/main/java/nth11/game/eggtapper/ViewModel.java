@@ -70,6 +70,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     Player player;
     Egg clickEgg;
+    Incubator incubator;
     ShopFragment shopFragment ;
 
 
@@ -77,6 +78,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         createPlayer();
         createEgg();
         createShopFragment();
+        createIncubator();
 
 
     }
@@ -106,6 +108,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void createEgg() {
         clickEgg = new Egg(1000);
 
+    }
+    public  void  createIncubator(){
+        incubator = new Incubator(1,1,1000,500);
     }
     //TODO
     public void onTap() {
@@ -144,10 +149,18 @@ public void AutoTap() {
     timer.scheduleAtFixedRate(new TimerTask() {
         @Override
         public void run() {
-            player.addMoney(1);
+            if(clickEgg.statusChecker()) {//временное решение
+                createEgg();
+                player.addMoney(incubator.getTapForce()*10) ;//временное решение
+
+            };
+            clickEgg.reduceStrength(incubator.getTapForce());
+
+
+            player.addMoney(incubator.getProfitability());
             uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),uiState.getValue().getShopActive()));
         }
-    }, 500, 500);
+    }, incubator.getTimer(), incubator.getTimer());
 }
 
 
