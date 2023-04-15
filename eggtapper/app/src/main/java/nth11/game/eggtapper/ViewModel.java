@@ -9,23 +9,17 @@ import java.util.TimerTask;
 
 
 class UiState {
-    final private int FIRST_TEX= R.drawable.egg1;
-    private Integer money;
-    private Integer strength;
-    private Integer toolUpCoast;
-    private Boolean shopActive;
-    private Integer incubatorUpCoast;
-    private int  eggTexture  = R.drawable.egg1;
+    private final int FIRST_TEX = R.drawable.egg1;
+    private final Integer money;
+    private final Integer strength;
+    private final Integer toolUpCoast;
+    private  Boolean shopActive;
+    private final Integer incubatorUpCoast;
+    private int eggTexture = R.drawable.egg1;
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
-        this.money = money;
-        this.strength = strength;
-        this.toolUpCoast = toolUpCoast;
-        this.shopActive = shopActive;
-        this.incubatorUpCoast = incubatorCoast;
-
+        this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg1);
     }
-
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int eggTexture) {
         this.money = money;
@@ -34,7 +28,6 @@ class UiState {
         this.shopActive = shopActive;
         this.incubatorUpCoast = incubatorCoast;
         this.eggTexture = eggTexture;
-
     }
 
     public UiState(Integer money, Integer strength) {
@@ -52,13 +45,6 @@ class UiState {
     public UiState(Integer money, Integer strength, Boolean shopActive, Integer incubatorCoast) {
         this(money, strength, null, shopActive, incubatorCoast);
     }
-
-//    public UiState(Integer money, Integer strength,Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast,int eggTexture) {
-//        this(money, strength, toolUpCoast, shopActive, incubatorCoast);
-//        this.eggTexture = eggTexture;
-//    }
-
-
 
     public Boolean getShopActive() {
         return shopActive;
@@ -84,11 +70,11 @@ class UiState {
     public Integer getIncubatorUpCoast() {
         return incubatorUpCoast;
     }
+
     public int getEggTexture() {
         return eggTexture;
     }
 }
-
 //
 //
 //
