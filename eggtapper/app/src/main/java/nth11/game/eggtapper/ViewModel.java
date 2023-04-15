@@ -7,12 +7,15 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+
 class UiState {
+    final private int FIRST_TEX= R.drawable.egg1;
     private Integer money;
     private Integer strength;
     private Integer toolUpCoast;
-    private Boolean shopActive ;
-    private  Integer incubatorUpCoast;
+    private Boolean shopActive;
+    private Integer incubatorUpCoast;
+    private int  eggTexture  = R.drawable.egg1;
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
         this.money = money;
@@ -20,7 +23,20 @@ class UiState {
         this.toolUpCoast = toolUpCoast;
         this.shopActive = shopActive;
         this.incubatorUpCoast = incubatorCoast;
+
     }
+
+
+    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int eggTexture) {
+        this.money = money;
+        this.strength = strength;
+        this.toolUpCoast = toolUpCoast;
+        this.shopActive = shopActive;
+        this.incubatorUpCoast = incubatorCoast;
+        this.eggTexture = eggTexture;
+
+    }
+
     public UiState(Integer money, Integer strength) {
         this(money, strength, null, false, null);
     }
@@ -37,11 +53,22 @@ class UiState {
         this(money, strength, null, shopActive, incubatorCoast);
     }
 
+//    public UiState(Integer money, Integer strength,Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast,int eggTexture) {
+//        this(money, strength, toolUpCoast, shopActive, incubatorCoast);
+//        this.eggTexture = eggTexture;
+//    }
 
-    public Boolean getShopActive(){return shopActive;}
-    public UiState setShopActive(Boolean shopActive){this.shopActive = shopActive;
+
+
+    public Boolean getShopActive() {
+        return shopActive;
+    }
+
+    public UiState setShopActive(Boolean shopActive) {
+        this.shopActive = shopActive;
         return null;
     }
+
     public Integer getMoney() {
         return money;
     }
@@ -53,8 +80,12 @@ class UiState {
     public Integer getToolUpCoast() {
         return toolUpCoast;
     }
+
     public Integer getIncubatorUpCoast() {
         return incubatorUpCoast;
+    }
+    public int getEggTexture() {
+        return eggTexture;
     }
 }
 
@@ -67,7 +98,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     Player player;
     Egg clickEgg;
     Incubator incubator;
-    ShopFragment shopFragment ;
+    ShopFragment shopFragment;
 
 
     public ViewModel() {
@@ -79,7 +110,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     }
 
-    public ShopFragment getShopFragment(){
+    public ShopFragment getShopFragment() {
         return shopFragment;
     }
 
@@ -95,7 +126,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         player = new Player(0, new TapTool(5, 1, 50));
     }
 
-    public void createShopFragment(){
+    public void createShopFragment() {
 
         shopFragment = new ShopFragment(this);
 
@@ -105,66 +136,79 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         clickEgg = new Egg(1000);
 
     }
-    public  void  createIncubator(){
-        incubator = new Incubator(1,1,1000,500);
+
+    public void createIncubator() {
+        incubator = new Incubator(1, 1, 1000, 500);
     }
+
     //TODO
     public void onTap() {
-        if(clickEgg.statusChecker()) {
+        if (clickEgg.statusChecker()) {
             createEgg();
-            player.addMoney(player.getTool().getProfitability()*100) ;//временное решение
+            player.addMoney(player.getTool().getProfitability() * 100);//временное решение
 
-        };
+        }
+
         clickEgg.reduceStrength(player.getTool().getTapForce());
         player.addMoney(player.getTool().getProfitability());
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, false, null));
+
+        TapTool newTool = new TapTool(player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoast());
+
+        uiState.setValue(new UiState(player.getMoney(),clickEgg.getPercentStrenght(),newTool.getCoast(),false, incubator.getCoast(),clickEgg.strengthChecker()));
+
     }
 
-    public  void onToolUp(){
+    public void onToolUp() {
         int coast = player.getTool().getCoast();
-        if (player.getMoney()<coast ) return;
+        if (player.getMoney() < coast) return;
         player.spendMoney(player.getTool().getCoast());
-        TapTool newTool = new TapTool(player.getTool().getTapForce() * 4, player.getTool().getProfitability() * 4, player.getTool().getCoast()*8);//TODO - сделать по человечески
+        TapTool newTool = new TapTool(player.getTool().getTapForce() * 4, player.getTool().getProfitability() * 4, player.getTool().getCoast() * 8);//TODO - сделать по человечески
         player.setTool(newTool);
 
         uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), newTool.getCoast()));
     }
-    public void onIncUp(){
+
+    public void onIncUp() {
         int coast = incubator.getCoast();
-        if (player.getMoney()<coast ) return;
+        if (player.getMoney() < coast) return;
         player.spendMoney(coast);
-        incubator = new Incubator(incubator.getTapForce()*2,incubator.getProfitability()*2, incubator.getCoast()*22,incubator.getTimer()); //TODO - сделать по человечески
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), false, incubator.getCoast() ));
+        incubator = new Incubator(incubator.getTapForce() * 2, incubator.getProfitability() * 2, incubator.getCoast() * 22, incubator.getTimer()); //TODO - сделать по человечески
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), false, incubator.getCoast()));
     }
 
-    public void onShopClick( boolean fl){
+    public void onShopClick(boolean fl) {
 
-        TapTool newTool = new TapTool(player.getTool().getTapForce() , player.getTool().getProfitability() , player.getTool().getCoast());
+        TapTool newTool = new TapTool(player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoast());
 
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),newTool.getCoast(),fl,incubator.getCoast()));
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), newTool.getCoast(), fl, incubator.getCoast()));
     }
 
 
 
-//    TODO метод пока сырой - переписать нормально
-public void AutoTap() {
-    Timer timer = new Timer();
-    timer.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            if(clickEgg.statusChecker()) {//временное решение
-                createEgg();
-                player.addMoney(incubator.getTapForce()*10) ;//временное решение
+    //    TODO метод пока сырой - переписать нормально
+    public void AutoTap() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (clickEgg.statusChecker()) {//временное решение
+                    createEgg();
+                    player.addMoney(incubator.getTapForce() * 10);//временное решение
 
-            };
-            clickEgg.reduceStrength(incubator.getTapForce());
+                }
+                ;
+                clickEgg.reduceStrength(incubator.getTapForce());
 
 
-            player.addMoney(incubator.getProfitability());
-            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),uiState.getValue().getShopActive()));
-        }
-    }, incubator.getTimer(), incubator.getTimer());
-}
+                player.addMoney(incubator.getProfitability());
+
+                uiState.postValue(new UiState(player.getMoney(),clickEgg.getPercentStrenght(),null,uiState.getValue().getShopActive(), null,clickEgg.strengthChecker()));
+
+
+            }
+        }, incubator.getTimer(), incubator.getTimer());
+    }
+
 
 
 

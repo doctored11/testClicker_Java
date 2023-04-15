@@ -38,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //отключаем темную тему от греха подальше ( возможно временно)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        //создание этой вонючей ViewModel
         model = new ViewModelProvider(this).get(ViewModel.class);
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
 
-        //отключаем темную тему от греха подальше ( возможно временно)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        //создание этой вонючей ViewModel
+
 
 
         textCount = findViewById(R.id.text_count);
@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         egg = findViewById(R.id.egg);
 
+
+
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
 
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+            egg.setImageResource(uiState.getEggTexture());
 
             setFragment( uiState.getShopActive());
 
