@@ -1,12 +1,7 @@
 package nth11.game.eggtapper;
 
-import android.os.Handler;
-
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,49 +11,33 @@ class UiState {
     private Integer money;
     private Integer strength;
     private Integer toolUpCoast;
-    private Boolean shopActive = false;
+    private Boolean shopActive ;
     private  Integer incubatorUpCoast;
 
-
-
-
-
-
+    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
+        this.money = money;
+        this.strength = strength;
+        this.toolUpCoast = toolUpCoast;
+        this.shopActive = shopActive;
+        this.incubatorUpCoast = incubatorCoast;
+    }
     public UiState(Integer money, Integer strength) {
-        this.money = money;
-        this.strength = strength;
-        this.shopActive = false;
+        this(money, strength, null, false, null);
     }
+
     public UiState(Integer money, Integer strength, Integer toolUpCoast) {
-        this.money = money;
-        this.strength = strength;
-        this.toolUpCoast= toolUpCoast;
-        this.shopActive = false;
+        this(money, strength, toolUpCoast, false, null);
     }
-    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive) {
-        this.money = money;
-        this.strength = strength;
-        this.toolUpCoast= toolUpCoast;
-        this.shopActive = shopActive;
+
+    public UiState(Integer money, Integer strength, Boolean shopActive) {
+        this(money, strength, null, shopActive, null);
     }
-    public UiState(Integer money, Integer strength,  Boolean shopActive) {
-        this.money = money;
-        this.strength = strength;
-        this.shopActive = shopActive;
+
+    public UiState(Integer money, Integer strength, Boolean shopActive, Integer incubatorCoast) {
+        this(money, strength, null, shopActive, incubatorCoast);
     }
-    public UiState(Integer money, Integer strength,  Boolean shopActive, int incubatorCoast) {
-        this.money = money;
-        this.strength = strength;
-        this.shopActive = shopActive;
-        this.incubatorUpCoast = incubatorCoast;
-    }
-    public UiState(Integer money, Integer strength, Integer toolUpCoast, Integer incubatorCoast,Boolean shopActive) {
-        this.money = money;
-        this.strength = strength;
-        this.toolUpCoast= toolUpCoast;
-        this.incubatorUpCoast = incubatorCoast;
-        this.shopActive = shopActive;
-    }
+
+
     public Boolean getShopActive(){return shopActive;}
     public UiState setShopActive(Boolean shopActive){this.shopActive = shopActive;
         return null;
@@ -106,7 +85,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     private final MutableLiveData<UiState> uiState =
-            new MutableLiveData(new UiState(0, 0));
+            new MutableLiveData(new UiState(0, 0, null, false, null));
 
     public LiveData<UiState> getUiState() {
         return uiState;
@@ -138,7 +117,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         };
         clickEgg.reduceStrength(player.getTool().getTapForce());
         player.addMoney(player.getTool().getProfitability());
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()));
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, false, null));
     }
 
     public  void onToolUp(){
@@ -162,10 +141,10 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         TapTool newTool = new TapTool(player.getTool().getTapForce() , player.getTool().getProfitability() , player.getTool().getCoast());
 
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),newTool.getCoast(),incubator.getCoast(),fl));
-//        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght()).setShopActive(fl
-
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),newTool.getCoast(),fl,incubator.getCoast()));
     }
+
+
 
 //    TODO метод пока сырой - переписать нормально
 public void AutoTap() {
