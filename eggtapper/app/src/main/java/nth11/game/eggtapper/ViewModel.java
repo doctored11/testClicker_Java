@@ -11,18 +11,18 @@ import java.util.TimerTask;
 
 
 class UiState {
-    private final int FIRST_TEX = R.drawable.egg1;
+//    private final int FIRST_TEX = R.drawable.egg1;
     private final Integer money;
     private final Integer strength;
     private final Integer toolUpCoast;
     private  Boolean shopActive;
     private final Integer incubatorUpCoast;
-    private int eggTexture = R.drawable.egg1;
+    private int eggTexture = R.drawable.egg_stage_0;
 
 
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
-        this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg1);
+        this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg_stage_0);
     }
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int eggTexture) {
@@ -194,7 +194,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                     player.addMoney(incubator.getTapForce() * 10);//временное решение
 
                 }
-                ;
+
                 clickEgg.reduceStrength(incubator.getTapForce());
 
 

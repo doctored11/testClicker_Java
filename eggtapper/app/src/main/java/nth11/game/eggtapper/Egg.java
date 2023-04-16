@@ -4,7 +4,7 @@ public class Egg {
     private int strength;
     private int maxValue;
 
-    private int texture = R.drawable.egg1;
+    private int texture = R.drawable.egg_stage_0;
 
 
     public Egg (int strength){
@@ -32,28 +32,40 @@ public class Egg {
 
     public int strengthChecker(){
         int strengthInPercent = getPercentStrenght();
-        if (strengthInPercent>65){
-             return R.drawable.egg1;
+        if (strengthInPercent>96){
+            return R.drawable.egg_stage_0;
         }
-        if (strengthInPercent>45){
-             return R.drawable.egg2;
+        if (strengthInPercent>90){
+             return R.drawable.egg_stage_1;
         }
-        if (strengthInPercent>25){
-             return R.drawable.egg3;
+        if (strengthInPercent>85){
+             return R.drawable.egg_stage_2;
         }
-        if (strengthInPercent>15){
-             return R.drawable.egg4;
+        if (strengthInPercent>75){
+             return R.drawable.egg_stage_3;
         }
-        if (strengthInPercent>10){
-             return R.drawable.egg5;
+        if (strengthInPercent>60){
+             return R.drawable.egg_stage_4;
         }
-        if (strengthInPercent>3){
-             return R.drawable.egg6;
+        if (strengthInPercent>43){
+             return R.drawable.egg_stage_5;
         }
-        if (strengthInPercent>0){
-             return R.drawable.egg7;
+        if (strengthInPercent>30){
+             return R.drawable.egg_stage_6;
         }
-        return R.drawable.egg1;
+        if (strengthInPercent>20){
+             return R.drawable.egg_stage_7;
+        }
+        if (strengthInPercent>12){
+            return R.drawable.egg_stage_8;
+        }
+        if (strengthInPercent>6){
+            return R.drawable.egg_stage_9;
+        }
+        if (strengthInPercent>1){
+            return R.drawable.egg_stage_10;
+        }
+        return R.drawable.egg_stage_destroy;
     }
     public int getTexture(){
 

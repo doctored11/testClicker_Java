@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -72,12 +74,14 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
             egg.setImageResource(uiState.getEggTexture());
+//
             animal.setImageResource(model.getAnimal().getSprite()); // !
 
             setFragment( uiState.getShopActive());
 
 
         });
+
 
         shopBtn.setOnClickListener(view -> {
             boolean fl = model.getUiState().getValue().getShopActive();
@@ -109,11 +113,31 @@ public class MainActivity extends AppCompatActivity {
         }
         ft.commit();
     }
-    private void animateEgg(View view, boolean isDown) {
-        float scaleX = isDown ? 0.97f : 1f;
-        float scaleY = isDown ? 0.95f : 1f;
-        view.animate().scaleX(scaleX).scaleY(scaleY).setDuration(isDown ? 0 : (long) 0.1);
-    }
+//    private void animateEgg(View view, boolean isDown) {
+//        float scaleX = isDown ? 0.96f : 1f;
+//        float scaleY = isDown ? 0.95f : 1.05f;
+//        view.animate().scaleX(scaleX).scaleY(scaleY).setDuration(isDown ? 0 : (long) 0.1);
+//    }
+private void animateEgg(View view, boolean isDown) {
+    float scaleX = isDown ? 0.96f : 1f;
+    float scaleY = isDown ? 0.90f : 1.05f;
+    float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
+
+    view.animate()
+            .scaleX(scaleX)
+            .scaleY(scaleY)
+            .translationY(translationY)
+            .setDuration(0) // задержка при опускании больше, чем при поднятии
+            .withEndAction(() -> {
+                // обратная анимация, которая возвращает яйцо в исходное положение
+                view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .translationY(0f)
+                        .setDuration(0);
+            });
+}
+
 
 
 }
