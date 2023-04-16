@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textCount;
     private TextView txtMoney;
     private ImageView egg;
+    private ImageView animal;
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +59,20 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress);
 
         egg = findViewById(R.id.egg);
+        animal = findViewById(R.id.animal);
 
 
 
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
+//            Animal duck1 = new Animal(1); //TODO временно - перенести из view
 
             // update UI
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
             egg.setImageResource(uiState.getEggTexture());
+            animal.setImageResource(model.getAnimal().getSprite()); // !
 
             setFragment( uiState.getShopActive());
 

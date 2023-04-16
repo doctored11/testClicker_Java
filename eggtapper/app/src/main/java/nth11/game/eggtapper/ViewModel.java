@@ -1,5 +1,7 @@
 package nth11.game.eggtapper;
 
+import android.widget.ImageView;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -16,6 +18,8 @@ class UiState {
     private  Boolean shopActive;
     private final Integer incubatorUpCoast;
     private int eggTexture = R.drawable.egg1;
+
+
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
         this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg1);
@@ -81,15 +85,17 @@ class UiState {
 //
 public class ViewModel extends androidx.lifecycle.ViewModel {
 
-    Player player;
-    Egg clickEgg;
-    Incubator incubator;
-    ShopFragment shopFragment;
+    private Player player;
+     private Animal animal;
+     private  Egg clickEgg;
+     private Incubator incubator;
+     private ShopFragment shopFragment;
 
 
     public ViewModel() {
         createPlayer();
         createEgg();
+        createAnimal();
         createShopFragment();
         createIncubator();
         AutoTap();
@@ -111,6 +117,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void createPlayer() {
         player = new Player(0, new TapTool(5, 1, 50));
     }
+    public void  createAnimal(){
+        animal = new Animal(1);
+    }
 
     public void createShopFragment() {
 
@@ -121,6 +130,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void createEgg() {
         clickEgg = new Egg(1000);
 
+    }
+    public  Animal getAnimal(){
+        return  animal;
     }
 
     public void createIncubator() {
