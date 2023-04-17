@@ -2,7 +2,11 @@ package nth11.game.eggtapper;
 
 
 
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
@@ -15,18 +19,16 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-
 class UiState {
-//    private final int FIRST_TEX = R.drawable.egg1;
+    //    private final int FIRST_TEX = R.drawable.egg1;
     private final Integer money;
     private final Integer strength;
     private final Integer toolUpCoast;
-    private  Boolean shopActive;
+    private Boolean shopActive;
     private final Integer incubatorUpCoast;
     private int eggTexture = R.drawable.egg_stage_0;
 
-    private int id =-1;
-
+    private int id = -1;
 
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
@@ -41,6 +43,7 @@ class UiState {
         this.incubatorUpCoast = incubatorCoast;
         this.id = id;
     }
+
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id, int eggTexture) {
         this.money = money;
         this.strength = strength;
@@ -48,7 +51,7 @@ class UiState {
         this.shopActive = shopActive;
         this.incubatorUpCoast = incubatorCoast;
         this.id = id;
-        this.eggTexture= eggTexture;
+        this.eggTexture = eggTexture;
     }
 
     public UiState(Integer money, Integer strength) {
@@ -95,10 +98,12 @@ class UiState {
     public int getEggTexture() {
         return eggTexture;
     }
-    public void setId(int id){
+
+    public void setId(int id) {
         this.id = id;
     }
 }
+
 //
 //
 //
@@ -106,13 +111,13 @@ class UiState {
 public class ViewModel extends androidx.lifecycle.ViewModel {
 
     private Player player;
-     private Animal animal;
-     private  Egg clickEgg;
-     private Incubator incubator;
-     private ShopFragment shopFragment;
-     Boolean firstStart = true;
-     Boolean eggDefender;
-   private Context context;
+    private Animal animal;
+    private Egg clickEgg;
+    private Incubator incubator;
+    private ShopFragment shopFragment;
+    Boolean firstStart = true;
+    Boolean eggDefender;
+    private Context context;
 
 
     public ViewModel() {
@@ -122,6 +127,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         createShopFragment();
         createIncubator();
+//Log.e("0000","0000");
+//        getSavedAll();
+
         AutoTap();
 
     }
@@ -141,8 +149,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void createPlayer() {
         player = new Player(0, new TapTool(5, 1, 50));
     }
-    public void  createAnimal(){
-        Log.d("AnimalCreate","!");
+
+    public void createAnimal() {
+        Log.d("AnimalCreate", "!");
         Random random = new Random();
         int randomNumber = random.nextInt(1000) + 1;
         animal = new Animal(randomNumber);
@@ -159,8 +168,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         clickEgg = new Egg(1000);
 
     }
-    public  Animal getAnimal(){
-        return  animal;
+
+    public Animal getAnimal() {
+        return animal;
     }
 
     public void createIncubator() {
@@ -169,26 +179,26 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     //TODO
     public void onTap() {
-        if ( context!=null && animal.getBitmap()==null && firstStart ){
+        if (context != null && animal.getBitmap() == null && firstStart) {
             firstStart = false;
             textureSet(context);
         }
 
-        if (clickEgg.statusChecker() ) {
-            Log.d("!-!","1_прочность <=0");
+        if (clickEgg.statusChecker()) {
+            Log.d("!-!", "1_прочность <=0");
             createAnimal();
-            if ( context!=null){
+            if (context != null) {
                 Log.d("!-!", "Вошел2 0_0");
                 textureSet(context);
             }
             createEgg();
             player.addMoney(player.getTool().getProfitability() * 100);//временное решение
         }
-        if (!eggDefender)   clickEgg.reduceStrength(player.getTool().getTapForce());
+        if (!eggDefender) clickEgg.reduceStrength(player.getTool().getTapForce());
 
         player.addMoney(player.getTool().getProfitability());
 
-        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(),clickEgg.strengthChecker()));
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(), clickEgg.strengthChecker()));
 
     }
 
@@ -215,7 +225,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
-
     //    TODO метод пока сырой - переписать нормально
     public void AutoTap() {
         Timer timer = new Timer();
@@ -231,23 +240,24 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 if (!eggDefender) clickEgg.reduceStrength(incubator.getTapForce());
                 player.addMoney(incubator.getProfitability());
 
-                uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(),clickEgg.strengthChecker()));
+                uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(), clickEgg.strengthChecker()));
 
 
             }
         }, incubator.getTimer(), incubator.getTimer());
     }
 
-//
+    //
     public interface OnBitmapReadyListener {
         void onBitmapReady(Bitmap bitmap);
     }
-    public void textureSet(Context context){
+
+    public void textureSet(Context context) {
 
         TextureLoader.loadTexture(context, animal.getSprite(), new OnBitmapReadyListener() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-                // используйте измененный bitmap
+
                 Log.e("!!!!", "Покрас картинки");
                 animal.setBitmap(bitmap);
                 eggDefender = false;
@@ -260,4 +270,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void setContext(Context context) {
         this.context = context;
     }
+    public Player getPlayer(){
+        //временно для теста метод
+        return player;
+    }
+
+
+
 }

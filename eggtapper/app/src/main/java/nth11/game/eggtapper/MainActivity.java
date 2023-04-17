@@ -8,7 +8,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -46,11 +49,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+        DBHelper dbHelper = new DBHelper(this);
+        int buffer = dbHelper.getAll();
+        Log.e("Сохранил монет: ", buffer+" $");
+
+
+
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //создание этой вонючей ViewModel
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
+
+        model.getPlayer().setMoney(buffer);//TODO !
+
+
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
@@ -58,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
+
+        txtMoney.setText(getString(R.string.txt_money) + " " + buffer); //TODO убрать!
+
 
         shopBtn = findViewById(R.id.shop_btn);
         frameShop = findViewById(R.id.fragment_shop);
@@ -80,20 +99,11 @@ public class MainActivity extends AppCompatActivity {
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
 //
 
-//&&&&&???
-//            if( model.getAnimal().getId() != prevId) {
-//                TextureLoader.loadTexture(this, model.getAnimal().getSprite(), animal);
-//                prevId = model.getAnimal().getId();
-//            }
-
-
             egg.setImageResource(uiState.getEggTexture());
 
             animal.setImageBitmap(model.getAnimal().getBitmap());
                 animal.setScaleX(1);
                animal.setScaleY(1);
-//
-//            animal.setImageResource(model.getAnimal().getSprite()); // !
 
             setFragment(uiState.getShopActive());
 
@@ -130,11 +140,6 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    //    private void animateEgg(View view, boolean isDown) {
-//        float scaleX = isDown ? 0.96f : 1f;
-//        float scaleY = isDown ? 0.95f : 1.05f;
-//        view.animate().scaleX(scaleX).scaleY(scaleY).setDuration(isDown ? 0 : (long) 0.1);
-//    }
     private void animateEgg(View view, boolean isDown) {
         float scaleX = isDown ? 0.96f : 1f;
         float scaleY = isDown ? 0.90f : 1.05f;
@@ -154,6 +159,27 @@ public class MainActivity extends AppCompatActivity {
                             .setDuration(0);
                 });
     }
+
+    protected void onDestroy() {
+        super.onDestroy();
+         DBHelper dbHelper = new DBHelper(this);
+        dbHelper.saveAll();
+
+    }
+    protected void onPause() {
+        super.onPause();
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.saveAll();
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DBHelper dbHelper = new DBHelper(this);
+
+        model.getPlayer().setMoney(dbHelper.getAll());
+    }
+
 
 
 
