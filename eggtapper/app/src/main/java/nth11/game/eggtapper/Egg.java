@@ -1,5 +1,9 @@
 package nth11.game.eggtapper;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class Egg {
     private int strength;
     private int maxValue;
@@ -67,9 +71,6 @@ public class Egg {
         }
         return R.drawable.egg_stage_destroy;
     }
-    public int getTexture(){
 
-        return texture;
-    }
 
 }

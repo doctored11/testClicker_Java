@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtMoney;
     private ImageView egg;
     private ImageView animal;
+    private Bitmap bitmap;
+    private Animal nowAnimal = new Animal(0);
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         shopFragment = model.getShopFragment();
 
 
-
-
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
 
@@ -64,20 +65,34 @@ public class MainActivity extends AppCompatActivity {
         animal = findViewById(R.id.animal);
 
 
-
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
 //            Animal duck1 = new Animal(1); //TODO временно - перенести из view
+//
+
 
             // update UI
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+//
+            bitmap = BitmapFactory.decodeResource(getResources(), model.getAnimal().getSprite());
+            BitmapEditor.changeWhiteToBlueAsync(bitmap, new BitmapEditor.OnCompleteListener() {
+                @Override
+                public void onComplete(Bitmap bitmap) {
+                    egg.setImageBitmap(bitmap);
+                    egg.setScaleX(1);
+                    egg.setScaleY(1);
+                }
+            });
+            nowAnimal = model.getAnimal();
+
+
             egg.setImageResource(uiState.getEggTexture());
 //
-            animal.setImageResource(model.getAnimal().getSprite()); // !
+//            animal.setImageResource(model.getAnimal().getSprite()); // !
 
-            setFragment( uiState.getShopActive());
+            setFragment(uiState.getShopActive());
 
 
         });
@@ -87,8 +102,6 @@ public class MainActivity extends AppCompatActivity {
             boolean fl = model.getUiState().getValue().getShopActive();
             model.onShopClick(!fl);
         });
-
-
 
 
         egg.setOnTouchListener((view, motionEvent) -> {
@@ -105,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
     //это логика только отображения - оставляем во View?
     private void setFragment(boolean flag) {
-         ft = fragmentManager.beginTransaction();
+        ft = fragmentManager.beginTransaction();
         if (flag) {
             ft.replace(R.id.fragment_shop, shopFragment);
         } else {
@@ -113,31 +126,31 @@ public class MainActivity extends AppCompatActivity {
         }
         ft.commit();
     }
-//    private void animateEgg(View view, boolean isDown) {
+
+    //    private void animateEgg(View view, boolean isDown) {
 //        float scaleX = isDown ? 0.96f : 1f;
 //        float scaleY = isDown ? 0.95f : 1.05f;
 //        view.animate().scaleX(scaleX).scaleY(scaleY).setDuration(isDown ? 0 : (long) 0.1);
 //    }
-private void animateEgg(View view, boolean isDown) {
-    float scaleX = isDown ? 0.96f : 1f;
-    float scaleY = isDown ? 0.90f : 1.05f;
-    float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
+    private void animateEgg(View view, boolean isDown) {
+        float scaleX = isDown ? 1.96f : 1f;
+        float scaleY = isDown ? 1.90f : 1.05f;
+        float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
 
-    view.animate()
-            .scaleX(scaleX)
-            .scaleY(scaleY)
-            .translationY(translationY)
-            .setDuration(0) // задержка при опускании больше, чем при поднятии
-            .withEndAction(() -> {
-                // обратная анимация, которая возвращает яйцо в исходное положение
-                view.animate()
-                        .scaleX(1f)
-                        .scaleY(1f)
-                        .translationY(0f)
-                        .setDuration(0);
-            });
-}
-
+        view.animate()
+                .scaleX(scaleX)
+                .scaleY(scaleY)
+                .translationY(translationY)
+                .setDuration(0) // задержка при опускании больше, чем при поднятии
+                .withEndAction(() -> {
+                    // обратная анимация, которая возвращает яйцо в исходное положение
+                    view.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .translationY(0f)
+                            .setDuration(0);
+                });
+    }
 
 
 }
