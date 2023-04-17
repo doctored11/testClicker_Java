@@ -1,10 +1,16 @@
 package nth11.game.eggtapper;
 
+
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,19 +25,30 @@ class UiState {
     private final Integer incubatorUpCoast;
     private int eggTexture = R.drawable.egg_stage_0;
 
+    private int id =-1;
+
 
 
     public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
         this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg_stage_0);
     }
 
-    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int eggTexture) {
+    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id) {
         this.money = money;
         this.strength = strength;
         this.toolUpCoast = toolUpCoast;
         this.shopActive = shopActive;
         this.incubatorUpCoast = incubatorCoast;
-        this.eggTexture = eggTexture;
+        this.id = id;
+    }
+    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id, int eggTexture) {
+        this.money = money;
+        this.strength = strength;
+        this.toolUpCoast = toolUpCoast;
+        this.shopActive = shopActive;
+        this.incubatorUpCoast = incubatorCoast;
+        this.id = id;
+        this.eggTexture= eggTexture;
     }
 
     public UiState(Integer money, Integer strength) {
@@ -78,6 +95,9 @@ class UiState {
     public int getEggTexture() {
         return eggTexture;
     }
+    public void setId(int id){
+        this.id = id;
+    }
 }
 //
 //
@@ -90,12 +110,16 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
      private  Egg clickEgg;
      private Incubator incubator;
      private ShopFragment shopFragment;
+     Boolean firstStart = true;
+     Boolean eggDefender;
+   private Context context;
 
 
     public ViewModel() {
         createPlayer();
         createEgg();
         createAnimal();
+
         createShopFragment();
         createIncubator();
         AutoTap();
@@ -118,7 +142,10 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         player = new Player(0, new TapTool(5, 1, 50));
     }
     public void  createAnimal(){
-        animal = new Animal(1);
+        Log.d("AnimalCreate","!");
+        Random random = new Random();
+        int randomNumber = random.nextInt(1000) + 1;
+        animal = new Animal(randomNumber);
     }
 
     public void createShopFragment() {
@@ -128,6 +155,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createEgg() {
+        eggDefender = true;
         clickEgg = new Egg(1000);
 
     }
@@ -141,18 +169,32 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     //TODO
     public void onTap() {
-        if (clickEgg.statusChecker()) {
+
+
+        if ( context!=null && animal.getBitmap()==null && firstStart ){
+            firstStart = false;
+            textureSet(context);
+        }
+
+        if (clickEgg.statusChecker() ) {
+            Log.d("!-!","1_прочность <=0");
+            createAnimal();
+            if ( context!=null){
+                Log.d("!-!", "Вошел2 0_0");
+                textureSet(context);
+            }
             createEgg();
             player.addMoney(player.getTool().getProfitability() * 100);//временное решение
 
         }
 
-        clickEgg.reduceStrength(player.getTool().getTapForce());
+        if (!eggDefender)   clickEgg.reduceStrength(player.getTool().getTapForce());
+
+
+
         player.addMoney(player.getTool().getProfitability());
 
-        TapTool newTool = new TapTool(player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoast());
-
-        uiState.setValue(new UiState(player.getMoney(),clickEgg.getPercentStrenght(),newTool.getCoast(),false, incubator.getCoast(),clickEgg.strengthChecker()));
+        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(),clickEgg.strengthChecker()));
 
     }
 
@@ -190,17 +232,19 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             @Override
             public void run() {
                 if (clickEgg.statusChecker()) {//временное решение
-                    createEgg();
+//                    createEgg();
                     player.addMoney(incubator.getTapForce() * 10);//временное решение
 
                 }
+
 
                 clickEgg.reduceStrength(incubator.getTapForce());
 
 
                 player.addMoney(incubator.getProfitability());
 
-                uiState.postValue(new UiState(player.getMoney(),clickEgg.getPercentStrenght(),null,uiState.getValue().getShopActive(), null,clickEgg.strengthChecker()));
+//                uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),null,false, incubator.getCoast()));
+                uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(),clickEgg.strengthChecker()));
 
 
             }
@@ -208,6 +252,28 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
+//
+    public interface OnBitmapReadyListener {
+        void onBitmapReady(Bitmap bitmap);
+    }
+    public void textureSet(Context context){
+
+        TextureLoader.loadTexture(context, animal.getSprite(), new OnBitmapReadyListener() {
+            @Override
+            public void onBitmapReady(Bitmap bitmap) {
+                // используйте измененный bitmap
+                Log.e("!!!!", "Покрас картинки");
+                animal.setBitmap(bitmap);
+                eggDefender = false;
+            }
+        });
 
 
+
+    }
+
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
 }

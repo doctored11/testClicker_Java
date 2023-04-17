@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView egg;
     private ImageView animal;
     private Bitmap bitmap;
+    private int prevId =-1;
     private Animal nowAnimal = new Animal(0);
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //создание этой вонючей ViewModel
         model = new ViewModelProvider(this).get(ViewModel.class);
+        model.setContext(this);
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
@@ -76,19 +79,19 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
 //
-            bitmap = BitmapFactory.decodeResource(getResources(), model.getAnimal().getSprite());
-            BitmapEditor.changeWhiteToBlueAsync(bitmap, new BitmapEditor.OnCompleteListener() {
-                @Override
-                public void onComplete(Bitmap bitmap) {
-                    egg.setImageBitmap(bitmap);
-                    egg.setScaleX(1);
-                    egg.setScaleY(1);
-                }
-            });
-            nowAnimal = model.getAnimal();
+
+//&&&&&???
+//            if( model.getAnimal().getId() != prevId) {
+//                TextureLoader.loadTexture(this, model.getAnimal().getSprite(), animal);
+//                prevId = model.getAnimal().getId();
+//            }
 
 
             egg.setImageResource(uiState.getEggTexture());
+
+            animal.setImageBitmap(model.getAnimal().getBitmap());
+                animal.setScaleX(1);
+               animal.setScaleY(1);
 //
 //            animal.setImageResource(model.getAnimal().getSprite()); // !
 
@@ -133,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
 //        view.animate().scaleX(scaleX).scaleY(scaleY).setDuration(isDown ? 0 : (long) 0.1);
 //    }
     private void animateEgg(View view, boolean isDown) {
-        float scaleX = isDown ? 1.96f : 1f;
-        float scaleY = isDown ? 1.90f : 1.05f;
+        float scaleX = isDown ? 0.96f : 1f;
+        float scaleY = isDown ? 0.90f : 1.05f;
         float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
 
         view.animate()
@@ -151,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                             .setDuration(0);
                 });
     }
+
 
 
 }
