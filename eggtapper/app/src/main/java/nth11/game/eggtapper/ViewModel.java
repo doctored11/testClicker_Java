@@ -169,8 +169,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     //TODO
     public void onTap() {
-
-
         if ( context!=null && animal.getBitmap()==null && firstStart ){
             firstStart = false;
             textureSet(context);
@@ -185,12 +183,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             }
             createEgg();
             player.addMoney(player.getTool().getProfitability() * 100);//временное решение
-
         }
-
         if (!eggDefender)   clickEgg.reduceStrength(player.getTool().getTapForce());
-
-
 
         player.addMoney(player.getTool().getProfitability());
 
@@ -204,7 +198,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         player.spendMoney(player.getTool().getCoast());
         TapTool newTool = new TapTool(player.getTool().getTapForce() * 4, player.getTool().getProfitability() * 4, player.getTool().getCoast() * 8);//TODO - сделать по человечески
         player.setTool(newTool);
-
         uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), newTool.getCoast()));
     }
 
@@ -217,9 +210,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void onShopClick(boolean fl) {
-
         TapTool newTool = new TapTool(player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoast());
-
         uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), newTool.getCoast(), fl, incubator.getCoast()));
     }
 
@@ -232,25 +223,20 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             @Override
             public void run() {
                 if (clickEgg.statusChecker()) {//временное решение
-//                    createEgg();
+                    createEgg();
+                    eggDefender = true;
                     player.addMoney(incubator.getTapForce() * 10);//временное решение
 
                 }
-
-
-                clickEgg.reduceStrength(incubator.getTapForce());
-
-
+                if (!eggDefender) clickEgg.reduceStrength(incubator.getTapForce());
                 player.addMoney(incubator.getProfitability());
 
-//                uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),null,false, incubator.getCoast()));
                 uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), null, uiState.getValue().getShopActive(), incubator.getCoast(), animal.getId(),clickEgg.strengthChecker()));
 
 
             }
         }, incubator.getTimer(), incubator.getTimer());
     }
-
 
 //
     public interface OnBitmapReadyListener {
@@ -267,8 +253,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 eggDefender = false;
             }
         });
-
-
 
     }
 
