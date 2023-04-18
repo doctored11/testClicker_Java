@@ -148,6 +148,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void createPlayer() {
         player = new Player(0, new TapTool(5, 1, 50));
+        if(context!=null) loadAll(context);
     }
 
     public void createAnimal() {
@@ -233,8 +234,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             public void run() {
                 if (clickEgg.statusChecker()) {//временное решение
                     createEgg();
-                    eggDefender = true;
+
                     player.addMoney(incubator.getTapForce() * 10);//временное решение
+
+                    if (context != null) {
+                        Log.d("!-!", "ВошелAuto 0_0");
+                        textureSet(context);
+                    }
 
                 }
                 if (!eggDefender) clickEgg.reduceStrength(incubator.getTapForce());
@@ -261,6 +267,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 Log.e("!!!!", "Покрас картинки");
                 animal.setBitmap(bitmap);
                 eggDefender = false;
+                Log.i("защитник ", eggDefender+" ");
             }
         });
 
@@ -269,10 +276,38 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void setContext(Context context) {
         this.context = context;
+        Log.e("111", player.getTool().getTapForce()+ " ");
+
+//       loadAll(context);
     }
     public Player getPlayer(){
         //временно для теста метод
         return player;
+    }
+
+
+    public void saveAll(Context cont){
+
+        BDHelper dbHelper;
+         BDHelper.DataReader dataReader;
+        dbHelper = new BDHelper(cont);
+        TapTool tt = player.getTool();
+
+        dbHelper.saveData(player.getMoney(), tt.getTapForce(), tt.getProfitability(), tt.getCoast(),
+                incubator.getTapForce(), incubator.getProfitability(), incubator.getCoast());
+    }
+    public void loadAll(Context cont){
+        BDHelper dbHelper;
+        BDHelper.DataReader dataReader;
+        dataReader = new BDHelper.DataReader(cont);
+        int[] buff =  dataReader.readData();
+        //COLUMN_MONEY, COLUMN_TAP_TOOL_FORCE, COLUMN_TAP_TOOL_PROFIT,
+        //                    COLUMN_TAP_TOOL_COAST, COLUMN_INCUBATOR_FORCE, COLUMN_INCUBATOR_PROFIT, COLUMN_INCUBATOR_COAST
+        Log.e("чтение Бд", buff[0]+" "+buff[1]+" "+buff[2]+" "+buff[4]+" -_-");
+        player.setMoney(buff[0]);
+        TapTool nt = new TapTool(buff[1],buff[2],buff[3]);
+        player.setTool(nt);
+        incubator = new Incubator(buff[4],buff[5],buff[6],500);
     }
 
 

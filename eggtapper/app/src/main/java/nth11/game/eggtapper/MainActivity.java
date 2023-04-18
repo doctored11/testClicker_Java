@@ -52,9 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        DBHelper dbHelper = new DBHelper(this);
-        int buffer = dbHelper.getAll();
-        Log.e("Сохранил монет: ", buffer+" $");
+
 
 
 
@@ -63,8 +61,10 @@ public class MainActivity extends AppCompatActivity {
         //создание этой вонючей ViewModel
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
+        model.loadAll(this);
 
-        model.getPlayer().setMoney(buffer);//TODO !
+
+
 
 
 
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
 
-        txtMoney.setText(getString(R.string.txt_money) + " " + buffer); //TODO убрать!
+
 
 
         shopBtn = findViewById(R.id.shop_btn);
@@ -162,22 +162,27 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onDestroy() {
         super.onDestroy();
-         DBHelper dbHelper = new DBHelper(this);
-        dbHelper.saveAll();
 
     }
+
+
+    @Override
     protected void onPause() {
         super.onPause();
-        DBHelper dbHelper = new DBHelper(this);
-        dbHelper.saveAll();
+        model.saveAll(this);
+//        dbHelper = new BDHelper(this);
+
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
-        DBHelper dbHelper = new DBHelper(this);
 
-        model.getPlayer().setMoney(dbHelper.getAll());
+
+//        dbHelper = new BDHelper(this);
+
+
     }
 
 
