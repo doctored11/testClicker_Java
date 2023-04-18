@@ -1,9 +1,10 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.widget.ImageView;
+
+import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class TextureLoader {
     public static void loadTexture(Context context, int resourceId, ViewModel.OnBitmapReadyListener listener) {

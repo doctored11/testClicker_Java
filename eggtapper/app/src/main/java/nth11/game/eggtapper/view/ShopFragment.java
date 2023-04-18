@@ -1,7 +1,9 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.view;
 
-import android.app.Activity;
 import android.os.Bundle;
+
+import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.viewModel.ViewModel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class ShopFragment extends Fragment {
 

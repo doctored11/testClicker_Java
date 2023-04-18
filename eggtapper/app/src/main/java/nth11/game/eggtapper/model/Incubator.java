@@ -1,4 +1,4 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.model;
 
 public class Incubator extends TapTool {
     private int timer;

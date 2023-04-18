@@ -1,4 +1,4 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -8,23 +8,26 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.model.Animal;
+import nth11.game.eggtapper.viewModel.OnTouchListener;
+import nth11.game.eggtapper.viewModel.ViewModel;
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//надеюсь что это View - обработка кликов и отображение изменений (изменения  происходят в ViewModel)//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton shopBtn;
@@ -44,12 +47,13 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private int prevId =-1;
     private Animal nowAnimal = new Animal(0);
+    private OnTouchListener onTouchListener;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
 
 
@@ -63,20 +67,11 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
         model.loadAll(this);
 
-
-
-
-
-
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
 
-
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
-
-
-
 
         shopBtn = findViewById(R.id.shop_btn);
         frameShop = findViewById(R.id.fragment_shop);
@@ -89,25 +84,16 @@ public class MainActivity extends AppCompatActivity {
 
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
-//            Animal duck1 = new Animal(1); //TODO временно - перенести из view
-//
 
 
-            // update UI
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
-//
-
             egg.setImageResource(uiState.getEggTexture());
-
             animal.setImageBitmap(model.getAnimal().getBitmap());
                 animal.setScaleX(1);
                animal.setScaleY(1);
-
             setFragment(uiState.getShopActive());
-
-
         });
 
 
@@ -127,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
+
+
+
     }
 
     //это логика только отображения - оставляем во View?

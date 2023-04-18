@@ -1,8 +1,10 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import nth11.game.eggtapper.R;
 
 public class Egg {
     private int strength;

@@ -1,4 +1,4 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.model;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;

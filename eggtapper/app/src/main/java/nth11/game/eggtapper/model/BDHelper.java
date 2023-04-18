@@ -1,4 +1,4 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.model;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;

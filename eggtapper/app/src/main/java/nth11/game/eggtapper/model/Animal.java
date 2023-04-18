@@ -1,6 +1,8 @@
-package nth11.game.eggtapper;
+package nth11.game.eggtapper.model;
 
 import android.graphics.Bitmap;
+
+import nth11.game.eggtapper.R;
 
 public class Animal {
     private int id;
