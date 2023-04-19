@@ -42,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtMoney;
     private ImageView egg;
     private ImageView animal;
-    private Bitmap bitmap;
-    private int prevId =-1;
-    private Animal nowAnimal = new Animal(0);
+
 
 
     @SuppressLint("ClickableViewAccessibility")

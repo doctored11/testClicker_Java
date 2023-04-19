@@ -49,23 +49,6 @@ import nth11.game.eggtapper.R;
         this.id = id;
         this.eggTexture = eggTexture;
     }
-
-//    public UiState(Integer money, Integer strength, Integer toolUpCoastForce, Integer incubatorUpCoastprofit,) {
-//        this(money, strength, null, false, null, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Integer toolUpCoastProfit, Integer toolUpCoastForce, Integer incubatorUpCoastprofit) {
-//        this(money, strength, toolUpCoastProfit, false, null, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Boolean shopActive, Integer toolUpCoastForce) {
-//        this(money, strength, null, shopActive, null, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Boolean shopActive, Integer incubatorCoast, Integer toolUpCoastForce) {
-//        this(money, strength, null, shopActive, incubatorCoast, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
-//    }
-
     public Boolean getShopActive() {
         return shopActive;
     }

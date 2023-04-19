@@ -11,6 +11,9 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.view.ShopFragment;
@@ -21,92 +24,6 @@ import nth11.game.eggtapper.model.Incubator;
 import nth11.game.eggtapper.model.Player;
 import nth11.game.eggtapper.model.TapTool;
 import nth11.game.eggtapper.model.TextureLoader;
-
-//
-//class UiState {
-//    //    private final int FIRST_TEX = R.drawable.egg1;
-//    private final Integer money;
-//    private final Integer strength;
-//    private final Integer toolUpCoast;
-//    private Boolean shopActive;
-//    private final Integer incubatorUpCoast;
-//    private int eggTexture = R.drawable.egg_stage_0;
-//
-//    private int id = -1;
-//
-//
-//    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
-//        this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg_stage_0);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id) {
-//        this.money = money;
-//        this.strength = strength;
-//        this.toolUpCoast = toolUpCoast;
-//        this.shopActive = shopActive;
-//        this.incubatorUpCoast = incubatorCoast;
-//        this.id = id;
-//    }
-//
-//    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id, int eggTexture) {
-//        this.money = money;
-//        this.strength = strength;
-//        this.toolUpCoast = toolUpCoast;
-//        this.shopActive = shopActive;
-//        this.incubatorUpCoast = incubatorCoast;
-//        this.id = id;
-//        this.eggTexture = eggTexture;
-//    }
-//
-//    public UiState(Integer money, Integer strength) {
-//        this(money, strength, null, false, null);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Integer toolUpCoast) {
-//        this(money, strength, toolUpCoast, false, null);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Boolean shopActive) {
-//        this(money, strength, null, shopActive, null);
-//    }
-//
-//    public UiState(Integer money, Integer strength, Boolean shopActive, Integer incubatorCoast) {
-//        this(money, strength, null, shopActive, incubatorCoast);
-//    }
-//
-//    public Boolean getShopActive() {
-//        return shopActive;
-//    }
-//
-//    public UiState setShopActive(Boolean shopActive) {
-//        this.shopActive = shopActive;
-//        return null;
-//    }
-//
-//    public Integer getMoney() {
-//        return money;
-//    }
-//
-//    public Integer getStrenght() {
-//        return strength;
-//    }
-//
-//    public Integer getToolUpCoast() {
-//        return toolUpCoast;
-//    }
-//
-//    public Integer getIncubatorUpCoast() {
-//        return incubatorUpCoast;
-//    }
-//
-//    public int getEggTexture() {
-//        return eggTexture;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//}
 
 //
 //
@@ -139,7 +56,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //Log.e("0000","0000");
 //        getSavedAll();
 
-        AutoTap();
+        autoTap();
 
     }
 
@@ -162,8 +79,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createAnimal() {
-        Log.e("Animal","Create");
-        if (!solveAnimalSpawn(850000)) {
+        Log.e("Animal", "Create");
+        if (!solveAnimalSpawn(980000)) {
             eggDefender = false;
             return;
         }
@@ -180,8 +97,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createEgg() {
-        animal = null; // TODO сделать покрасивше
-        eggDefender = true;// TODO сделать покрасивше
+
         clickEgg = new Egg(1000);
 
     }
@@ -194,143 +110,100 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         incubator = new Incubator(1, 1, 1000, 1000, 500);
     }
 
-    //TODO
+
     public void onTap() {
-        if (context != null && firstStart) { //&& animal.getBitmap() == null
+        if (context != null && firstStart) {
             firstStart = false;
             textureSet(context);
         }
 
         if (clickEgg.statusChecker()) {
-            createEgg();
-            createAnimal();
-
-            if (context != null) {
-
-                textureSet(context);
-            }
-
-            player.addMoney(player.getTool().getProfitability() * 100);//временное решение
+            tapRestartScene();
         }
-        if (!eggDefender) clickEgg.reduceStrength(player.getTool().getTapForce());
+
+        if (!eggDefender) {
+            clickEgg.reduceStrength(player.getTool().getTapForce());
+        }
 
         player.addMoney(player.getTool().getProfitability());
         uiUpdate();
-//        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(),incubator.getCoastForce(),incubator.getCoastProfit(), uiState.getValue().getShopActive(),uiState.getValue().getIncubatorUpCoastProfit(), uiState.getValue().getIncubatorUpCoastForce() ,animal.getId(), clickEgg.strengthChecker()));
-
     }
 
     public void onToolUpProf() {
         int coast = player.getTool().getCoastProfit();
-        if (player.getMoney() < coast) return;
-        player.spendMoney(coast);
-
-        TapTool newTool = new TapTool(player.getTool().getTapForce(), player.getTool().getProfitability() * 2, player.getTool().getCoastForce(), player.getTool().getCoastProfit() * 2);//TODO - сделать по человечески
-        player.setTool(newTool);
-        uiState.getValue().setShopActive(false);
-
-
-        uiUpdate();
+        updateTool(coast, player.getTool().getTapForce(), player.getTool().getProfitability() * 2, player.getTool().getCoastForce(), player.getTool().getCoastProfit() * 2);
     }
 
     public void onToolUpForce() {
         int coast = player.getTool().getCoastForce();
-        if (player.getMoney() < coast) return;
-        player.spendMoney(coast);
-
-        TapTool newTool = new TapTool(player.getTool().getTapForce() * 2, player.getTool().getProfitability(), (int) Math.pow(player.getTool().getCoastForce(), 2), player.getTool().getCoastProfit());//TODO - сделать по человечески
-        player.setTool(newTool);
-        uiState.getValue().setShopActive(false);
-
-
-        uiUpdate();
+        updateTool(coast, player.getTool().getTapForce() * 2, player.getTool().getProfitability(), (int) Math.pow(player.getTool().getCoastForce(), 2), player.getTool().getCoastProfit());
     }
-
 
     public void onIncUpProf() {
         int coast = incubator.getCoastProfit();
-        if (player.getMoney() < coast) return;
-        player.spendMoney(coast);
-        incubator = new Incubator(incubator.getTapForce(), (int) (incubator.getProfitability() * 2), incubator.getCoastForce(), incubator.getCoastProfit() * 4, incubator.getTimer()); //TODO - сделать по человечески
-        uiState.getValue().setShopActive(false);
-
-        uiUpdate();
-//        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), player.getTool().getCoastProfit(),player.getTool().getCoastForce(),false, incubator.getCoastProfit(),incubator.getCoastForce(),animal.getId(), clickEgg.strengthChecker()));
+        updateIncubator(coast, incubator.getTapForce(), (int) (incubator.getProfitability() * 2), incubator.getCoastForce(), incubator.getCoastProfit() * 4, incubator.getTimer());
     }
 
     public void onIncUpForce() {
         int coast = incubator.getCoastForce();
+        updateIncubator(coast, incubator.getTapForce() * 2, incubator.getProfitability(), incubator.getCoastForce() * 22, incubator.getCoastProfit(), incubator.getTimer());
+    }
+
+    private void updateTool(int coast, int tapForce, int profitability, int coastForce, int coastProfit) {
         if (player.getMoney() < coast) return;
         player.spendMoney(coast);
-        incubator = new Incubator(incubator.getTapForce() * 2, incubator.getProfitability(), incubator.getCoastForce() * 22, incubator.getCoastProfit(), incubator.getTimer()); //TODO - сделать по человечески
+
+        TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit);
+        player.setTool(newTool);
+        uiState.getValue().setShopActive(false);
+
+        uiUpdate();
+    }
+
+    private void updateIncubator(int coast, int tapForce, int profitability, int coastForce, int coastProfit, int timer) {
+        if (player.getMoney() < coast) return;
+        player.spendMoney(coast);
+
+        incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer);
         uiState.getValue().setShopActive(false);
 
         uiUpdate();
     }
 
     public void onShopClick(boolean fl) {
-
-        uiState.getValue().setShopActive(fl); // ;)
-//        uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), player.getTool().getCoastProfit(),player.getTool().getCoastForce(),uiState.getValue().getShopActive(), incubator.getCoastProfit(),incubator.getCoastForce(),animal.getId(), clickEgg.strengthChecker()));
+        uiState.getValue().setShopActive(fl);
         uiUpdate();
 
     }
 
-
-    //    TODO метод пока сырой - переписать нормально
-    public void AutoTap() {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (clickEgg.statusChecker()) {//временное решение
-                    createEgg();
-                    createAnimal();
-
-                    player.addMoney(incubator.getTapForce() * 10);//временное решение
-
-                    if (context != null) {
-                        textureSet(context);
-                    }
-
-                }
-                if (!eggDefender) clickEgg.reduceStrength(incubator.getTapForce());
-                player.addMoney(incubator.getProfitability());
-
-                uiUpdateAuto();
-//                uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), player.getTool().getCoastProfit(),player.getTool().getCoastForce(),uiState.getValue().getShopActive(), incubator.getCoastProfit(),incubator.getCoastForce(),animal.getId(), clickEgg.strengthChecker()));
-
-
-            }
-        }, incubator.getTimer(), incubator.getTimer());
+    public void autoTap() {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        long delay = incubator.getTimer();
+        long period = incubator.getTimer();
+        executorService.scheduleAtFixedRate(new AutoTapTask(), delay, period, TimeUnit.MILLISECONDS);
     }
 
-    //
     public interface OnBitmapReadyListener {
         void onBitmapReady(Bitmap bitmap);
     }
 
+
     public void textureSet(Context context) {
         if (animal == null) return;
-
         TextureLoader.loadTexture(context, animal.getSprite(), new OnBitmapReadyListener() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
-
                 Log.e("!!!!", "Покрас картинки");
                 animal.setBitmap(bitmap);
                 eggDefender = false;
                 Log.i("защитник ", eggDefender + " ");
             }
         });
-
     }
 
 
     public void setContext(Context context) {
         this.context = context;
-
-
 //       loadAll(context);
     }
 
@@ -338,7 +211,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         //временно для теста метод
         return player;
     }
-
 
     public void saveAll(Context cont) {
 
@@ -372,10 +244,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), animal.getId(), clickEgg.strengthChecker()));
         } else {
             uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
-
         }
-
-
     }
 
     public void uiUpdateAuto() {
@@ -384,19 +253,45 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), animal.getId(), clickEgg.strengthChecker()));
         } else {
             uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
-
         }
     }
-
 
 
     public boolean solveAnimalSpawn(int eggStrength) {
         Random random = new Random();
         double buffer = eggStrength / 20000;
-        boolean boolbuf =(random.nextInt(101) < buffer && random.nextInt(101) < 50);
+        boolean boolbuf = (random.nextInt(101) < buffer && random.nextInt(101) < 50);
         Log.e("solve", buffer + " " + boolbuf);
-        return boolbuf ;
+        return boolbuf;
+    }
 
+    public void tapRestartScene() {
+
+        animal = null;
+        eggDefender = true;
+
+        createEgg();
+        createAnimal();
+        if (context != null) {
+            textureSet(context);
+        }
+        player.addMoney(player.getTool().getProfitability() * 100);//временное решение
+    }
+
+    private class AutoTapTask implements Runnable {
+        @Override
+        public void run() {
+            if (clickEgg != null && clickEgg.statusChecker()) {
+                tapRestartScene();
+            }
+            if (clickEgg != null && !eggDefender) {
+                clickEgg.reduceStrength(incubator.getTapForce());
+            }
+            if (player != null) {
+                player.addMoney(incubator.getProfitability());
+            }
+            uiUpdateAuto();
+        }
     }
 
 
