@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.viewModel.ViewModel;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-
-import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class ShopFragment extends Fragment {
 
@@ -36,16 +36,29 @@ public class ShopFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_shop, container, false);
 
-        LinearLayout toolUp = view.findViewById(R.id.toolUp);
-        TextView coastTool = view.findViewById(R.id.text_toolUp_coast);
-        coastTool.setText(String.format("$ = %d", model.getUiState().getValue().getToolUpCoast()));
+        LinearLayout toolUpProf = view.findViewById(R.id.toolUp_profit);
+        TextView coastToolProf = view.findViewById(R.id.text_toolUp_coast_prof);
+        coastToolProf.setText(String.format("$ = %d", model.getUiState().getValue().getToolUpCoastProfit()));
 
-        LinearLayout incUp = view.findViewById(R.id.incubator_first_up);
-        TextView coastInc = view.findViewById(R.id.text_incubator_first_coast);
-        coastInc.setText(String.format("$ = %d", model.getUiState().getValue().getIncubatorUpCoast()));
+        LinearLayout incUpProf = view.findViewById(R.id.incubatorUp_profit);
+        TextView coastIncProf = view.findViewById(R.id.text_incubator_first_coast_prof);
+        coastIncProf.setText(String.format("$ = %d", model.getUiState().getValue().getIncubatorUpCoastProfit()));
 
-        toolUp.setOnClickListener(v -> model.onToolUp());
-        incUp.setOnClickListener(v -> model.onIncUp());
+        LinearLayout toolUpForce = view.findViewById(R.id.toolUp_force);
+        TextView coastToolForce = view.findViewById(R.id.text_toolUp_coast_force);
+        coastToolForce.setText(String.format("$ = %d", model.getUiState().getValue().getToolUpCoastForce()));
+
+        LinearLayout incUpForce = view.findViewById(R.id.incubatorUp_force);
+        TextView coastIncForce = view.findViewById(R.id.text_incubator_first_coast_force);
+        coastIncForce.setText(String.format("$ = %d", model.getUiState().getValue().getIncubatorUpCoastForce()));
+
+
+
+        toolUpProf.setOnClickListener(v -> model.onToolUpProf());
+        incUpProf.setOnClickListener(v -> model.onIncUpProf());
+
+        toolUpForce.setOnClickListener(v -> model.onToolUpForce());
+        incUpForce.setOnClickListener(v -> model.onIncUpForce());
 
         return view;
     }

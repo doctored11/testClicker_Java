@@ -10,17 +10,17 @@ import java.util.Random;
 public class BitmapEditor {
 
 
-    public static void changeWhiteToBlueAsync(Bitmap bitmap, OnCompleteListener listener) {
-        new ChangeWhiteToBlueAsyncTask(listener).execute(bitmap);
+    public static void changeWhiteToRandomAsync(Bitmap bitmap, OnCompleteListener listener) {
+        new ChangeWhiteToRandomAsyncTask(listener).execute(bitmap);
     }
 
-    private static class ChangeWhiteToBlueAsyncTask extends AsyncTask<Bitmap, Void, Bitmap> {
+    private static class ChangeWhiteToRandomAsyncTask extends AsyncTask<Bitmap, Void, Bitmap> {
        private int randomColor = generateRandomColor();
 
 
         private OnCompleteListener listener;
 
-        public ChangeWhiteToBlueAsyncTask(OnCompleteListener listener) {
+        public ChangeWhiteToRandomAsyncTask(OnCompleteListener listener) {
             this.listener = listener;
         }
 

@@ -1,58 +1,70 @@
 package nth11.game.eggtapper.viewModel;
 
 
+import android.util.Log;
+
 import nth11.game.eggtapper.R;
 
  public class UiState {
     //    private final int FIRST_TEX = R.drawable.egg1;
     private final Integer money;
     private final Integer strength;
-    private final Integer toolUpCoast;
+
+    private final Integer toolForce;
+
+    private final Integer toolProfit;
+    private final Integer toolUpCoastProfit;
+    private final Integer toolUpCoastForce;
     private Boolean shopActive;
-    private final Integer incubatorUpCoast;
+    private final Integer incubatorForce;
+    private final Integer incubatorProfit;
+    private final Integer incubatorUpCoastprofit;
+    private final Integer incubatorUpCoastForce;
     private int eggTexture = R.drawable.egg_stage_0;
 
     private int id = -1;
 
 
-    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast) {
-        this(money, strength, toolUpCoast, shopActive, incubatorCoast, R.drawable.egg_stage_0);
+    public UiState(Integer money, Integer strength,Integer toolProfit, Integer toolForce ,Integer toolUpCoastProfit,Integer toolUpCoastForce, Boolean shopActive,Integer incubatorProfit, Integer incubatorForce , Integer incubatorUpCoastprofit, Integer incubatorUpCoastForce) {
+        this(money, strength,toolProfit,toolForce, toolUpCoastProfit, toolUpCoastForce, shopActive,incubatorProfit,incubatorForce ,incubatorUpCoastprofit, incubatorUpCoastForce, 0,R.drawable.egg_stage_0);
     }
 
-    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id) {
-        this.money = money;
-        this.strength = strength;
-        this.toolUpCoast = toolUpCoast;
-        this.shopActive = shopActive;
-        this.incubatorUpCoast = incubatorCoast;
-        this.id = id;
-    }
 
-    public UiState(Integer money, Integer strength, Integer toolUpCoast, Boolean shopActive, Integer incubatorCoast, int id, int eggTexture) {
+    public UiState(Integer money, Integer strength,Integer toolProfit,Integer toolForce,  Integer toolUpCoastProfit, Integer toolUpCoastForce, Boolean shopActive,Integer incubatorProfit,Integer incubatorForce ,Integer incubatorUpCoastprofit, Integer incubatorUpCoastForce, int id, int eggTexture) {
         this.money = money;
         this.strength = strength;
-        this.toolUpCoast = toolUpCoast;
+
+        this.toolProfit = toolProfit;
+        this.toolForce = toolForce;
+        this.toolUpCoastForce = toolUpCoastForce;
+        this.toolUpCoastProfit = toolUpCoastProfit;
+
         this.shopActive = shopActive;
-        this.incubatorUpCoast = incubatorCoast;
+
+        this.incubatorProfit = incubatorProfit;
+        this.incubatorForce = incubatorForce;
+        this.incubatorUpCoastprofit = incubatorUpCoastprofit;
+        this.incubatorUpCoastForce = incubatorUpCoastForce;
+
         this.id = id;
         this.eggTexture = eggTexture;
     }
 
-    public UiState(Integer money, Integer strength) {
-        this(money, strength, null, false, null);
-    }
-
-    public UiState(Integer money, Integer strength, Integer toolUpCoast) {
-        this(money, strength, toolUpCoast, false, null);
-    }
-
-    public UiState(Integer money, Integer strength, Boolean shopActive) {
-        this(money, strength, null, shopActive, null);
-    }
-
-    public UiState(Integer money, Integer strength, Boolean shopActive, Integer incubatorCoast) {
-        this(money, strength, null, shopActive, incubatorCoast);
-    }
+//    public UiState(Integer money, Integer strength, Integer toolUpCoastForce, Integer incubatorUpCoastprofit,) {
+//        this(money, strength, null, false, null, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
+//    }
+//
+//    public UiState(Integer money, Integer strength, Integer toolUpCoastProfit, Integer toolUpCoastForce, Integer incubatorUpCoastprofit) {
+//        this(money, strength, toolUpCoastProfit, false, null, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
+//    }
+//
+//    public UiState(Integer money, Integer strength, Boolean shopActive, Integer toolUpCoastForce) {
+//        this(money, strength, null, shopActive, null, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
+//    }
+//
+//    public UiState(Integer money, Integer strength, Boolean shopActive, Integer incubatorCoast, Integer toolUpCoastForce) {
+//        this(money, strength, null, shopActive, incubatorCoast, toolUpCoastForce, incubatorUpCoastprofit, incubatorUpCoastForce);
+//    }
 
     public Boolean getShopActive() {
         return shopActive;
@@ -71,12 +83,12 @@ import nth11.game.eggtapper.R;
         return strength;
     }
 
-    public Integer getToolUpCoast() {
-        return toolUpCoast;
-    }
 
-    public Integer getIncubatorUpCoast() {
-        return incubatorUpCoast;
+    public Integer getIncubatorUpCoastProfit() {
+        return incubatorUpCoastprofit;
+    }
+    public Integer getIncubatorUpCoastForce(){
+        return incubatorUpCoastForce;
     }
 
     public int getEggTexture() {
@@ -86,4 +98,28 @@ import nth11.game.eggtapper.R;
     public void setId(int id) {
         this.id = id;
     }
-}
+
+     public Integer getToolForce() {
+         return toolForce;
+     }
+
+     public Integer getToolProfit() {
+         return toolProfit;
+     }
+     public Integer getToolUpCoastProfit() {
+         return toolUpCoastProfit;
+     }
+
+
+     public Integer getToolUpCoastForce() {
+         return toolUpCoastForce;
+     }
+
+     public Integer getIncubatorForce() {
+         return incubatorForce;
+     }
+
+     public Integer getIncubatorProfit() {
+         return incubatorProfit;
+     }
+ }

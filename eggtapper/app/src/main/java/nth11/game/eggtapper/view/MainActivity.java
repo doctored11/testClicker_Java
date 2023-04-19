@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -21,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.model.Animal;
-import nth11.game.eggtapper.viewModel.OnTouchListener;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -32,11 +32,9 @@ import nth11.game.eggtapper.viewModel.ViewModel;
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton shopBtn;
     private FrameLayout frameShop;
-
-
-    ProgressBar progressBar;
-    ViewModel model;
-    FragmentTransaction ft;
+     private   ProgressBar progressBar;
+    private ViewModel model;
+    private  FragmentTransaction ft;
     private Fragment shopFragment;
     private FragmentManager fragmentManager;
 
@@ -47,25 +45,25 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private int prevId =-1;
     private Animal nowAnimal = new Animal(0);
-    private OnTouchListener onTouchListener;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-
-
-
 
 
 
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //создание этой вонючей ViewModel
+
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
-        model.loadAll(this);
+//        model.loadAll(this);
+
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
@@ -90,9 +88,11 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setProgress(uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
             egg.setImageResource(uiState.getEggTexture());
-            animal.setImageBitmap(model.getAnimal().getBitmap());
+            if (model.getAnimal() != null) {   //проверку по хорошему во VM
+                animal.setImageBitmap(model.getAnimal().getBitmap());
                 animal.setScaleX(1);
-               animal.setScaleY(1);
+                animal.setScaleY(1);
+            } else {animal.setImageBitmap(null);}
             setFragment(uiState.getShopActive());
         });
 
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        model.saveAll(this);
+//        model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 
 
