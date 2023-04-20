@@ -9,13 +9,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.view.ShopFragment;
 import nth11.game.eggtapper.model.Animal;
 import nth11.game.eggtapper.model.BDHelper;
@@ -30,6 +27,25 @@ import nth11.game.eggtapper.model.TextureLoader;
 //
 //
 public class ViewModel extends androidx.lifecycle.ViewModel {
+    public final long MIN_EGG_STRENGTH = 1000l;
+    public final long MAX_EGG_STRENGTH = 100_000_000_000_000l; //хз сколько надеюсь не очень много
+
+    public final long BASE_TAPTOOL_FORCECLICK_PRICE = 100;
+    public final long BASE_TAPTOOL_PROFITCLICK_PRICE = 250;
+    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
+    public final long BASE_TAPTOOL_PROFITCLICK_VALUE =1;
+
+    public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER= 1.22;
+    public final double BASE_TAPTOOL_PROFITCLICK_MULTIPLAER =1.14;
+
+
+    public final long BASE_INCUBATOR_FORCE_PRICE = 200;
+    public final long BASE_INCUBATOR_PROFIT_PRICE = 150;
+    public final long BASE_INCUBATOR_FORCE_VALUE = 0;
+    public final long BASE_INCUBATOR_PROFIT_VALUE =0;
+    public final double BASE_INCUBATOR_FORCE_MULTIPLAER= 1.27;
+    public final double BASE_INCUBATOR_PROFIT_MULTIPLAER= 1.12;
+
 
     private Player player;
     private Animal animal;
@@ -37,15 +53,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private Incubator incubator;
     private ShopFragment shopFragment;
     Boolean firstStart = true;
-    Boolean eggDefender;
+    Boolean eggDefender = true;
     private Context context;
 
 
     public ViewModel() {
 
         createPlayer();
-
-        createEgg();
 
         createAnimal();
 
@@ -57,7 +71,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //        getSavedAll();
 
         autoTap();
-
+        createEgg(getRandomStrenght());
+        Log.e("random", getRandomStrenght() + "_");
     }
 
     public ShopFragment getShopFragment() {
@@ -66,7 +81,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     private final MutableLiveData<UiState> uiState =
-            new MutableLiveData(new UiState(0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0));//внимание сюда)
+            new MutableLiveData(new UiState(0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0));
 
     public LiveData<UiState> getUiState() {
         return uiState;
@@ -74,13 +89,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void createPlayer() {
 
-        player = new Player(0, new TapTool(5, 1, 50, 50));
+        player = new Player(300, new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE,BASE_TAPTOOL_FORCECLICK_PRICE,BASE_TAPTOOL_PROFITCLICK_PRICE,1,1));
         if (context != null) loadAll(context);
     }
 
     public void createAnimal() {
         Log.e("Animal", "Create");
-        if (!solveAnimalSpawn(980000)) {
+        if (!solveAnimalSpawn(970000l)) {
             eggDefender = false;
             return;
         }
@@ -96,9 +111,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     }
 
-    public void createEgg() {
+    public void createEgg(long strength) {
 
-        clickEgg = new Egg(1000);
+        clickEgg = new Egg(strength);
 
     }
 
@@ -107,11 +122,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createIncubator() {
-        incubator = new Incubator(1, 1, 1000, 1000, 500);
+        incubator = new Incubator(BASE_INCUBATOR_FORCE_VALUE, BASE_INCUBATOR_PROFIT_VALUE, BASE_INCUBATOR_FORCE_PRICE, BASE_INCUBATOR_PROFIT_PRICE, 500,1, 1);
     }
 
 
     public void onTap() {
+
+        Log.e("onTap", player.getTool().getProfitability() + " " + uiState.getValue().getMoney());
         if (context != null && firstStart) {
             firstStart = false;
             textureSet(context);
@@ -130,41 +147,56 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void onToolUpProf() {
-        int coast = player.getTool().getCoastProfit();
-        updateTool(coast, player.getTool().getTapForce(), player.getTool().getProfitability() * 2, player.getTool().getCoastForce(), player.getTool().getCoastProfit() * 2);
+        long coast = player.getTool().getCoastProfit();
+
+        long newProfitCost = (long) Math.round  ((BASE_TAPTOOL_PROFITCLICK_PRICE * Math.pow( BASE_TAPTOOL_PROFITCLICK_MULTIPLAER, player.getTool().getUpCountProf())));
+        long newProfitValue = player.getTool().getProfitability() * 11;
+
+        updateTool(coast, player.getTool().getTapForce(), newProfitValue, player.getTool().getCoastForce(),newProfitCost);
     }
 
     public void onToolUpForce() {
-        int coast = player.getTool().getCoastForce();
-        updateTool(coast, player.getTool().getTapForce() * 2, player.getTool().getProfitability(), (int) Math.pow(player.getTool().getCoastForce(), 2), player.getTool().getCoastProfit());
+        long coast = player.getTool().getCoastForce();
+        long newForceCost = (long) Math.round  ((BASE_TAPTOOL_FORCECLICK_PRICE * Math.pow( BASE_TAPTOOL_FORCECLICK_MULTIPLAER, player.getTool().getUpCountForce())));
+        long newForceValue = player.getTool().getTapForce() * 5;
+        updateTool(coast, newForceValue , player.getTool().getProfitability(), newForceCost, player.getTool().getCoastProfit());
     }
 
     public void onIncUpProf() {
-        int coast = incubator.getCoastProfit();
-        updateIncubator(coast, incubator.getTapForce(), (int) (incubator.getProfitability() * 2), incubator.getCoastForce(), incubator.getCoastProfit() * 4, incubator.getTimer());
+        long coast = incubator.getCoastProfit();
+
+        long newProfitCost = (long) Math.round  ((BASE_INCUBATOR_PROFIT_PRICE * Math.pow( BASE_INCUBATOR_PROFIT_MULTIPLAER, incubator.getUpCountProf())));
+        long newProfitValue = (incubator.getProfitability()+1 ) *8;
+
+
+        updateIncubator(coast, incubator.getTapForce(), newProfitValue, incubator.getCoastForce(), newProfitCost, incubator.getTimer());
     }
 
     public void onIncUpForce() {
-        int coast = incubator.getCoastForce();
-        updateIncubator(coast, incubator.getTapForce() * 2, incubator.getProfitability(), incubator.getCoastForce() * 22, incubator.getCoastProfit(), incubator.getTimer());
+        long coast = incubator.getCoastForce();
+
+        long newForceCost = (long) Math.round  ((BASE_INCUBATOR_FORCE_PRICE * Math.pow( BASE_INCUBATOR_FORCE_MULTIPLAER, incubator.getUpCountForce())));
+        long newForceValue = (incubator.getTapForce()+1 ) *3;
+
+        updateIncubator(coast, newForceValue , incubator.getProfitability(), newForceCost, incubator.getCoastProfit(), incubator.getTimer());
     }
 
-    private void updateTool(int coast, int tapForce, int profitability, int coastForce, int coastProfit) {
+    private void updateTool(long coast, long tapForce, long profitability, long coastForce, long coastProfit) {
         if (player.getMoney() < coast) return;
         player.spendMoney(coast);
 
-        TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit);
+        TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit, player.getTool().getUpCountProf()+1 , player.getTool().getUpCountForce()+1);
         player.setTool(newTool);
         uiState.getValue().setShopActive(false);
 
         uiUpdate();
     }
 
-    private void updateIncubator(int coast, int tapForce, int profitability, int coastForce, int coastProfit, int timer) {
+    private void updateIncubator(long coast, long tapForce, long profitability, long coastForce, long coastProfit, int timer) {
         if (player.getMoney() < coast) return;
         player.spendMoney(coast);
 
-        incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer);
+        incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf()+1, incubator.getUpCountForce()+1);
         uiState.getValue().setShopActive(false);
 
         uiUpdate();
@@ -193,6 +225,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         TextureLoader.loadTexture(context, animal.getSprite(), new OnBitmapReadyListener() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
+                if (animal == null) return;// вроде очень надо
+
                 Log.e("!!!!", "Покрас картинки");
                 animal.setBitmap(bitmap);
                 eggDefender = false;
@@ -257,9 +291,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
-    public boolean solveAnimalSpawn(int eggStrength) {
+    public boolean solveAnimalSpawn(long eggStrength) {
         Random random = new Random();
-        double buffer = eggStrength / 20000;
+        long buffer = (long) eggStrength / 20000;
         boolean boolbuf = (random.nextInt(101) < buffer && random.nextInt(101) < 50);
         Log.e("solve", buffer + " " + boolbuf);
         return boolbuf;
@@ -270,12 +304,14 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         animal = null;
         eggDefender = true;
 
-        createEgg();
+
         createAnimal();
         if (context != null) {
             textureSet(context);
         }
-        player.addMoney(player.getTool().getProfitability() * 100);//временное решение
+        player.addMoney((long) (Math.pow( player.getTool().getProfitability(),2) * 55));//временное решение
+
+        createEgg(getRandomStrenght());
     }
 
     private class AutoTapTask implements Runnable {
@@ -292,6 +328,27 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             }
             uiUpdateAuto();
         }
+    }
+
+    public long getRandomStrenght() {
+        Log.e("сложность", player.getTool().getTapForce() + incubator.getTapForce()+ "_ _");
+        if (player.getTool().getTapForce() + incubator.getTapForce() < 10) {
+            long max = (long)10_000l;
+            return getRandomNumber(MIN_EGG_STRENGTH, max);
+        }
+        if (player.getTool().getTapForce() + incubator.getTapForce() < 250) {
+            long max = (long) Math.pow(MAX_EGG_STRENGTH, 1 / ((MAX_EGG_STRENGTH * 0.1 - player.getTool().getTapForce())));
+            return getRandomNumber(MIN_EGG_STRENGTH, 200_000l);
+        }
+        return getRandomNumber(MIN_EGG_STRENGTH, MAX_EGG_STRENGTH);
+
+    }
+
+    public static long getRandomNumber(long lowerBound, long upperBound) {
+        Random random = new Random();
+        Log.i("random",Math.random()+" "+Math.random() +" "+Math.random() +" "+Math.random() +" "+Math.random() +" "+Math.random() );
+        return (long) (Math.random()*(upperBound-lowerBound+1)+lowerBound);
+//        Math.random() * (max - min + 1) + min)
     }
 
 

@@ -1,25 +1,23 @@
 package nth11.game.eggtapper.viewModel;
 
 
-import android.util.Log;
-
 import nth11.game.eggtapper.R;
 
  public class UiState {
     //    private final int FIRST_TEX = R.drawable.egg1;
-    private final Integer money;
-    private final Integer strength;
+    private final long money;
+    private final long strength;
 
-    private final Integer toolForce;
+    private final long toolForce;
 
-    private final Integer toolProfit;
-    private final Integer toolUpCoastProfit;
-    private final Integer toolUpCoastForce;
+    private final long toolProfit;
+    private final long toolUpCoastProfit;
+    private final long toolUpCoastForce;
     private Boolean shopActive;
-    private final Integer incubatorForce;
-    private final Integer incubatorProfit;
-    private final Integer incubatorUpCoastprofit;
-    private final Integer incubatorUpCoastForce;
+    private final long incubatorForce;
+    private final long incubatorProfit;
+    private final long incubatorUpCoastprofit;
+    private final long incubatorUpCoastForce;
     private int eggTexture = R.drawable.egg_stage_0;
 
     private int id = -1;
@@ -30,7 +28,7 @@ import nth11.game.eggtapper.R;
     }
 
 
-    public UiState(Integer money, Integer strength,Integer toolProfit,Integer toolForce,  Integer toolUpCoastProfit, Integer toolUpCoastForce, Boolean shopActive,Integer incubatorProfit,Integer incubatorForce ,Integer incubatorUpCoastprofit, Integer incubatorUpCoastForce, int id, int eggTexture) {
+    public UiState(long money, long strength, long toolProfit, long toolForce, long toolUpCoastProfit, long toolUpCoastForce, Boolean shopActive, long incubatorProfit, long incubatorForce , long incubatorUpCoastprofit, long incubatorUpCoastForce, int id, int eggTexture) {
         this.money = money;
         this.strength = strength;
 
@@ -58,19 +56,19 @@ import nth11.game.eggtapper.R;
         return null;
     }
 
-    public Integer getMoney() {
+    public long getMoney() {
         return money;
     }
 
-    public Integer getStrenght() {
+    public long getStrenght() {
         return strength;
     }
 
 
-    public Integer getIncubatorUpCoastProfit() {
+    public long getIncubatorUpCoastProfit() {
         return incubatorUpCoastprofit;
     }
-    public Integer getIncubatorUpCoastForce(){
+    public long getIncubatorUpCoastForce(){
         return incubatorUpCoastForce;
     }
 
@@ -82,27 +80,27 @@ import nth11.game.eggtapper.R;
         this.id = id;
     }
 
-     public Integer getToolForce() {
+     public long getToolForce() {
          return toolForce;
      }
 
-     public Integer getToolProfit() {
+     public long getToolProfit() {
          return toolProfit;
      }
-     public Integer getToolUpCoastProfit() {
+     public long getToolUpCoastProfit() {
          return toolUpCoastProfit;
      }
 
 
-     public Integer getToolUpCoastForce() {
+     public long getToolUpCoastForce() {
          return toolUpCoastForce;
      }
 
-     public Integer getIncubatorForce() {
+     public long getIncubatorForce() {
          return incubatorForce;
      }
 
-     public Integer getIncubatorProfit() {
+     public long getIncubatorProfit() {
          return incubatorProfit;
      }
  }

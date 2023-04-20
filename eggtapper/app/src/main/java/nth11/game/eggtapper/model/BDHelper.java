@@ -50,8 +50,8 @@ public class BDHelper extends SQLiteOpenHelper {
         // Здесь можно реализовать миграцию данных, если это необходимо
     }
 
-    public void saveData(int money, int tapToolForce, int tapToolProfit, int tapToolCoast,
-                         int incubatorForce, int incubatorProfit, int incubatorCoast) {
+    public void saveData(long money, long tapToolForce, long tapToolProfit, long tapToolCoast,
+                         long incubatorForce, long incubatorProfit, long incubatorCoast) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_MONEY, money);

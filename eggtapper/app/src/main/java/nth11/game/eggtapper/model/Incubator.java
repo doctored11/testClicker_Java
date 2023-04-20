@@ -3,8 +3,8 @@ package nth11.game.eggtapper.model;
 public class Incubator extends TapTool {
     private int timer;
 
-    public Incubator(int tapForce, int profitability, int coastF,int coastP,int timer) {
-        super(tapForce, profitability, coastF,coastP);
+    public Incubator(long tapForce, long profitability, long coastF, long coastP, int timer, long upCountProf, long upCountForce) {
+        super(tapForce, profitability, coastF,coastP,upCountProf, upCountForce);
         this.timer = timer;
     }
     public int getTimer(){

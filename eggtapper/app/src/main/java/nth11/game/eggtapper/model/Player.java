@@ -1,15 +1,15 @@
 package nth11.game.eggtapper.model;
 
 public class Player {
-    private int money;
+    private long money;
     private TapTool tool;
 
-    public Player(int money, TapTool tool) {
+    public Player(long money, TapTool tool) {
         this.money = money;
         this.tool = tool;
     }
 
-    public int getMoney() {
+    public long getMoney() {
         return money;
     }
 
@@ -17,13 +17,13 @@ public class Player {
         return tool;
     }
 
-    public void setMoney(int money) {
+    public void setMoney(long money) {
         this.money = money;
     }
-    public void  addMoney(int money){
+    public void  addMoney(long money){
         this.money +=money;
     }
-    public void  spendMoney(int money){
+    public void  spendMoney(long money){
         this.money -=money;
     }
     public void  addMoney(){

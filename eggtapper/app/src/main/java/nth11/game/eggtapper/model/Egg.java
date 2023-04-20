@@ -1,23 +1,22 @@
 package nth11.game.eggtapper.model;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import nth11.game.eggtapper.R;
 
 public class Egg {
-    private int strength;
-    private int maxValue;
+    private long strength;
+    private long maxValue;
 
     private int texture = R.drawable.egg_stage_0;
 
 
-    public Egg (int strength){
+    public Egg (long strength){
+        Log.e("!!!!!!!!!!!_-_______________Прочность:", strength+" __________________!!!!!!!!");
         this.strength=strength;
         this.maxValue=strength;
     }
-    public void reduceStrength(int count){
+    public void reduceStrength(long count){
 
         if (count<0) count =1;
         this.strength-=count;
@@ -25,10 +24,10 @@ public class Egg {
             this.strength=0;
         }
     }
-    public int getStrenght(){
+    public long getStrenght(){
         return this.strength;
     }
-    public int getPercentStrenght(){
+    public long getPercentStrenght(){
         return strength*100/maxValue;
 
     }
@@ -37,7 +36,7 @@ public class Egg {
     }
 
     public int strengthChecker(){
-        int strengthInPercent = getPercentStrenght();
+        long strengthInPercent = getPercentStrenght();
         if (strengthInPercent>96){
             return R.drawable.egg_stage_0;
         }

@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -21,7 +20,7 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
-import nth11.game.eggtapper.model.Animal;
+import nth11.game.eggtapper.model.GameCurrency;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -62,6 +61,13 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
 //        model.loadAll(this);
 
+        GameCurrency money1 = new GameCurrency( 100,' ');
+        GameCurrency money2 = new GameCurrency( 500,' ');
+        GameCurrency money3 = money1.simpleMultiplay(10000_002);
+        money3.prefixUpdate();
+        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
+
+
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
@@ -83,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             textCount.setText(uiState.getStrenght() + " ");
-            progressBar.setProgress(uiState.getStrenght());
+            progressBar.setProgress((int) uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
