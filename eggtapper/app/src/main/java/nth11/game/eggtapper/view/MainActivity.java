@@ -61,11 +61,17 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
 //        model.loadAll(this);
 
-        GameCurrency money1 = new GameCurrency( 100,' ');
-        GameCurrency money2 = new GameCurrency( 500,' ');
-        GameCurrency money3 = money1.simpleMultiplay(10000_002);
-        money3.prefixUpdate();
-        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
+//        GameCurrency money1 = new GameCurrency( 100,' ');
+//        GameCurrency money2 = new GameCurrency( 500,' ');
+//        GameCurrency money3 = money1.simpleMultiplay(10000_002);
+//        money3.prefixUpdate();
+//        money3.prefixUpdate();
+//        money3.prefixUpdate();
+//        money3.prefixUpdate(); money3.prefixUpdate(); money3.prefixUpdate();
+
+
+
+//        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
 
 
 

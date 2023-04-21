@@ -94,7 +94,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
     public GameCurrency simpleMultiplay(double simpleMultiplayer){
         Log.e("Умножение :", "возможны ошибки при больших значениях множителя! "+ simpleMultiplayer);
-        if(Double.MAX_VALUE/simpleMultiplayer < this.value ){
+        if(Double.MAX_VALUE/simpleMultiplayer > this.value ){ //? проверить знак < >
             GameCurrency bg = new GameCurrency((Double.MAX_VALUE*0.99), this.prefix);
             bg.prefixUpdate();
             return bg;
