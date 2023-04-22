@@ -2,33 +2,34 @@ package nth11.game.eggtapper.viewModel;
 
 
 import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.model.GameCurrency;
 
- public class UiState {
+public class UiState {
     //    private final int FIRST_TEX = R.drawable.egg1;
-    private final long money;
+    private final GameCurrency money;
     private final long strength;
 
     private final long toolForce;
 
-    private final long toolProfit;
-    private final long toolUpCoastProfit;
-    private final long toolUpCoastForce;
+    private final GameCurrency toolProfit;
+    private final GameCurrency toolUpCoastProfit;
+    private final GameCurrency toolUpCoastForce;
     private Boolean shopActive;
     private final long incubatorForce;
-    private final long incubatorProfit;
-    private final long incubatorUpCoastprofit;
-    private final long incubatorUpCoastForce;
+    private final GameCurrency incubatorProfit;
+    private final GameCurrency incubatorUpCoastprofit;
+    private final GameCurrency incubatorUpCoastForce;
     private int eggTexture = R.drawable.egg_stage_0;
 
     private int id = -1;
 
 
-    public UiState(Integer money, Integer strength,Integer toolProfit, Integer toolForce ,Integer toolUpCoastProfit,Integer toolUpCoastForce, Boolean shopActive,Integer incubatorProfit, Integer incubatorForce , Integer incubatorUpCoastprofit, Integer incubatorUpCoastForce) {
+    public UiState(GameCurrency money, Integer strength, GameCurrency toolProfit, long toolForce , GameCurrency toolUpCoastProfit, GameCurrency toolUpCoastForce, Boolean shopActive, GameCurrency incubatorProfit, long incubatorForce , GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce) {
         this(money, strength,toolProfit,toolForce, toolUpCoastProfit, toolUpCoastForce, shopActive,incubatorProfit,incubatorForce ,incubatorUpCoastprofit, incubatorUpCoastForce, 0,R.drawable.egg_stage_0);
     }
 
 
-    public UiState(long money, long strength, long toolProfit, long toolForce, long toolUpCoastProfit, long toolUpCoastForce, Boolean shopActive, long incubatorProfit, long incubatorForce , long incubatorUpCoastprofit, long incubatorUpCoastForce, int id, int eggTexture) {
+    public UiState(GameCurrency money, long strength, GameCurrency toolProfit, long toolForce, GameCurrency toolUpCoastProfit, GameCurrency toolUpCoastForce, Boolean shopActive, GameCurrency incubatorProfit, long incubatorForce , GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, int id, int eggTexture) {
         this.money = money;
         this.strength = strength;
 
@@ -56,7 +57,7 @@ import nth11.game.eggtapper.R;
         return null;
     }
 
-    public long getMoney() {
+    public GameCurrency getMoney() {
         return money;
     }
 
@@ -65,10 +66,11 @@ import nth11.game.eggtapper.R;
     }
 
 
-    public long getIncubatorUpCoastProfit() {
+    public GameCurrency getIncubatorUpCoastProfit() {
         return incubatorUpCoastprofit;
     }
-    public long getIncubatorUpCoastForce(){
+    public GameCurrency getIncubatorUpCoastForce(){
+
         return incubatorUpCoastForce;
     }
 
@@ -84,15 +86,15 @@ import nth11.game.eggtapper.R;
          return toolForce;
      }
 
-     public long getToolProfit() {
+     public GameCurrency getToolProfit() {
          return toolProfit;
      }
-     public long getToolUpCoastProfit() {
+     public GameCurrency getToolUpCoastProfit() {
          return toolUpCoastProfit;
      }
 
 
-     public long getToolUpCoastForce() {
+     public GameCurrency getToolUpCoastForce() {
          return toolUpCoastForce;
      }
 
@@ -100,7 +102,7 @@ import nth11.game.eggtapper.R;
          return incubatorForce;
      }
 
-     public long getIncubatorProfit() {
+     public GameCurrency getIncubatorProfit() {
          return incubatorProfit;
      }
  }

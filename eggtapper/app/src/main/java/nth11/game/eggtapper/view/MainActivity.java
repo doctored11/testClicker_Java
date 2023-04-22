@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-
-
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //создание этой вонючей ViewModel
@@ -61,13 +59,16 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
 //        model.loadAll(this);
 
-//        GameCurrency money1 = new GameCurrency( 100,' ');
-//        GameCurrency money2 = new GameCurrency( 500,' ');
-//        GameCurrency money3 = money1.simpleMultiplay(10000_002);
-//        money3.prefixUpdate();
-//        money3.prefixUpdate();
-//        money3.prefixUpdate();
-//        money3.prefixUpdate(); money3.prefixUpdate(); money3.prefixUpdate();
+        GameCurrency money1 = new GameCurrency( 11.5,'K');
+        GameCurrency money2 = new GameCurrency( 200,' ');
+        boolean bool = GameCurrency.compare(money1,money2);
+        Log.e(" ----- ", bool + " ");
+
+        GameCurrency money3 = money1.add(money2);
+        money3.prefixUpdate();
+        money3.prefixUpdate();
+        money3.prefixUpdate();
+        money3.prefixUpdate(); money3.prefixUpdate(); money3.prefixUpdate();
 
 
 
@@ -93,10 +94,9 @@ public class MainActivity extends AppCompatActivity {
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
 
-
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress((int) uiState.getStrenght());
-            txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+            txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
                 animal.setImageBitmap(model.getAnimal().getBitmap());

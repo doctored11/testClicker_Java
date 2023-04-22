@@ -13,9 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import nth11.game.eggtapper.model.GameCurrency;
 import nth11.game.eggtapper.view.ShopFragment;
 import nth11.game.eggtapper.model.Animal;
-import nth11.game.eggtapper.model.BDHelper;
+//import nth11.game.eggtapper.model.BDHelper;
 import nth11.game.eggtapper.model.Egg;
 import nth11.game.eggtapper.model.Incubator;
 import nth11.game.eggtapper.model.Player;
@@ -31,19 +32,19 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //    public final long MAX_EGG_STRENGTH = 100_000_000_000_000l; //хз сколько надеюсь не очень много
 public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюсь не очень много
 
-    public final long BASE_TAPTOOL_FORCECLICK_PRICE = 100;
-    public final long BASE_TAPTOOL_PROFITCLICK_PRICE = 200;
+    public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
+    public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');;
     public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
-    public final long BASE_TAPTOOL_PROFITCLICK_VALUE = 1;
+    public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');;
 
     public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
     public final double BASE_TAPTOOL_PROFITCLICK_MULTIPLAER = 1.14;
 
 
-    public final long BASE_INCUBATOR_FORCE_PRICE = 300;
-    public final long BASE_INCUBATOR_PROFIT_PRICE = 250;
-    public final long BASE_INCUBATOR_FORCE_VALUE = 0;
-    public final long BASE_INCUBATOR_PROFIT_VALUE = 0;
+    public final GameCurrency BASE_INCUBATOR_FORCE_PRICE = new GameCurrency(300, ' ');
+    public final GameCurrency BASE_INCUBATOR_PROFIT_PRICE = new GameCurrency(250, ' ');
+    public final long BASE_INCUBATOR_FORCE_VALUE= 0;
+    public final GameCurrency BASE_INCUBATOR_PROFIT_VALUE = new GameCurrency(0, ' ');
     public final double BASE_INCUBATOR_FORCE_MULTIPLAER = 1.27;
     public final double BASE_INCUBATOR_PROFIT_MULTIPLAER = 1.12;
 
@@ -82,7 +83,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
 
     private final MutableLiveData<UiState> uiState =
-            new MutableLiveData(new UiState(0, 0, 0, 0, 0, 0, false, 0, 0, 0, 0));
+            new MutableLiveData(new UiState(new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' '), false, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' ')));
 
     public LiveData<UiState> getUiState() {
         return uiState;
@@ -90,7 +91,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public void createPlayer() {
 
-        player = new Player(0, new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
+        player = new Player(new GameCurrency(130, 'K'), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
         if (context != null) loadAll(context);
     }
 
@@ -129,7 +130,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public void onTap() {
 
-        Log.e("onTap", player.getTool().getProfitability() + " " + uiState.getValue().getMoney());
+        Log.e("onTap", player.getTool().getProfitability().getFormattedValue() + " " + uiState.getValue().getMoney().getFormattedValue());
         if (context != null && firstStart) {
             firstStart = false;
             textureSet(context);
@@ -148,57 +149,75 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
     }
 
     public void onToolUpProf() {
-        long coast = player.getTool().getCoastProfit();
+        GameCurrency coast = player.getTool().getCoastProfit();
+        if(!GameCurrency.compare(player.getMoney(),coast)) return;
 
-        long newProfitCost = (long) Math.round((BASE_TAPTOOL_PROFITCLICK_PRICE * Math.pow(BASE_TAPTOOL_PROFITCLICK_MULTIPLAER, player.getTool().getUpCountProf())));
-        long newProfitValue = player.getTool().getProfitability() + 5;
+        GameCurrency newProfitCost = BASE_TAPTOOL_PROFITCLICK_PRICE.simpleMultiplay(Math.pow(BASE_TAPTOOL_PROFITCLICK_MULTIPLAER, player.getTool().getUpCountProf()));
+        GameCurrency newProfitValue = player.getTool().getProfitability().add( new GameCurrency(5, ' '));
+        newProfitValue.prefixUpdate();
+        newProfitCost.prefixUpdate();
 
-        updateTool(coast, player.getTool().getTapForce(), newProfitValue, player.getTool().getCoastForce(), newProfitCost);
+        updateTool(coast, player.getTool().getTapForce(), newProfitValue, player.getTool().getCoastForce(), newProfitCost, 0,1);
     }
 
     public void onToolUpForce() {
-        long coast = player.getTool().getCoastForce();
-        long newForceCost = (long) Math.round((BASE_TAPTOOL_FORCECLICK_PRICE * Math.pow(BASE_TAPTOOL_FORCECLICK_MULTIPLAER, player.getTool().getUpCountForce())));
-        long newForceValue = player.getTool().getTapForce() +2;
-        updateTool(coast, newForceValue, player.getTool().getProfitability(), newForceCost, player.getTool().getCoastProfit());
+        GameCurrency coast = player.getTool().getCoastForce();
+        coast.prefixUpdate();
+        if(!GameCurrency.compare(player.getMoney(),coast)) return;
+
+        GameCurrency newForceCost =  (BASE_TAPTOOL_FORCECLICK_PRICE.simpleMultiplay( Math.pow(BASE_TAPTOOL_FORCECLICK_MULTIPLAER, player.getTool().getUpCountForce())));
+        long newForceValue = player.getTool().getTapForce()+2;
+        newForceCost.prefixUpdate();
+
+        updateTool(coast, newForceValue, player.getTool().getProfitability(), newForceCost, player.getTool().getCoastProfit(),1,0);
     }
 
     public void onIncUpProf() {
-        long coast = incubator.getCoastProfit();
+        GameCurrency coast = incubator.getCoastProfit();
+        if(!GameCurrency.compare(player.getMoney(),coast)) return;
+
         Log.e("onInc count", incubator.getUpCountProf() + " ");
-        long newProfitCost = (long) Math.round((BASE_INCUBATOR_PROFIT_PRICE * Math.pow(BASE_INCUBATOR_PROFIT_MULTIPLAER, incubator.getUpCountProf())));
-        long newProfitValue = (incubator.getProfitability() + 1) +3;
+        GameCurrency newProfitCost = (BASE_INCUBATOR_PROFIT_PRICE.simpleMultiplay(Math.pow(BASE_INCUBATOR_PROFIT_MULTIPLAER, incubator.getUpCountProf())));
+        GameCurrency newProfitValue = (incubator.getProfitability().add( new GameCurrency(3, ' ')));
+        newProfitCost.prefixUpdate();
+        newProfitValue.prefixUpdate();
 
 
-        updateIncubator(coast, incubator.getTapForce(), newProfitValue, incubator.getCoastForce(), newProfitCost, incubator.getTimer());
+
+        updateIncubator(coast, incubator.getTapForce(), newProfitValue, incubator.getCoastForce(), newProfitCost, incubator.getTimer(),0,1);
     }
 
     public void onIncUpForce() {
-        long coast = incubator.getCoastForce();
+        GameCurrency coast = incubator.getCoastForce();
+        if(!GameCurrency.compare(player.getMoney(),coast)) return;
 
-        long newForceCost = (long) Math.round((BASE_INCUBATOR_FORCE_PRICE * Math.pow(BASE_INCUBATOR_FORCE_MULTIPLAER, incubator.getUpCountForce())));
-        long newForceValue = (incubator.getTapForce() + 1) ;
+        GameCurrency newForceCost = (BASE_INCUBATOR_FORCE_PRICE.simpleMultiplay(Math.pow(BASE_INCUBATOR_FORCE_MULTIPLAER, incubator.getUpCountForce())));
+        long newForceValue = (incubator.getTapForce() +1);
+        newForceCost.prefixUpdate();
 
-        updateIncubator(coast, newForceValue, incubator.getProfitability(), newForceCost, incubator.getCoastProfit(), incubator.getTimer());
+
+        updateIncubator(coast, newForceValue, incubator.getProfitability(), newForceCost, incubator.getCoastProfit(), incubator.getTimer(),1,0);
     }
 
-    private void updateTool(long coast, long tapForce, long profitability, long coastForce, long coastProfit) {
-        if (player.getMoney() < coast) return;
+    private void updateTool(GameCurrency coast, long tapForce, GameCurrency profitability, GameCurrency coastForce, GameCurrency coastProfit, int forceContUp, int profCountUp) {
+//        if (!GameCurrency.compare(player.getMoney(),coast)) return;
+        coast.prefixUpdate();
         player.spendMoney(coast);
 
-        TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit, player.getTool().getUpCountProf() + 1, player.getTool().getUpCountForce() + 1);
+
+        TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit, player.getTool().getUpCountProf() +  profCountUp, player.getTool().getUpCountForce() + forceContUp);//
         player.setTool(newTool);
         uiState.getValue().setShopActive(false);
 
         uiUpdate();
     }
 
-    private void updateIncubator(long coast, long tapForce, long profitability, long coastForce, long coastProfit, int timer) {
-        if (player.getMoney() < coast) return;
+    private void updateIncubator(GameCurrency coast, long tapForce, GameCurrency profitability, GameCurrency coastForce, GameCurrency coastProfit, int timer, int forceCountUp, int profCountUp) {
+        if (!GameCurrency.compare(player.getMoney(),coast)) return;
         player.spendMoney(coast);
         Log.e("Incubator count:", incubator.getUpCountForce() + " ");
 
-        incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() + 1, incubator.getUpCountForce() + 1);
+        incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() +  profCountUp, incubator.getUpCountForce() + forceCountUp);
         uiState.getValue().setShopActive(false);
 
         uiUpdate();
@@ -250,27 +269,27 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public void saveAll(Context cont) {
 
-        BDHelper dbHelper;
-        BDHelper.DataReader dataReader;
-        dbHelper = new BDHelper(cont);
-        TapTool tt = player.getTool();
-
-        dbHelper.saveData(player.getMoney(), tt.getTapForce(), tt.getProfitability(), tt.getCoastForce(),
-                incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastForce());
+//        BDHelper dbHelper;
+//        BDHelper.DataReader dataReader;
+//        dbHelper = new BDHelper(cont);
+//        TapTool tt = player.getTool();
+//
+//        dbHelper.saveData(player.getMoney(), tt.getTapForce(), tt.getProfitability(), tt.getCoastForce(),
+//                incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastForce());
     }
 
     public void loadAll(Context cont) {
-        BDHelper dbHelper;
-        BDHelper.DataReader dataReader;
-        dataReader = new BDHelper.DataReader(cont);
-        int[] buff = dataReader.readData();
-        //COLUMN_MONEY, COLUMN_TAP_TOOL_FORCE, COLUMN_TAP_TOOL_PROFIT,
-        //                    COLUMN_TAP_TOOL_COAST, COLUMN_INCUBATOR_FORCE, COLUMN_INCUBATOR_PROFIT, COLUMN_INCUBATOR_COAST
-        Log.e("чтение Бд", buff[0] + " " + buff[1] + " " + buff[2] + " " + buff[4] + " -_-");
-//        player.setMoney(buff[0]);
-//        TapTool nt = new TapTool(buff[1],buff[2],buff[3]);
-//        player.setTool(nt);
-//        incubator = new Incubator(buff[4],buff[5],buff[6],500);
+//        BDHelper dbHelper;
+//        BDHelper.DataReader dataReader;
+//        dataReader = new BDHelper.DataReader(cont);
+//        int[] buff = dataReader.readData();
+//        //COLUMN_MONEY, COLUMN_TAP_TOOL_FORCE, COLUMN_TAP_TOOL_PROFIT,
+//        //                    COLUMN_TAP_TOOL_COAST, COLUMN_INCUBATOR_FORCE, COLUMN_INCUBATOR_PROFIT, COLUMN_INCUBATOR_COAST
+//        Log.e("чтение Бд", buff[0] + " " + buff[1] + " " + buff[2] + " " + buff[4] + " -_-");
+////        player.setMoney(buff[0]);
+////        TapTool nt = new TapTool(buff[1],buff[2],buff[3]);
+////        player.setTool(nt);
+////        incubator = new Incubator(buff[4],buff[5],buff[6],500);
     }
 
     public void uiUpdate() {
@@ -303,6 +322,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
     }
 
     public void tapRestartScene() {
+        Log.i("restart","__restart");
 
         animal = null;
         eggDefender = true;
@@ -312,9 +332,12 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         if (context != null) {
             textureSet(context);
         }
-        player.addMoney((long) (Math.pow(player.getTool().getProfitability(), 2) * 4));//временное решение
+        Log.i("restart","---до начисление монет ---");
+        player.addMoney( player.getTool().getProfitability().simpleMultiplay(100));//временное решение
+        Log.i("restart","---монеты добавлены---");
 
         createEgg(getRandomStrenght());
+
     }
 
     private class AutoTapTask implements Runnable {
