@@ -8,12 +8,12 @@ public class Animal {
     private int id;
     private int sprite = R.drawable.testfull_duck;
 
-    private long strength;
+    private double strength;
     private Bitmap bitmap;
 
     public Animal(int id) {
         this.id = id;
-        this.strength= (long) (Math.random()*(20-10)+10);
+        this.strength= (long) (Math.random()*(35-10)+10);
     }
 
     public int getSprite() {
@@ -37,6 +37,13 @@ public class Animal {
     public void reduceStrength(){
 
         this.strength-=1;
+        if ( this.strength<=0){
+            this.strength=0;
+        }
+    }
+    public void reduceStrength( double damage){
+
+        this.strength-=damage;
         if ( this.strength<=0){
             this.strength=0;
         }

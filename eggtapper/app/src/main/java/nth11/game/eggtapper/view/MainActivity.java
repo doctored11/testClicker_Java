@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtMoney;
     private ImageView egg;
     private ImageView animal;
+    private  long lastClickTime = 0;
 
 
 
@@ -125,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
 //            return true;
 //        });
 
+
+
+        // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
         egg.setOnTouchListener((view, motionEvent) -> {
             int pointerCount = motionEvent.getPointerCount();
             for (int i = 0; i < pointerCount; i++) {
@@ -136,30 +140,35 @@ public class MainActivity extends AppCompatActivity {
                 switch (action) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_POINTER_DOWN:
-                        // Обработка нажатия пальца
-                        model.onTap();
-                        if (model.onAnimalTap()) {
-                            animateEgg(animal, true);
+                        // нажатие пальца
+                        long now = System.currentTimeMillis();
+                        if (now - lastClickTime >= 10) { // Проверка времени между кликами
+
+                            if (model.onAnimalTap()) {
+                                animateEgg(animal, true);
+                            } else{
+                                model.onTap();
+
+                            }
+                            animateEgg(view, true);
                         }
-                        animateEgg(view, true);
+                        lastClickTime = now;
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
-                        // Обработка отпускания пальца
-                        if (model.onAnimalTap()) {
-                            animateEgg(animal, false);
-                        }
+                        // отпускание пальца
+//                        if (model.onAnimalTap()) {
+//                            animateEgg(animal, false);
+//                        }
                         animateEgg(view, false);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        // Обработка перемещения пальца
-                        // Можно использовать x, y для определения перемещения пальца
+
                         break;
                 }
             }
             return true;
         });
-
 
 
 

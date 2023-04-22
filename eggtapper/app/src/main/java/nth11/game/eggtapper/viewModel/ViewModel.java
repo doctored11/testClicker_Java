@@ -34,7 +34,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');;
-    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
+    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 100;
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');;
 
     public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
@@ -129,6 +129,11 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
 
     public void onTap() {
+        if (animal != null  && clickEgg.statusChecker() )   {
+            Log.i("outTap", "_tapOut_" + (animal != null) + " " +  clickEgg.statusChecker());
+            return;
+        }
+
 
         Log.e("onTap", player.getTool().getProfitability().getFormattedValue() + " " + uiState.getValue().getMoney().getFormattedValue());
         if (context != null && firstStart) {
@@ -171,6 +176,15 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         uiUpdate();
         return true;
     }
+
+    public void autoTap() {
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        long delay = incubator.getTimer();
+        long period = incubator.getTimer();
+        executorService.scheduleAtFixedRate(new AutoTapTask(), delay, period, TimeUnit.MILLISECONDS);
+    }
+
+
 
     public void onToolUpProf() {
         GameCurrency coast = player.getTool().getCoastProfit();
@@ -253,12 +267,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     }
 
-    public void autoTap() {
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        long delay = incubator.getTimer();
-        long period = incubator.getTimer();
-        executorService.scheduleAtFixedRate(new AutoTapTask(), delay, period, TimeUnit.MILLISECONDS);
-    }
+
 
     public interface OnBitmapReadyListener {
         void onBitmapReady(Bitmap bitmap);
@@ -368,15 +377,23 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         @Override
         public void run() {
 
-            if (clickEgg != null && clickEgg.statusChecker()&& animal==null) {
+            if (clickEgg != null && clickEgg.statusChecker() && animal==null) {
                 Log.i("++++++++++++=onAutoTap", " RESTART( ");
                 tapRestartScene();
             }
+
             if (clickEgg != null && !eggDefender) {
                 clickEgg.reduceStrength(incubator.getTapForce());
             }
-            if (player != null) {
+            if (player != null && (animal== null|| !clickEgg.statusChecker() ) ) {
                 player.addMoney(incubator.getProfitability());
+            }
+            if (player != null && (animal!= null&& clickEgg.statusChecker() ) ) {
+                player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
+                animal.reduceStrength(0.05);
+            }
+            if (animal!=null && animal.statusChecker()) {
+                tapRestartScene();
             }
             uiUpdateAuto();
         }
