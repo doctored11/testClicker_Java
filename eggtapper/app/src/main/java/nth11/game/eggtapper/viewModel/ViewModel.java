@@ -48,7 +48,6 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
     public final double BASE_INCUBATOR_FORCE_MULTIPLAER = 1.27;
     public final double BASE_INCUBATOR_PROFIT_MULTIPLAER = 1.12;
 
-
     private Player player;
     private Animal animal;
     private Egg clickEgg;

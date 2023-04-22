@@ -218,17 +218,13 @@ public class MainActivity extends AppCompatActivity {
 //        model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-
 //        dbHelper = new BDHelper(this);
-
-
     }
 
 
