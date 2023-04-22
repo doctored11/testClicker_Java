@@ -34,7 +34,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');;
-    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
+    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 600;
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');;
 
     public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
@@ -91,7 +91,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public void createPlayer() {
 
-        player = new Player(new GameCurrency(130, 'K'), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
+        player = new Player(new GameCurrency(1, 'K'), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
         if (context != null) loadAll(context);
     }
 
@@ -136,7 +136,8 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
             textureSet(context);
         }
 
-        if (clickEgg.statusChecker()) {
+        if (clickEgg.statusChecker() && animal==null) {
+            Log.i("++++++++++++=onTap", " RESTART( ");
             tapRestartScene();
         }
 
@@ -146,6 +147,29 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
         player.addMoney(player.getTool().getProfitability());
         uiUpdate();
+    }
+    public boolean onAnimalTap() {
+        if (animal == null || !clickEgg.statusChecker() )   return false;
+
+        Log.e("_____________________________________onBirdTap", player.getTool().getProfitability().getFormattedValue() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + uiState.getValue().getMoney().getFormattedValue());
+//        if (context != null && firstStart) {
+//            firstStart = false;
+//            textureSet(context);
+//        }
+
+        if (!animal.statusChecker())  animal.reduceStrength();
+
+        if (animal.statusChecker()) {
+            tapRestartScene();
+        }
+
+//        if (!eggDefender) {
+
+//
+
+        player.addMoney( player.getTool().getProfitability().simpleMultiplay(10));
+        uiUpdate();
+        return true;
     }
 
     public void onToolUpProf() {
@@ -343,7 +367,9 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
     private class AutoTapTask implements Runnable {
         @Override
         public void run() {
-            if (clickEgg != null && clickEgg.statusChecker()) {
+
+            if (clickEgg != null && clickEgg.statusChecker()&& animal==null) {
+                Log.i("++++++++++++=onAutoTap", " RESTART( ");
                 tapRestartScene();
             }
             if (clickEgg != null && !eggDefender) {
@@ -376,6 +402,8 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         return (long) (Math.random() * (upperBound - lowerBound + 1) + lowerBound);
 //        Math.random() * (max - min + 1) + min)
     }
+
+
 
 
 }

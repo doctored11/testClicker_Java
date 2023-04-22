@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
         shopBtn.setOnClickListener(view -> {
             boolean fl = model.getUiState().getValue().getShopActive();
             model.onShopClick(!fl);
@@ -115,14 +117,23 @@ public class MainActivity extends AppCompatActivity {
 
         egg.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                animateEgg(view, true);
                 model.onTap();
+                if(  model.onAnimalTap() ){
+                    animateEgg(animal, true);
+                }
+                animateEgg(view, true);
+
+
             } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                if(  model.onAnimalTap() ){
+                    animateEgg(animal, false);
+                }
                 animateEgg(view, false);
                 return false;
             }
             return true;
         });
+
 
 
 

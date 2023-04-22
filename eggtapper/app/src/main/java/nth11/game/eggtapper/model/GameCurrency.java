@@ -72,34 +72,47 @@ public class GameCurrency implements Comparable<GameCurrency> {
     }
 
 
-    public GameCurrency add(GameCurrency second) {
-        if (compare(this, second)) {
-            Log.e("add", " 1");
-            if (this.getDegreeByPrefix() == second.getDegreeByPrefix()) {
-                Log.e("add", "1.1");
-                return new GameCurrency((this.value + second.value), this.prefix);
-            }
-            if (comparePrefix(this, second)) {
-                Log.e("add", "1.2");
-                if (this.getDegreeByPrefix() - second.getDegreeByPrefix() <= 9) {
-                    Log.e("add", "1.2.1");
-                    int buffDegree = this.getDegreeDifference(second);
-                    return new GameCurrency(this.value * Math.pow(10, buffDegree) + second.value, second.prefix); //
-                }
-                return new GameCurrency(this.value * 1.0000001, this.prefix);
-            }
+//    public GameCurrency add(GameCurrency second) {
+//        if (compare(this, second)) {
+//            Log.e("add", " 1");
+//            if (this.getDegreeByPrefix() == second.getDegreeByPrefix()) {
+//                Log.e("add", "1.1");
+//                return new GameCurrency((this.value + second.value), this.prefix);
+//            }
+//            if (comparePrefix(this, second)) {
+//                Log.e("add", "1.2");
+//                if (this.getDegreeByPrefix() - second.getDegreeByPrefix() <= 9) {
+//                    Log.e("add", "1.2.1");
+//                    int buffDegree = this.getDegreeDifference(second);
+//                    return new GameCurrency(this.value * Math.pow(10, buffDegree) + second.value, second.prefix); //
+//                }
+//                return new GameCurrency(this.value * 1.0000001, this.prefix);
+//            }
+//
+//        } else {
+//            Log.e("add", "2");
+//            if (second.getDegreeByPrefix() - this.getDegreeByPrefix() <= 9) {
+//                int buffDegree = second.getDegreeDifference(this);
+//
+//                Log.e("add", "2.1");
+//                return new GameCurrency(second.value * Math.pow(10, buffDegree  ) + this.value, this.prefix);
+//            }
+//            return second; //если разница очень большая просто заменяем на большее
+//        }
+//        return this;
+//
+//    }
+    public  GameCurrency add(GameCurrency second) {
+        if (compare(this, second)){
+            int buffDegree = this.getDegreeDifference(second);
+            return new GameCurrency(this.value * Math.pow(10, buffDegree) + second.value, second.prefix);
 
-        } else {
-            Log.e("add", "2");
-            if (second.getDegreeByPrefix() - this.getDegreeByPrefix() <= 9) {
-                int buffDegree = second.getDegreeDifference(this);
 
-                Log.e("add", "2.1");
-                return new GameCurrency(second.value * Math.pow(10, buffDegree  ) + this.value, this.prefix);
-            }
-            return second; //если разница очень большая просто заменяем на большее
         }
-        return this;
+        else {
+            int buffDegree = second.getDegreeDifference(this);
+            return new GameCurrency(second.value * Math.pow(10, buffDegree) + this.value, this.prefix);
+        }
 
     }
 
