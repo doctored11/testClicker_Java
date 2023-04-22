@@ -59,16 +59,7 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
 //        model.loadAll(this);
 
-        GameCurrency money1 = new GameCurrency( 11.5,'K');
-        GameCurrency money2 = new GameCurrency( 200,' ');
-        boolean bool = GameCurrency.compare(money1,money2);
-        Log.e(" ----- ", bool + " ");
 
-        GameCurrency money3 = money1.add(money2);
-        money3.prefixUpdate();
-        money3.prefixUpdate();
-        money3.prefixUpdate();
-        money3.prefixUpdate(); money3.prefixUpdate(); money3.prefixUpdate();
 
 
 
@@ -115,24 +106,60 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+//        egg.setOnTouchListener((view, motionEvent) -> {
+//            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                model.onTap();
+//                if(  model.onAnimalTap() ){
+//                    animateEgg(animal, true);
+//                }
+//                animateEgg(view, true);
+//
+//
+//            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//                if(  model.onAnimalTap() ){
+//                    animateEgg(animal, false);
+//                }
+//                animateEgg(view, false);
+//                return false;
+//            }
+//            return true;
+//        });
+
         egg.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                model.onTap();
-                if(  model.onAnimalTap() ){
-                    animateEgg(animal, true);
-                }
-                animateEgg(view, true);
+            int pointerCount = motionEvent.getPointerCount();
+            for (int i = 0; i < pointerCount; i++) {
+                int action = motionEvent.getActionMasked();
+                int pointerId = motionEvent.getPointerId(i);
+                float x = motionEvent.getX(i);
+                float y = motionEvent.getY(i);
 
-
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                if(  model.onAnimalTap() ){
-                    animateEgg(animal, false);
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        // Обработка нажатия пальца
+                        model.onTap();
+                        if (model.onAnimalTap()) {
+                            animateEgg(animal, true);
+                        }
+                        animateEgg(view, true);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP:
+                        // Обработка отпускания пальца
+                        if (model.onAnimalTap()) {
+                            animateEgg(animal, false);
+                        }
+                        animateEgg(view, false);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // Обработка перемещения пальца
+                        // Можно использовать x, y для определения перемещения пальца
+                        break;
                 }
-                animateEgg(view, false);
-                return false;
             }
             return true;
         });
+
 
 
 

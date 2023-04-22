@@ -34,7 +34,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');;
-    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 600;
+    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');;
 
     public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
@@ -91,7 +91,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
     public void createPlayer() {
 
-        player = new Player(new GameCurrency(1, 'K'), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
+        player = new Player(new GameCurrency(0, ' '), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
         if (context != null) loadAll(context);
     }
 
