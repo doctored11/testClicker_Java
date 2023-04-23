@@ -38,11 +38,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginRight="25dp"
             app:srcCompat="@drawable/ico_dollar"
             app:fabSize="auto"
             app:backgroundTint="@color/gold_1"
             app:tint="@color/white"
             />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/settings_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:backgroundTint="#818181"
+                app:fabSize="auto"
+                app:srcCompat="@drawable/ico_dollar"
+                app:tint="@color/white" />
 
 
     </LinearLayout>
@@ -112,7 +123,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/fragment_shop"
+        android:id="@+id/fragment_base"
         android:layout_width="match_parent"
         android:layout_height="589dp"
         android:layout_alignParentTop="true"

@@ -1,6 +1,8 @@
 package nth11.game.eggtapper.viewModel;
 
 
+import androidx.fragment.app.Fragment;
+
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.model.GameCurrency;
 
@@ -14,7 +16,7 @@ public class UiState {
     private final GameCurrency toolProfit;
     private final GameCurrency toolUpCoastProfit;
     private final GameCurrency toolUpCoastForce;
-    private Boolean shopActive;
+    private Fragment fragmentActive;
     private final long incubatorForce;
     private final GameCurrency incubatorProfit;
     private final GameCurrency incubatorUpCoastprofit;
@@ -24,12 +26,12 @@ public class UiState {
     private int id = -1;
 
 
-    public UiState(GameCurrency money, Integer strength, GameCurrency toolProfit, long toolForce , GameCurrency toolUpCoastProfit, GameCurrency toolUpCoastForce, Boolean shopActive, GameCurrency incubatorProfit, long incubatorForce , GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce) {
+    public UiState(GameCurrency money, Integer strength, GameCurrency toolProfit, long toolForce , GameCurrency toolUpCoastProfit, GameCurrency toolUpCoastForce, Fragment shopActive, GameCurrency incubatorProfit, long incubatorForce , GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce) {
         this(money, strength,toolProfit,toolForce, toolUpCoastProfit, toolUpCoastForce, shopActive,incubatorProfit,incubatorForce ,incubatorUpCoastprofit, incubatorUpCoastForce, 0,R.drawable.egg_stage_0);
     }
 
 
-    public UiState(GameCurrency money, long strength, GameCurrency toolProfit, long toolForce, GameCurrency toolUpCoastProfit, GameCurrency toolUpCoastForce, Boolean shopActive, GameCurrency incubatorProfit, long incubatorForce , GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, int id, int eggTexture) {
+    public UiState(GameCurrency money, long strength, GameCurrency toolProfit, long toolForce, GameCurrency toolUpCoastProfit, GameCurrency toolUpCoastForce, Fragment shopActive, GameCurrency incubatorProfit, long incubatorForce , GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, int id, int eggTexture) {
         this.money = money;
         this.strength = strength;
 
@@ -38,7 +40,7 @@ public class UiState {
         this.toolUpCoastForce = toolUpCoastForce;
         this.toolUpCoastProfit = toolUpCoastProfit;
 
-        this.shopActive = shopActive;
+        this.fragmentActive = shopActive;
 
         this.incubatorProfit = incubatorProfit;
         this.incubatorForce = incubatorForce;
@@ -48,12 +50,12 @@ public class UiState {
         this.id = id;
         this.eggTexture = eggTexture;
     }
-    public Boolean getShopActive() {
-        return shopActive;
+    public Fragment getFragmentActive() {
+        return fragmentActive;
     }
 
-    public UiState setShopActive(Boolean shopActive) {
-        this.shopActive = shopActive;
+    public UiState setFragmentActive(Fragment fragmentActive) {
+        this.fragmentActive = fragmentActive;
         return null;
     }
 

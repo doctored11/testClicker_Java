@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
-import nth11.game.eggtapper.model.GameCurrency;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -30,22 +29,23 @@ import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton shopBtn;
-    private FrameLayout frameShop;
-     private   ProgressBar progressBar;
+    private FloatingActionButton settingBtn;
+    private FrameLayout frameBase;
+    private ProgressBar progressBar;
     private ViewModel model;
-    private  FragmentTransaction ft;
+    private FragmentTransaction ft;
     private Fragment shopFragment;
+    private Fragment settingFragment;
     private FragmentManager fragmentManager;
 
     private TextView textCount;
     private TextView txtMoney;
     private ImageView egg;
     private ImageView animal;
-    private  long lastClickTime = 0;
+    private long lastClickTime = 0;
 
 
-
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,21 +61,19 @@ public class MainActivity extends AppCompatActivity {
 //        model.loadAll(this);
 
 
-
-
-
 //        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
-
 
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
+        settingFragment = model.getSettingsFragment();
 
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
 
         shopBtn = findViewById(R.id.shop_btn);
-        frameShop = findViewById(R.id.fragment_shop);
+        settingBtn = findViewById(R.id.settings_btn);
+        frameBase = findViewById(R.id.fragment_base);
 
         progressBar = findViewById(R.id.progress);
 
@@ -94,17 +92,40 @@ public class MainActivity extends AppCompatActivity {
                 animal.setImageBitmap(model.getAnimal().getBitmap());
                 animal.setScaleX(1);
                 animal.setScaleY(1);
-            } else {animal.setImageBitmap(null);}
-            setFragment(uiState.getShopActive());
+            } else {
+                animal.setImageBitmap(null);
+            }
+            setFragment(uiState.getFragmentActive());
         });
-
-
 
 
         shopBtn.setOnClickListener(view -> {
-            boolean fl = model.getUiState().getValue().getShopActive();
-            model.onShopClick(!fl);
+            Fragment fl = model.getUiState().getValue().getFragmentActive();
+            Log.i("CLICK", (fl == null) + " ---");
+
+            if (fl != null) {
+                fl = null;
+
+            } else {
+                fl = shopFragment;
+            }
+//            if ( fl == null) return;
+            model.onShopClick(fl);// !возможное отрицание
         });
+        settingBtn.setOnClickListener(view -> {
+            Fragment fl = model.getUiState().getValue().getFragmentActive();
+            Log.i("CLICK", (fl == null) + " ---");
+
+            if (fl != null) {
+                fl = null;
+
+            } else {
+                fl = settingFragment;
+            }
+//            if ( fl == null) return;
+            model.onShopClick(fl);// !возможное отрицание
+        });
+
 
 
 //        egg.setOnTouchListener((view, motionEvent) -> {
@@ -127,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-
         // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
         egg.setOnTouchListener((view, motionEvent) -> {
             int pointerCount = motionEvent.getPointerCount();
@@ -146,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
 
                             if (model.onAnimalTap()) {
                                 animateEgg(animal, true);
-                            } else{
+                            } else {
                                 model.onTap();
 
                             }
@@ -171,17 +191,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
     //это логика только отображения - оставляем во View?
-    private void setFragment(boolean flag) {
+    Fragment lastFragment;
+
+    private void setFragment(Fragment flag) {
         ft = fragmentManager.beginTransaction();
-        if (flag) {
-            ft.replace(R.id.fragment_shop, shopFragment);
-        } else {
-            ft.remove(shopFragment);
+
+        if (flag != null) {
+            ft.replace(R.id.fragment_base, flag);
+            lastFragment = flag;
+
+        } else if ( lastFragment!= null) {
+            ft.remove(lastFragment);
         }
         ft.commit();
     }
@@ -226,8 +249,6 @@ public class MainActivity extends AppCompatActivity {
 
 //        dbHelper = new BDHelper(this);
     }
-
-
 
 
 }

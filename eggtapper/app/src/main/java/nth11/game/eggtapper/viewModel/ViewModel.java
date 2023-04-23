@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,8 +14,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import nth11.game.eggtapper.SettingsFragment;
 import nth11.game.eggtapper.model.GameCurrency;
-import nth11.game.eggtapper.view.ShopFragment;
 import nth11.game.eggtapper.model.Animal;
 //import nth11.game.eggtapper.model.BDHelper;
 import nth11.game.eggtapper.model.Egg;
@@ -22,6 +23,7 @@ import nth11.game.eggtapper.model.Incubator;
 import nth11.game.eggtapper.model.Player;
 import nth11.game.eggtapper.model.TapTool;
 import nth11.game.eggtapper.model.TextureLoader;
+import nth11.game.eggtapper.view.ShopFragment;
 
 //
 //
@@ -53,6 +55,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
     private Egg clickEgg;
     private Incubator incubator;
     private ShopFragment shopFragment;
+    private SettingsFragment settingsFragment;
     Boolean firstStart = true;
     Boolean eggDefender = true;
     private Context context;
@@ -64,7 +67,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
         createAnimal();
 
-        createShopFragment();
+        createFragments();
 
         createIncubator();
 
@@ -79,10 +82,14 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
     public ShopFragment getShopFragment() {
         return shopFragment;
     }
+    public SettingsFragment getSettingsFragment() {
+        return settingsFragment;
+    }
+
 
 
     private final MutableLiveData<UiState> uiState =
-            new MutableLiveData(new UiState(new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' '), false, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' ')));
+            new MutableLiveData(new UiState(new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' '), null, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' ')));
 
     public LiveData<UiState> getUiState() {
         return uiState;
@@ -106,9 +113,10 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         animal = new Animal(randomNumber);
     }
 
-    public void createShopFragment() {
+    public void createFragments() {
 
         shopFragment = new ShopFragment(this);
+        settingsFragment = new SettingsFragment(this);
 
     }
 
@@ -244,7 +252,7 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
 
         TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit, player.getTool().getUpCountProf() +  profCountUp, player.getTool().getUpCountForce() + forceContUp);//
         player.setTool(newTool);
-        uiState.getValue().setShopActive(false);
+        uiState.getValue().setFragmentActive(null);
 
         uiUpdate();
     }
@@ -255,13 +263,13 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         Log.e("Incubator count:", incubator.getUpCountForce() + " ");
 
         incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() +  profCountUp, incubator.getUpCountForce() + forceCountUp);
-        uiState.getValue().setShopActive(false);
+        uiState.getValue().setFragmentActive(null);
 
         uiUpdate();
     }
 
-    public void onShopClick(boolean fl) {
-        uiState.getValue().setShopActive(fl);
+    public void onShopClick(Fragment fl) {
+        uiState.getValue().setFragmentActive(fl);
         uiUpdate();
 
     }
@@ -328,18 +336,18 @@ public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюс
         TapTool tt = player.getTool();
 
         if (animal != null) {
-            uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), animal.getId(), clickEgg.strengthChecker()));
+            uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getFragmentActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), animal.getId(), clickEgg.strengthChecker()));
         } else {
-            uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
+            uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getFragmentActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
         }
     }
 
     public void uiUpdateAuto() {
         TapTool tt = player.getTool();
         if (animal != null) {
-            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), animal.getId(), clickEgg.strengthChecker()));
+            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getFragmentActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), animal.getId(), clickEgg.strengthChecker()));
         } else {
-            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getShopActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
+            uiState.postValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getFragmentActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
         }
     }
 
