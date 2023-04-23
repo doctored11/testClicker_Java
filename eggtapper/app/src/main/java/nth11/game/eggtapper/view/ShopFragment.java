@@ -3,6 +3,7 @@ package nth11.game.eggtapper.view;
 import android.os.Bundle;
 
 import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.model.GameCurrency;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 import android.util.Log;
@@ -38,19 +39,21 @@ public class ShopFragment extends Fragment {
 
         LinearLayout toolUpProf = view.findViewById(R.id.toolUp_profit);
         TextView coastToolProf = view.findViewById(R.id.text_toolUp_coast_prof);
-        coastToolProf.setText(String.format("$ = %d", model.getUiState().getValue().getToolUpCoastProfit()));
+        GameCurrency buff =model.getUiState().getValue().getToolUpCoastProfit();
+        buff.prefixUpdate();
+        coastToolProf.setText(("$ = "+buff.getFormattedValue()));
 
         LinearLayout incUpProf = view.findViewById(R.id.incubatorUp_profit);
         TextView coastIncProf = view.findViewById(R.id.text_incubator_first_coast_prof);
-        coastIncProf.setText(String.format("$ = %d", model.getUiState().getValue().getIncubatorUpCoastProfit()));
+        coastIncProf.setText(("$ = "+ model.getUiState().getValue().getIncubatorUpCoastProfit().getFormattedValue()));
 
         LinearLayout toolUpForce = view.findViewById(R.id.toolUp_force);
         TextView coastToolForce = view.findViewById(R.id.text_toolUp_coast_force);
-        coastToolForce.setText(String.format("$ = %d", model.getUiState().getValue().getToolUpCoastForce()));
+        coastToolForce.setText(("$ = "+ model.getUiState().getValue().getToolUpCoastForce().getFormattedValue()));
 
         LinearLayout incUpForce = view.findViewById(R.id.incubatorUp_force);
         TextView coastIncForce = view.findViewById(R.id.text_incubator_first_coast_force);
-        coastIncForce.setText(String.format("$ = %d", model.getUiState().getValue().getIncubatorUpCoastForce()));
+        coastIncForce.setText(("$ = "+ model.getUiState().getValue().getIncubatorUpCoastForce().getFormattedValue()));
 
 
 

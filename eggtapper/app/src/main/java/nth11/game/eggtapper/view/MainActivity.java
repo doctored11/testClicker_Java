@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
-import nth11.game.eggtapper.model.GameCurrency;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -30,28 +29,28 @@ import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class MainActivity extends AppCompatActivity {
     private FloatingActionButton shopBtn;
-    private FrameLayout frameShop;
-     private   ProgressBar progressBar;
+    private FloatingActionButton settingBtn;
+    private FrameLayout frameBase;
+    private ProgressBar progressBar;
     private ViewModel model;
-    private  FragmentTransaction ft;
+    private FragmentTransaction ft;
     private Fragment shopFragment;
+    private Fragment settingFragment;
     private FragmentManager fragmentManager;
 
     private TextView textCount;
     private TextView txtMoney;
     private ImageView egg;
     private ImageView animal;
+    private long lastClickTime = 0;
 
 
-
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-
 
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
@@ -61,28 +60,20 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
 //        model.loadAll(this);
 
-//        GameCurrency money1 = new GameCurrency( 100,' ');
-//        GameCurrency money2 = new GameCurrency( 500,' ');
-//        GameCurrency money3 = money1.simpleMultiplay(10000_002);
-//        money3.prefixUpdate();
-//        money3.prefixUpdate();
-//        money3.prefixUpdate();
-//        money3.prefixUpdate(); money3.prefixUpdate(); money3.prefixUpdate();
-
-
 
 //        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
 
 
-
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
+        settingFragment = model.getSettingsFragment();
 
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
 
         shopBtn = findViewById(R.id.shop_btn);
-        frameShop = findViewById(R.id.fragment_shop);
+        settingBtn = findViewById(R.id.settings_btn);
+        frameBase = findViewById(R.id.fragment_base);
 
         progressBar = findViewById(R.id.progress);
 
@@ -93,48 +84,127 @@ public class MainActivity extends AppCompatActivity {
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
 
-
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress((int) uiState.getStrenght());
-            txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney());
+            txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
                 animal.setImageBitmap(model.getAnimal().getBitmap());
                 animal.setScaleX(1);
                 animal.setScaleY(1);
-            } else {animal.setImageBitmap(null);}
-            setFragment(uiState.getShopActive());
+            } else {
+                animal.setImageBitmap(null);
+            }
+            setFragment(uiState.getFragmentActive());
         });
 
 
         shopBtn.setOnClickListener(view -> {
-            boolean fl = model.getUiState().getValue().getShopActive();
-            model.onShopClick(!fl);
+            Fragment fl = model.getUiState().getValue().getFragmentActive();
+            Log.i("CLICK", (fl == null) + " ---");
+
+            if (fl != null) {
+                fl = null;
+
+            } else {
+                fl = shopFragment;
+            }
+//            if ( fl == null) return;
+            model.onShopClick(fl);// !возможное отрицание
+        });
+        settingBtn.setOnClickListener(view -> {
+            Fragment fl = model.getUiState().getValue().getFragmentActive();
+            Log.i("CLICK", (fl == null) + " ---");
+
+            if (fl != null) {
+                fl = null;
+
+            } else {
+                fl = settingFragment;
+            }
+//            if ( fl == null) return;
+            model.onShopClick(fl);// !возможное отрицание
         });
 
 
+
+//        egg.setOnTouchListener((view, motionEvent) -> {
+//            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+//                model.onTap();
+//                if(  model.onAnimalTap() ){
+//                    animateEgg(animal, true);
+//                }
+//                animateEgg(view, true);
+//
+//
+//            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+//                if(  model.onAnimalTap() ){
+//                    animateEgg(animal, false);
+//                }
+//                animateEgg(view, false);
+//                return false;
+//            }
+//            return true;
+//        });
+
+
+        // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
         egg.setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                animateEgg(view, true);
-                model.onTap();
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                animateEgg(view, false);
-                return false;
+            int pointerCount = motionEvent.getPointerCount();
+            for (int i = 0; i < pointerCount; i++) {
+                int action = motionEvent.getActionMasked();
+                int pointerId = motionEvent.getPointerId(i);
+                float x = motionEvent.getX(i);
+                float y = motionEvent.getY(i);
+
+                switch (action) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        // нажатие пальца
+                        long now = System.currentTimeMillis();
+                        if (now - lastClickTime >= 10) { // Проверка времени между кликами
+
+                            if (model.onAnimalTap()) {
+                                animateEgg(animal, true);
+                            } else {
+                                model.onTap();
+
+                            }
+                            animateEgg(view, true);
+                        }
+                        lastClickTime = now;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_POINTER_UP:
+                        // отпускание пальца
+//                        if (model.onAnimalTap()) {
+//                            animateEgg(animal, false);
+//                        }
+                        animateEgg(view, false);
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+
+                        break;
+                }
             }
             return true;
         });
 
 
-
     }
 
     //это логика только отображения - оставляем во View?
-    private void setFragment(boolean flag) {
+    Fragment lastFragment;
+
+    private void setFragment(Fragment flag) {
         ft = fragmentManager.beginTransaction();
-        if (flag) {
-            ft.replace(R.id.fragment_shop, shopFragment);
-        } else {
-            ft.remove(shopFragment);
+
+        if (flag != null) {
+            ft.replace(R.id.fragment_base, flag);
+            lastFragment = flag;
+
+        } else if ( lastFragment!= null) {
+            ft.remove(lastFragment);
         }
         ft.commit();
     }
@@ -171,20 +241,14 @@ public class MainActivity extends AppCompatActivity {
 //        model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-
 //        dbHelper = new BDHelper(this);
-
-
     }
-
-
 
 
 }

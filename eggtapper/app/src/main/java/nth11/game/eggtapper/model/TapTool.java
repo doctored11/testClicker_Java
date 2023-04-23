@@ -2,14 +2,14 @@ package nth11.game.eggtapper.model;
 
 public class TapTool {
     private long tapForce;
-    private long coastForce;
-    private long profitability;
-    private long coastProfit;
+    private GameCurrency coastForce;
+    private GameCurrency profitability;
+    private GameCurrency coastProfit;
 
     private long upCountProf;
     private long upCountForce;
 
-    public TapTool(long tapForce, long profitability, long coastF, long coastP, long countProf, long countForce) {
+    public TapTool(long tapForce, GameCurrency profitability, GameCurrency coastF, GameCurrency coastP, long countProf, long countForce) {
         this.tapForce = tapForce;
         this.coastForce = coastF;
         this.profitability = profitability;
@@ -23,13 +23,13 @@ public class TapTool {
         return tapForce;
     }
 
-    public long getCoastForce() {
+    public GameCurrency getCoastForce() {
         return coastForce;
     }
-    public long getCoastProfit() {
+    public GameCurrency getCoastProfit() {
         return coastProfit;
     }
-    public long getProfitability(){
+    public GameCurrency getProfitability(){
         return profitability;
     }
 
