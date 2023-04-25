@@ -28,6 +28,9 @@ import nth11.game.eggtapper.viewModel.ViewModel;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class MainActivity extends AppCompatActivity {
+    private final int EGG_SCALE = 1;
+    private final int ANIMAL_SCALE = 2;
+
     private FloatingActionButton shopBtn;
     private FloatingActionButton settingBtn;
     private FrameLayout frameBase;
@@ -90,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
                 animal.setImageBitmap(model.getAnimal().getBitmap());
-                animal.setScaleX(1);
-                animal.setScaleY(1);
+                animal.setScaleX(2);
+                animal.setScaleY(2);
             } else {
                 animal.setImageBitmap(null);
             }
@@ -125,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
 //            if ( fl == null) return;
             model.onShopClick(fl);// !возможное отрицание
         });
-
 
 
 //        egg.setOnTouchListener((view, motionEvent) -> {
@@ -165,22 +167,22 @@ public class MainActivity extends AppCompatActivity {
                         if (now - lastClickTime >= 10) { // Проверка времени между кликами
 
                             if (model.onAnimalTap()) {
-                                animateEgg(animal, true);
+                                viewAnimation(animal, true, ANIMAL_SCALE);
                             } else {
                                 model.onTap();
 
                             }
-                            animateEgg(view, true);
+                            viewAnimation(view, true, EGG_SCALE);
                         }
                         lastClickTime = now;
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
                         // отпускание пальца
-//                        if (model.onAnimalTap()) {
-//                            animateEgg(animal, false);
-//                        }
-                        animateEgg(view, false);
+                        if (model.onAnimalTap()) {
+                            viewAnimation(animal, false, ANIMAL_SCALE); // мб удалить
+                        }
+                        viewAnimation(view, false, EGG_SCALE);
                         break;
                     case MotionEvent.ACTION_MOVE:
 
@@ -203,15 +205,17 @@ public class MainActivity extends AppCompatActivity {
             ft.replace(R.id.fragment_base, flag);
             lastFragment = flag;
 
-        } else if ( lastFragment!= null) {
+        } else if (lastFragment != null) {
             ft.remove(lastFragment);
         }
         ft.commit();
     }
 
-    private void animateEgg(View view, boolean isDown) {
-        float scaleX = isDown ? 0.96f : 1f;
-        float scaleY = isDown ? 0.90f : 1.05f;
+    private void viewAnimation(View view, boolean isDown, int size) {
+        float scaleX = isDown ? 0.96f * size : 1f * size;
+        float scaleY = isDown ? 0.90f * size : 1.05f * size;
+
+
         float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
 
         view.animate()
@@ -222,10 +226,11 @@ public class MainActivity extends AppCompatActivity {
                 .withEndAction(() -> {
                     // обратная анимация, которая возвращает яйцо в исходное положение
                     view.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
+                            .scaleX(1f * size)
+                            .scaleY(1f * size)
                             .translationY(0f)
                             .setDuration(0);
+
                 });
     }
 

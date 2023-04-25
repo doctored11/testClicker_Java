@@ -38,7 +38,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');
     ;
-    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 150;
+    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 100;
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');
     ;
 
@@ -419,7 +419,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //            long max = (long) Math.pow(MAX_EGG_STRENGTH, 1 / ((MAX_EGG_STRENGTH * 0.1 - player.getTool().getTapForce())));
 //            return getRandomNumber(MIN_EGG_STRENGTH, 200_000l);
 //        }
-        return getRandomNumber(MIN_EGG_STRENGTH, MAX_EGG_STRENGTH);
+//        return getRandomNumber(MIN_EGG_STRENGTH, MAX_EGG_STRENGTH); //Todo - вернуть это на "релизе"
+        return getRandomNumber(1_000, 3_000);
 
     }
 
