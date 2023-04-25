@@ -4,10 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class TextureLoader {
-    public static void loadTexture(Context context, int resourceId, ViewModel.OnBitmapReadyListener listener) {
+    public static void loadTexture(Context context,  ViewModel.OnBitmapReadyListener listener) {
+        int  resourceId = R.drawable.egg_stage_2;
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resourceId);
         BitmapEditor.changeWhiteToRandomAsync(bitmap, new BitmapEditor.OnCompleteListener() {
             @Override
