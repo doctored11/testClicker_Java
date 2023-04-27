@@ -28,8 +28,8 @@ import nth11.game.eggtapper.viewModel.ViewModel;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class MainActivity extends AppCompatActivity {
-    private final int EGG_SCALE = 1;
-    private final int ANIMAL_SCALE = 2;
+    private final float EGG_SCALE = 1f;
+    private final float ANIMAL_SCALE = 2.2f;
 
     private FloatingActionButton shopBtn;
     private FloatingActionButton settingBtn;
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textCount;
     private TextView txtMoney;
+    private TextView txtMoneyPerSec;
     private ImageView egg;
     private ImageView animal;
     private long lastClickTime = 0;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
+        txtMoneyPerSec = findViewById(R.id.counter_per_second);
 
         shopBtn = findViewById(R.id.shop_btn);
         settingBtn = findViewById(R.id.settings_btn);
@@ -90,11 +92,12 @@ public class MainActivity extends AppCompatActivity {
             textCount.setText(uiState.getStrenght() + " ");
             progressBar.setProgress((int) uiState.getStrenght());
             txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
+            txtMoneyPerSec.setText(uiState.getIncubatorProfit().getFormattedValue() + " per sec");
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
                 animal.setImageBitmap(model.getAnimal().getBitmap());
-                animal.setScaleX(2);
-                animal.setScaleY(2);
+                animal.setScaleX(ANIMAL_SCALE);
+                animal.setScaleY(ANIMAL_SCALE);
             } else {
                 animal.setImageBitmap(null);
             }
@@ -128,26 +131,6 @@ public class MainActivity extends AppCompatActivity {
 //            if ( fl == null) return;
             model.onShopClick(fl);// !возможное отрицание
         });
-
-
-//        egg.setOnTouchListener((view, motionEvent) -> {
-//            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-//                model.onTap();
-//                if(  model.onAnimalTap() ){
-//                    animateEgg(animal, true);
-//                }
-//                animateEgg(view, true);
-//
-//
-//            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-//                if(  model.onAnimalTap() ){
-//                    animateEgg(animal, false);
-//                }
-//                animateEgg(view, false);
-//                return false;
-//            }
-//            return true;
-//        });
 
 
         // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
@@ -211,22 +194,22 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
     }
 
-    private void viewAnimation(View view, boolean isDown, int size) {
-        float scaleX = isDown ? 0.96f * size : 1f * size;
-        float scaleY = isDown ? 0.90f * size : 1.05f * size;
+    private void viewAnimation(View view, boolean isDown, float size) {
+        float scaleX =  (isDown ? 0.98f * size : size);
+        float scaleY =  (isDown ? 0.96f * size : 1.02f * size);
 
 
-        float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
+        float translationY = isDown ? 20f : 0f; // расстояние, на которое яйцо опускается
 
         view.animate()
-                .scaleX(scaleX)
+                .scaleX( scaleX)
                 .scaleY(scaleY)
                 .translationY(translationY)
                 .setDuration(0) // задержка при опускании больше, чем при поднятии
                 .withEndAction(() -> {
                     // обратная анимация, которая возвращает яйцо в исходное положение
                     view.animate()
-                            .scaleX(1f * size)
+                            .scaleX((1f * size))
                             .scaleY(1f * size)
                             .translationY(0f)
                             .setDuration(0);

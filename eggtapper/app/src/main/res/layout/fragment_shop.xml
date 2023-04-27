@@ -15,15 +15,10 @@
         android:layout_height="match_parent"></TextView>
 
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-
-
 
 
         <LinearLayout
@@ -31,7 +26,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-<!--toolProf-->
+            <!--toolProf-->
             <LinearLayout
                 android:id="@+id/toolUp_profit"
                 android:layout_width="match_parent"
@@ -59,22 +54,22 @@
                     <TextView
                         android:id="@+id/text_toolUp_name_prof"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_height="36dp"
                         android:layout_weight="3"
-                        android:text="@string/click_up" />
+                        android:text="@string/shop_click_profit" />
 
                     <TextView
                         android:id="@+id/text_toolUp_descr_prof"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
-                        android:text="TextView" />
+                        android:text="@string/shop_click_profit_descr" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="29dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="8"
                     android:orientation="horizontal">
 
                     <TextView
@@ -82,12 +77,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/click_up" />
+                        android:text="" />
                 </LinearLayout>
 
             </LinearLayout>
 
-<!--toolForce-->
+            <!--toolForce-->
             <LinearLayout
                 android:id="@+id/toolUp_force"
                 android:layout_width="match_parent"
@@ -117,20 +112,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="3"
-                        android:text="@string/click_up" />
+                        android:text="@string/shop_click_force" />
 
                     <TextView
-                        android:id="@+id/text_toolUp_force_descr"
+                        android:id="@+id/text_toolUp_profit_descr"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
-                        android:text="TextView" />
+                        android:text="@string/shop_click_force_descr" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="29dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="8"
                     android:orientation="horizontal">
 
                     <TextView
@@ -138,61 +133,127 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/click_up" />
+                        android:text="" />
                 </LinearLayout>
 
             </LinearLayout>
 
-<!--inc prof-->
+            <!--inc prof-->
 
             <LinearLayout
                 android:id="@+id/incubatorUp_profit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1">
+                android:layout_height="0dp"
+                android:layout_weight="0.1"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="25dp">
 
-                <TextView
-                    android:id="@+id/text_incubator_first_name_profit"
+                <ImageView
+                    android:id="@+id/imId"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/Inc_up" />
+                    android:src="@drawable/incuprofup"></ImageView>
 
-                <TextView
-                    android:id="@+id/text_incubator_first_coast_prof"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/Inc_up" />
+                <LinearLayout
+                    android:layout_width="167dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/text_incubator_first_name_profit"
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:layout_weight="3"
+                        android:text="@string/shop_incubator_profit" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:text="@string/shop_incubator_profit_descr" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="29dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_incubator_first_coast_prof"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
 
             </LinearLayout>
+
 
             <!--  inc force  -->
             <LinearLayout
                 android:id="@+id/incubatorUp_force"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1">
+                android:layout_height="0dp"
+                android:layout_weight="0.1"
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="25dp">
 
-                <TextView
-                    android:id="@+id/text_incubator_first_name_force"
+                <ImageView
+                    android:id="@+id/imageIncForceUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/Inc_up" />
+                    android:src="@drawable/incupforce" />
 
-                <TextView
-                    android:id="@+id/text_incubator_first_coast_force"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/Inc_up" />
+                <LinearLayout
+                    android:layout_width="172dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="2"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        android:id="@+id/text_incubator_first_name_force"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        android:layout_weight="3"
+                        android:text="@string/shop_incubator_force" />
+
+                    <TextView
+                        android:id="@+id/text_toolUp_force_descr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="7"
+                        android:text="@string/shop_incubator_force_descr" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="29dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="8"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/text_incubator_first_coast_force"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
 
             </LinearLayout>
-
         </LinearLayout>
     </LinearLayout>
 
 
-
 </FrameLayout>
+

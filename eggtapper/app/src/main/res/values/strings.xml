@@ -8,7 +8,19 @@
     <string name="shop">Shop</string>
     <string name="properties">properties</string>
 
-    <string name="click_up">tool upgrade</string>
+    <string name="shop_click_profit">Увеличение профитности клика</string>
+    <string name="shop_click_profit_descr">Увеличивает количество очков получаемых с клика.</string>
+
+    <string name="shop_click_force">Увеличение силы клика</string>
+    <string name="shop_click_force_descr">Увеличивает урон по яйцу с клика.</string>
+
+
+    <string name="shop_incubator_profit">Увеличение прибыльности инкубатора</string>
+    <string name="shop_incubator_profit_descr">Увеличивает количество очков получаемых раз в секунду.</string>
+
+    <string name="shop_incubator_force">Увеличение силы инкубатора</string>
+    <string name="shop_incubator_force_descr">Увеличивает урон по яйцу раз в секунду.</string>
+
     <string name="Inc_up">IncubatorUpdate</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -41,9 +41,9 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
     }
 
-    public void prefixUpdate() {
+    public  void  prefixUpdate() {
         Log.e("степень при попытке апдейта: ", this.getDegreeByPrefix() + " число " + this.value + this.getFormattedValue());
-        if (this.value > 999 * Math.pow(10, this.getDegreeByPrefix())) {
+        if (this.value > 999) {
             prefixUp();
             return;
         }
@@ -58,16 +58,34 @@ public class GameCurrency implements Comparable<GameCurrency> {
     public void prefixUp() {
         Log.e("prefUp: ", " prefUp!");
         Log.d("до Up", this.getFormattedValue() + " - _ -" );
-        this.setPrefix(getPrefixByDegree(getDegreeByPrefix() + 3));
-        this.setValue(this.value / (Math.pow(10, this.getDegreeByPrefix())));
+        while (this.value > 999) {
+            this.setPrefix(getPrefixByDegree(getDegreeByPrefix() + 3));
+            Log.e("степеньь_____", this.getDegreeByPrefix() + "  ");
+            Log.e("валуе _____", this.value + "  ");
+
+            int degree = this.getDegreeByPrefix() - 3 < 3 ? 3 : this.getDegreeByPrefix() - 3;
+            this.setValue(this.value / (Math.pow(10, (degree))));
+            Log.e("числшоо _____", this.getFormattedValue() + "  ");
+        }
+
         Log.d("после  Up", this.getFormattedValue() + " -_-" );
     }
 
     public void prefixDown() {
         Log.e("prefDown: ", " prefDown!");
         //последовательность важна (нв)
-        this.value *= (Math.pow(10, this.getDegreeByPrefix()));
-        this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
+//        this.value *= (Math.pow(10, this.getDegreeByPrefix()));
+//        this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
+
+        if (this.value < 1 ) {
+            int degree = this.getDegreeByPrefix()<=3? 3:this.getDegreeByPrefix()-3 ;
+            this.setValue(this.value * (Math.pow(10, (degree))));
+            this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
+            Log.i("after pref down : ", this.getFormattedValue() + " ---");
+            prefixDown();
+
+        }
+
 
     }
 
@@ -103,13 +121,19 @@ public class GameCurrency implements Comparable<GameCurrency> {
 //
 //    }
     public  GameCurrency add(GameCurrency second) {
+        Log.e("Сложенние ",  "Начало ");
+//        this.prefixUpdate(); //Todo - возможно надо но почему то вызывает ошибку - разобраться !!!
+//        second.prefixUpdate();
         if (compare(this, second)){
+            Log.e("Сложенние ",  "первое>=");
+
             int buffDegree = this.getDegreeDifference(second);
             return new GameCurrency(this.value * Math.pow(10, buffDegree) + second.value, second.prefix);
 
 
         }
         else {
+            Log.e("Сложенние ",  "второt<");
             int buffDegree = second.getDegreeDifference(this);
             return new GameCurrency(second.value * Math.pow(10, buffDegree) + this.value, this.prefix);
         }
@@ -143,7 +167,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     }
 
     public GameCurrency simpleMultiplay(double simpleMultiplayer){
-        Log.e("Умножение :", "возможны ошибки при больших значениях множителя! "+ simpleMultiplayer);
+        Log.e("Умножение :", "возможны ошибки при больших значениях множителя! "+ simpleMultiplayer +", до = " + this.getFormattedValue());
         if(Double.MAX_VALUE/simpleMultiplayer < this.value ){ //? проверить знак < >
             GameCurrency bg = new GameCurrency((Double.MAX_VALUE*0.99), this.prefix);
             bg.prefixUpdate();
@@ -151,6 +175,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
         }
         GameCurrency bg = new GameCurrency(this.getValue()*simpleMultiplayer, this.prefix);
         bg.prefixUpdate();
+        Log.i("после: ", bg.getFormattedValue()+ " ");
         return bg;
 
 

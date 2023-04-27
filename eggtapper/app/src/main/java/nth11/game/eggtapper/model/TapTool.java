@@ -30,6 +30,7 @@ public class TapTool {
         return coastProfit;
     }
     public GameCurrency getProfitability(){
+
         return profitability;
     }
 

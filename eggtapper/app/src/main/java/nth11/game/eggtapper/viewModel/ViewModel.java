@@ -38,8 +38,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
     public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');
     ;
-    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 100;
-    public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');
+    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
+    public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(800, ' ');
     ;
 
     public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
@@ -100,7 +100,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void createPlayer() {
 
-        player = new Player(new GameCurrency(0, ' '), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
+        player = new Player(new GameCurrency(600, ' '), new TapTool(BASE_TAPTOOL_FORCECLICK_VALUE, BASE_TAPTOOL_PROFITCLICK_VALUE, BASE_TAPTOOL_FORCECLICK_PRICE, BASE_TAPTOOL_PROFITCLICK_PRICE, 1, 1));
         if (context != null) loadAll(context);
     }
 
@@ -184,6 +184,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //
 
         player.addMoney(player.getTool().getProfitability().simpleMultiplay(10));
+
         uiUpdate();
         return true;
     }
@@ -224,9 +225,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         GameCurrency coast = incubator.getCoastProfit();
         if (!GameCurrency.compare(player.getMoney(), coast)) return;
 
-        Log.e("onInc count", incubator.getUpCountProf() + " ");
+        Log.d("onInc count", incubator.getUpCountProf() + " ");
         GameCurrency newProfitCost = (BASE_INCUBATOR_PROFIT_PRICE.simpleMultiplay(Math.pow(BASE_INCUBATOR_PROFIT_MULTIPLAER, incubator.getUpCountProf())));
+//        Log.i("profit do:" , incubator.getProfitability().getFormattedValue() + "$");
         GameCurrency newProfitValue = (incubator.getProfitability().add(new GameCurrency(3, ' ')));
+//        Log.i("profit after:" , newProfitValue.getFormattedValue() + "$");
+
         newProfitCost.prefixUpdate();
         newProfitValue.prefixUpdate();
 
@@ -266,6 +270,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() + profCountUp, incubator.getUpCountForce() + forceCountUp);
         uiState.getValue().setFragmentActive(null);
+        Log.i("upInc", incubator.getProfitability().getFormattedValue() +"$ " + incubator.getTapForce() + "F");
 
         uiUpdate();
     }
@@ -386,23 +391,29 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private class AutoTapTask implements Runnable {
         @Override
         public void run() {
-
+            Log.i("Autotap", "___-Autotap!");
             if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
                 Log.i("++++++++++++=onAutoTap", " RESTART( ");
                 tapRestartScene();
             }
 
             if (clickEgg != null && !eggDefender) {
+                Log.i("++++++++++++=onAutoTap", " 1 ");
                 clickEgg.reduceStrength(incubator.getTapForce());
+                player.addMoney(incubator.getProfitability());
             }
             if (player != null && (animal == null || !clickEgg.statusChecker())) {
+                Log.i("++++++++++++=onAutoTap", " 2 ");
                 player.addMoney(incubator.getProfitability());
             }
             if (player != null && (animal != null && clickEgg.statusChecker())) {
+                Log.i("++++++++++++=onAutoTap", " 3 ");
                 player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
                 animal.reduceStrength(0.05);
             }
+
             if (animal != null && animal.statusChecker()) {
+                Log.i("++++++++++++=onAutoTap", " 4 ");
                 tapRestartScene();
             }
             uiUpdateAuto();
