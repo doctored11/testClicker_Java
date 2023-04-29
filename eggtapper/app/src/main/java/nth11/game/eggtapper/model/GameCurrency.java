@@ -90,36 +90,6 @@ public class GameCurrency implements Comparable<GameCurrency> {
     }
 
 
-//    public GameCurrency add(GameCurrency second) {
-//        if (compare(this, second)) {
-//            Log.e("add", " 1");
-//            if (this.getDegreeByPrefix() == second.getDegreeByPrefix()) {
-//                Log.e("add", "1.1");
-//                return new GameCurrency((this.value + second.value), this.prefix);
-//            }
-//            if (comparePrefix(this, second)) {
-//                Log.e("add", "1.2");
-//                if (this.getDegreeByPrefix() - second.getDegreeByPrefix() <= 9) {
-//                    Log.e("add", "1.2.1");
-//                    int buffDegree = this.getDegreeDifference(second);
-//                    return new GameCurrency(this.value * Math.pow(10, buffDegree) + second.value, second.prefix); //
-//                }
-//                return new GameCurrency(this.value * 1.0000001, this.prefix);
-//            }
-//
-//        } else {
-//            Log.e("add", "2");
-//            if (second.getDegreeByPrefix() - this.getDegreeByPrefix() <= 9) {
-//                int buffDegree = second.getDegreeDifference(this);
-//
-//                Log.e("add", "2.1");
-//                return new GameCurrency(second.value * Math.pow(10, buffDegree  ) + this.value, this.prefix);
-//            }
-//            return second; //если разница очень большая просто заменяем на большее
-//        }
-//        return this;
-//
-//    }
     public  GameCurrency add(GameCurrency second) {
         Log.e("Сложенние ",  "Начало ");
 //        this.prefixUpdate(); //Todo - возможно надо но почему то вызывает ошибку - разобраться !!!
@@ -187,9 +157,6 @@ public class GameCurrency implements Comparable<GameCurrency> {
         int sN = second.getDegreeByPrefix();
         return fN-sN;
 
-
-
-
     }
 
 
@@ -239,6 +206,34 @@ public class GameCurrency implements Comparable<GameCurrency> {
         String formattedValue = String.format("%.2f", this.value);
         return formattedValue + " " + this.prefix;
     }
+    public static GameCurrency parse(String input) {
+        input = input.replaceAll("\\s+", ""); // удаляем все пробелы из строки
+        double value;
+        char prefix;
+
+        try {
+            // пытаемся преобразовать число в строке
+            value = Double.parseDouble(input.replaceAll("[^0-9.]", ""));
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid input: " + input);
+        }
+
+        // если символ не найден, устанавливаем префикс по умолчанию
+        if (!input.matches(".*[a-zA-Z]+.*")) {
+            prefix = ' ';
+        } else {
+            // находим последний символ в строке
+            char lastChar = input.charAt(input.length() - 1);
+            // проверяем, что символ является буквой
+            if (!Character.isLetter(lastChar)) {
+                throw new IllegalArgumentException("Invalid input: " + input);
+            }
+            prefix = Character.toUpperCase(lastChar);
+        }
+
+        return new GameCurrency(value, prefix);
+    }
+
 
     // Геттеры и сеттеры для полей
     public double getValue() {

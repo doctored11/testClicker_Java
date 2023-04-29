@@ -2,9 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
 
-    tools:context=".SettingsFragment">
+    tools:context=".view.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -12,5 +12,23 @@
         android:layout_height="match_parent"
         android:background="#C800FF"
         android:text="@string/hello_blank_fragment" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_reg_r"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="reg" />
+
+        <Button
+            android:id="@+id/button_auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="auto" />
+    </LinearLayout>
 
 </FrameLayout>

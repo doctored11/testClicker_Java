@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewModel model;
     private FragmentTransaction ft;
     private Fragment shopFragment;
+    private Fragment regFragment;
     private Fragment settingFragment;
     private FragmentManager fragmentManager;
 
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
-//        model.loadAll(this);
+        model.loadAll(this);
 
 
 //        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
+        regFragment = model.getRegFragment();
         settingFragment = model.getSettingsFragment();
 
         textCount = findViewById(R.id.text_count);
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 fl = shopFragment;
             }
 //            if ( fl == null) return;
-            model.onShopClick(fl);// !возможное отрицание
+            model.toFragmentChange(fl);// !возможное отрицание
         });
         settingBtn.setOnClickListener(view -> {
             Fragment fl = model.getUiState().getValue().getFragmentActive();
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 fl = settingFragment;
             }
 //            if ( fl == null) return;
-            model.onShopClick(fl);// !возможное отрицание
+            model.toFragmentChange(fl);// !возможное отрицание
         });
 
 
@@ -181,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     //это логика только отображения - оставляем во View?
     Fragment lastFragment;
 
-    private void setFragment(Fragment flag) {
+    private  void setFragment(Fragment flag) {
         ft = fragmentManager.beginTransaction();
 
         if (flag != null) {
@@ -226,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        model.saveAll(this);
+        model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 
     }
