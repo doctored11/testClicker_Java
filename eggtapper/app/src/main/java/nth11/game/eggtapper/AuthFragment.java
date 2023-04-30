@@ -126,7 +126,7 @@ public class AuthFragment extends Fragment {
                     // Пароль верный, выполнить авторизацию Todo - реализовать!
                     model.setUsername(name);
                     Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
-//                    model.loadAll(getContext());
+                    model.loadAll(getContext());
 
                 } else {
                     // Пароль неверный, показать сообщение об ошибке

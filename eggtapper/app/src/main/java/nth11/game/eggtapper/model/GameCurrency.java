@@ -77,7 +77,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
 //        this.value *= (Math.pow(10, this.getDegreeByPrefix()));
 //        this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
 
-        if (this.value < 1 ) {
+        if (this.value < 1 && this.value!=0 ) {
             int degree = this.getDegreeByPrefix()<=3? 3:this.getDegreeByPrefix()-3 ;
             this.setValue(this.value * (Math.pow(10, (degree))));
             this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
@@ -207,6 +207,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
         return formattedValue + " " + this.prefix;
     }
     public static GameCurrency parse(String input) {
+        if (input== null) return new GameCurrency(0, ' ');
         input = input.replaceAll("\\s+", ""); // удаляем все пробелы из строки
         double value;
         char prefix;

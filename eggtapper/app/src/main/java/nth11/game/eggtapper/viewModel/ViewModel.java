@@ -307,7 +307,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
        this.Username = username;
     }
 
-
     public interface OnBitmapReadyListener {
         void onBitmapReady(Bitmap bitmap);
     }
@@ -357,7 +356,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void loadAll(Context cont) {
         MyDbHelper dbHelper = new MyDbHelper(cont);
+        if( getUsername()== null) return;
         User user = dbHelper.getUser(getUsername());
+        if (user == null) return;
 
 //        int[] buff = dataReader.readData();
 //        //COLUMN_MONEY, COLUMN_TAP_TOOL_FORCE, COLUMN_TAP_TOOL_PROFIT,
