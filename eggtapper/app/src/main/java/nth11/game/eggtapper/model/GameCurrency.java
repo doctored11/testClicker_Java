@@ -213,7 +213,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
         try {
             // пытаемся преобразовать число в строке
-            value = Double.parseDouble(input.replaceAll("[^0-9.]", ""));
+            value = Double.parseDouble(input.replaceAll("[^0-9.,]", "").replace(",", "."));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Invalid input: " + input);
         }
@@ -231,8 +231,10 @@ public class GameCurrency implements Comparable<GameCurrency> {
             prefix = Character.toUpperCase(lastChar);
         }
 
+        Log.i("Пaрсинг денег: ",new GameCurrency(value, prefix).getFormattedValue() +"__________________________________________________________________________" );
         return new GameCurrency(value, prefix);
     }
+
 
 
     // Геттеры и сеттеры для полей

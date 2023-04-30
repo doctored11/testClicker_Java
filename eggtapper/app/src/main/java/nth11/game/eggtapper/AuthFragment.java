@@ -105,8 +105,6 @@ public class AuthFragment extends Fragment {
         cursor.close();
         dbHelper.close();
 //
-
-
         return view;
     }
     private void showPasswordDialog(String name) {
@@ -126,7 +124,9 @@ public class AuthFragment extends Fragment {
 
                 if (passwordFromDb != null && passwordFromDb.equals(inputPassword)) {
                     // Пароль верный, выполнить авторизацию Todo - реализовать!
+                    model.setUsername(name);
                     Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
+//                    model.loadAll(getContext());
 
                 } else {
                     // Пароль неверный, показать сообщение об ошибке

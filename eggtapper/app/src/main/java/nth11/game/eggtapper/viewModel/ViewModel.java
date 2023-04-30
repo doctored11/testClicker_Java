@@ -304,7 +304,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void setUsername(String username) {
-        Username = username;
+       this.Username = username;
     }
 
 
