@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     Fragment lastFragment;
 
     private  void setFragment(Fragment flag) {
+        model.saveAll(this);
         ft = fragmentManager.beginTransaction();
 
         if (flag != null) {

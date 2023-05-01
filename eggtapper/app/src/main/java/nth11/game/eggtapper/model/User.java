@@ -1,6 +1,10 @@
 package nth11.game.eggtapper.model;
 
 
+import android.view.View;
+
+import nth11.game.eggtapper.viewModel.ViewModel;
+
 public class User {
 
     private String name;
@@ -40,6 +44,25 @@ public class User {
         this.countTapF = countTapF;
         this.countIncP = countIncP;
         this.countIncF = countIncF;
+
+    }
+    public User(String name, String password) {
+        this.name = name;
+        this.password = password;
+        this.money = new GameCurrency(0,' ') ;
+        this.strength = 5000;
+        this.toolForce = ViewModel.BASE_TAPTOOL_FORCECLICK_VALUE;
+        this.toolProfit = ViewModel.BASE_TAPTOOL_PROFITCLICK_VALUE ;
+        this.toolUpCoastProfit = ViewModel.BASE_TAPTOOL_PROFITCLICK_PRICE;
+        this.toolUpCoastForce = ViewModel.BASE_TAPTOOL_FORCECLICK_PRICE;
+        this.incubatorForce = ViewModel.BASE_INCUBATOR_FORCE_VALUE;
+        this.incubatorProfit = ViewModel.BASE_INCUBATOR_PROFIT_VALUE;
+        this.incubatorUpCoastprofit = ViewModel.BASE_INCUBATOR_PROFIT_PRICE;
+        this.incubatorUpCoastForce = ViewModel.BASE_INCUBATOR_FORCE_PRICE;
+        this.countTapP = 0;
+        this.countTapF = 0;
+        this.countIncP = 0;
+        this.countIncF = 0;
 
     }
 

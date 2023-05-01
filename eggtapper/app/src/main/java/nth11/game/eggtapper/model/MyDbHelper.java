@@ -215,6 +215,29 @@ public class MyDbHelper extends SQLiteOpenHelper {
         db.close();
         return user;
     }
+    public boolean hasRecords() {
+        SQLiteDatabase db = getReadableDatabase();
+        String[] columns = {COLUMN_NAME}; // используем любую колонку для запроса
+        Cursor cursor = db.query(TABLE_NAME, columns, null, null, null, null, null);
+        boolean hasRecords = cursor.moveToFirst(); // true, если есть запись, false - если пустая
+        cursor.close();
+        db.close();
+        return hasRecords;
+    }
+    public String getLastUserName() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
+        int nameIndex = cursor.getColumnIndex(COLUMN_NAME);
+        String lastUserName = null;
+        while (cursor.moveToNext()) {
+            lastUserName = cursor.getString(nameIndex);
+        }
+        cursor.close();
+        db.close();
+        return lastUserName;
+    }
+
+
 
 
 

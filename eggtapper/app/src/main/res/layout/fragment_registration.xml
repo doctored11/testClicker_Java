@@ -10,7 +10,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="639dp"
         android:background="#E43671"
         android:text="@string/hello_blank_fragment"
         android:visibility="visible" />

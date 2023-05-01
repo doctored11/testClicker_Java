@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import nth11.game.eggtapper.model.MyDbHelper;
+import nth11.game.eggtapper.model.User;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -70,7 +71,15 @@ public class RegFragment extends Fragment {
                     long newRowId = db.insert(dbHelper.getTableName(), null, values);
 
                     if (newRowId > -1) {
+
                         Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
+//                          //в таблицу кладем начального пользователя.
+                        //Todo перенести из этого "View" класса
+                        MyDbHelper dbHelper = new MyDbHelper(getContext());
+                        User user = new User(name, password);
+                        dbHelper.updateUser(user);
+                        model.loadAll(getContext());
+                        model.setUsername(name);
                     } else {
                         Toast.makeText(getContext(), "Registration failed", Toast.LENGTH_SHORT).show();
                     }

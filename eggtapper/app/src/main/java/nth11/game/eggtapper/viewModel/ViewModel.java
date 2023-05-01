@@ -40,24 +40,23 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюсь не очень много
 
 
-
-    public final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
-    public final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');
+    public static final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
+    public  static final GameCurrency BASE_TAPTOOL_PROFITCLICK_PRICE = new GameCurrency(200, ' ');
     ;
-    public final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
-    public final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(800, ' ');
+    public static final long BASE_TAPTOOL_FORCECLICK_VALUE = 1;
+    public static final GameCurrency BASE_TAPTOOL_PROFITCLICK_VALUE = new GameCurrency(1, ' ');
     ;
 
-    public final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
-    public final double BASE_TAPTOOL_PROFITCLICK_MULTIPLAER = 1.14;
+    public static final double BASE_TAPTOOL_FORCECLICK_MULTIPLAER = 1.25;
+    public static final double BASE_TAPTOOL_PROFITCLICK_MULTIPLAER = 1.14;
 
 
-    public final GameCurrency BASE_INCUBATOR_FORCE_PRICE = new GameCurrency(300, ' ');
-    public final GameCurrency BASE_INCUBATOR_PROFIT_PRICE = new GameCurrency(250, ' ');
-    public final long BASE_INCUBATOR_FORCE_VALUE = 0;
-    public final GameCurrency BASE_INCUBATOR_PROFIT_VALUE = new GameCurrency(0, ' ');
-    public final double BASE_INCUBATOR_FORCE_MULTIPLAER = 1.27;
-    public final double BASE_INCUBATOR_PROFIT_MULTIPLAER = 1.12;
+    public static final GameCurrency BASE_INCUBATOR_FORCE_PRICE = new GameCurrency(300, ' ');
+    public static final GameCurrency BASE_INCUBATOR_PROFIT_PRICE = new GameCurrency(250, ' ');
+    public static final long BASE_INCUBATOR_FORCE_VALUE = 0;
+    public static final GameCurrency BASE_INCUBATOR_PROFIT_VALUE = new GameCurrency(0, ' ');
+    public static final double BASE_INCUBATOR_FORCE_MULTIPLAER = 1.27;
+    public static final double BASE_INCUBATOR_PROFIT_MULTIPLAER = 1.12;
 
     private Player player;
     private Animal animal;
@@ -94,10 +93,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public ShopFragment getShopFragment() {
         return shopFragment;
     }
+
     public RegFragment getRegFragment() {
         return regFragment;
     }
-    public AuthFragment getAuthorizationFragment(){
+
+    public AuthFragment getAuthorizationFragment() {
         return authorizationFragment;
     }
 
@@ -106,8 +107,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
-    private final MutableLiveData<UiState> uiState =
-            new MutableLiveData(new UiState(new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' '), null, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' ')));
+    private final MutableLiveData<UiState> uiState = new MutableLiveData(new UiState(new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' '), null, new GameCurrency(0, ' '), 0, new GameCurrency(0, ' '), new GameCurrency(0, ' ')));
 
     public LiveData<UiState> getUiState() {
         return uiState;
@@ -288,23 +288,35 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() + profCountUp, incubator.getUpCountForce() + forceCountUp);
         uiState.getValue().setFragmentActive(null);
-        Log.i("upInc", incubator.getProfitability().getFormattedValue() +"$ " + incubator.getTapForce() + "F");
+        Log.i("upInc", incubator.getProfitability().getFormattedValue() + "$ " + incubator.getTapForce() + "F");
 
         uiUpdate();
     }
 
     public void toFragmentChange(Fragment fl) {
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        if (!dbHelper.hasRecords()) { // если не зареган то не выпускаем из меню
+            Fragment registrFragment = getRegFragment();
+            uiState.getValue().setFragmentActive(registrFragment);
+            uiUpdate();
+            return;
+        }
+
         uiState.getValue().setFragmentActive(fl);
         uiUpdate();
 
     }
 
     public String getUsername() {
+
+
+
         return Username;
     }
 
     public void setUsername(String username) {
-       this.Username = username;
+        this.Username = username;
     }
 
     public interface OnBitmapReadyListener {
@@ -346,33 +358,40 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //
 //        MyDbHelper dbHelper = new MyDbHelper(getContext());
 //        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        if (getUsername()==null) return;
+        if (getUsername() == null) return;
 
 //         public User(String name, String password,                                GameCurrency money, long strength,long toolForce,                                     GameCurrency toolProfit, GameCurrency toolUpCoastProfit,GameCurrency toolUpCoastForce,          long incubatorForce, GameCurrency incubatorProfit,GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, long countTapP, long countTapF, long countIncP, long countIncF ) {
 
-        User user = new User(getUsername(),dbHelper.getPassword(getUsername()),player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(),player.getTool().getCoastProfit(),player.getTool().getCoastProfit(),player.getTool().getCoastForce(),incubator.getTapForce(),incubator.getProfitability(),incubator.getCoastProfit(),incubator.getCoastForce(),player.getTool().getUpCountProf(),player.getTool().getUpCountForce(),incubator.getUpCountProf(),incubator.getUpCountForce());
+        User user = new User(getUsername(), dbHelper.getPassword(getUsername()), player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getCoastProfit(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce());
         dbHelper.updateUser(user);
     }
 
     public void loadAll(Context cont) {
+        //ЕСЛИ ТАБЛИЦА ПУСТАЯ model.toFragmentChange(registrFragment);
+//"default"
+
         MyDbHelper dbHelper = new MyDbHelper(cont);
-        if( getUsername()== null) return;
+
+        if (Username == "default"){
+            setUsername(dbHelper.getLastUserName());
+        }
+
+        if (!dbHelper.hasRecords()) {
+            Fragment registrFragment = getRegFragment();
+            toFragmentChange(registrFragment);
+        }
+        if (getUsername() == null) return;
         User user = dbHelper.getUser(getUsername());
         if (user == null) return;
 
-//        int[] buff = dataReader.readData();
-//        //COLUMN_MONEY, COLUMN_TAP_TOOL_FORCE, COLUMN_TAP_TOOL_PROFIT,
-//        //                    COLUMN_TAP_TOOL_COAST, COLUMN_INCUBATOR_FORCE, COLUMN_INCUBATOR_PROFIT, COLUMN_INCUBATOR_COAST
-//        Log.e("чтение Бд", buff[0] + " " + buff[1] + " " + buff[2] + " " + buff[4] + " -_-");
-         player.setMoney(user.getMoney());
-////        player.setMoney(buff[0]);
-        TapTool nt = new TapTool(user.getToolForce(),user.getToolProfit(),user.getToolUpCoastForce(),user.getToolUpCoastProfit(),user.getCountTapP(),user.getCountTapF());
-////        TapTool nt = new TapTool(buff[1],buff[2],buff[3]);
+
+        player.setMoney(user.getMoney());
+        TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
         player.setTool(nt);
-//
-         incubator = new Incubator(user.getIncubatorForce(),user.getIncubatorProfit(),user.getIncubatorUpCoastForce(),user.getIncubatorProfit(),500, user.getCountIncP(), user.getCountIncF());
-////        incubator = new Incubator(buff[4],buff[5],buff[6],500);
+        incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
+
     }
+
 
     public void uiUpdate() {
         TapTool tt = player.getTool();
