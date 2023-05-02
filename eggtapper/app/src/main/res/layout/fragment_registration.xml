@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#6B0EED"
-    tools:context=".RegFragment">
+    tools:context=".RegFragment"
+    android:clickable="true">
 
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="639dp"
+        android:layout_height="658dp"
         android:background="#E43671"
         android:text="@string/hello_blank_fragment"
         android:visibility="visible" />

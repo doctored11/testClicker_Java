@@ -4,15 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#5A94C3"
-    tools:context=".AuthFragment">
+    tools:context=".AuthFragment"
+    android:clickable="true">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <LinearLayout
-        android:id = "@+id/users_list"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/users_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+    </ScrollView>
 
 
 </FrameLayout>

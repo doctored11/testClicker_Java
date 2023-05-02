@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private final float EGG_SCALE = 1f;
     private final float ANIMAL_SCALE = 2.2f;
 
-    private FloatingActionButton shopBtn;
+    private Button shopBtn;
     private FloatingActionButton settingBtn;
     private FrameLayout frameBase;
     private ProgressBar progressBar;
