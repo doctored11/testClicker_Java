@@ -362,7 +362,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 //         public User(String name, String password,                                GameCurrency money, long strength,long toolForce,                                     GameCurrency toolProfit, GameCurrency toolUpCoastProfit,GameCurrency toolUpCoastForce,          long incubatorForce, GameCurrency incubatorProfit,GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, long countTapP, long countTapF, long countIncP, long countIncF ) {
 
-        User user = new User(getUsername(), dbHelper.getPassword(getUsername()), player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getCoastProfit(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce());
+        User user = new User(getUsername(), dbHelper.getPassword(getUsername()), player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce());
         dbHelper.updateUser(user);
     }
 
