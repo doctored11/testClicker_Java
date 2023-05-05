@@ -157,6 +157,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     public void onTap() {
+        uiState.getValue().setFragmentActive(null);// - для быстрого  закрытия магазина и тд
+        uiUpdate(); //
+
         if (animal != null && clickEgg.statusChecker()) {
             Log.i("outTap", "_tapOut_" + (animal != null) + " " + clickEgg.statusChecker());
             return;
@@ -179,11 +182,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         }
 
         player.addMoney(player.getTool().getProfitability());
-        uiState.getValue().setFragmentActive(null);
+
         uiUpdate();
     }
     public void closeFragment(){
         uiState.getValue().setFragmentActive(null);
+        uiUpdate();
     }
 
     public boolean onAnimalTap() {
@@ -330,7 +334,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
-    public void textureSet(Context context) {
+    public synchronized void textureSet(Context context) {
         if (animal == null) return;
 //        TextureLoader.loadTexture(context, animal.getSprite(), new OnBitmapReadyListener() {
         TextureLoader.loadTexture(context, new OnBitmapReadyListener() {

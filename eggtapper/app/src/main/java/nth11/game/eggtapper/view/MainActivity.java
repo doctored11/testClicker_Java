@@ -116,19 +116,40 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        shopBtn.setOnClickListener(view -> {
-            Fragment fl = model.getUiState().getValue().getFragmentActive();
-            Log.i("CLICK", (fl == null) + " ---");
+        shopBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    Fragment fl = model.getUiState().getValue().getFragmentActive();
+                    Log.i("CLICK", (fl == null) + " ---");
 
-            if (fl != null) {
-                fl = null;
+                    if (fl != null) {
+                        fl = null;
 
-            } else {
-                fl = shopFragment;
-            }
+                    } else {
+                        fl = shopFragment;
+                    }
 //            if ( fl == null) return;
-            model.toFragmentChange(fl);// !возможное отрицание
+                    model.toFragmentChange(fl);// !возможное отрицание
+                }
+                return false;
+            }
         });
+
+
+//        shopBtn.setOnClickListener(view -> {
+//            Fragment fl = model.getUiState().getValue().getFragmentActive();
+//            Log.i("CLICK", (fl == null) + " ---");
+//
+//            if (fl != null) {
+//                fl = null;
+//
+//            } else {
+//                fl = shopFragment;
+//            }
+////            if ( fl == null) return;
+//            model.toFragmentChange(fl);// !возможное отрицание
+//        });
         settingBtn.setOnClickListener(view -> {
             Fragment fl = model.getUiState().getValue().getFragmentActive();
             Log.i("CLICK", (fl == null) + " ---");
@@ -220,11 +241,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void viewAnimation(View view, boolean isDown, float size) {
-        float scaleX =  (isDown ? 0.98f * size : size);
-        float scaleY =  (isDown ? 0.96f * size : 1.02f * size);
+        float scaleX =  (isDown ? 0.995f * size : size);
+        float scaleY =  (isDown ? 0.98f * size : 1 * size);
 
 
-        float translationY = isDown ? 20f : 0f; // расстояние, на которое яйцо опускается
+        float translationY = isDown ? 15f : 0f; // расстояние, на которое яйцо опускается
 
         view.animate()
                 .scaleX( scaleX)

@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
-    tools:context=".view.SettingsFragment"
-    android:clickable="true">
+    android:background="@color/pg_2"
+    android:clickable="true"
+    tools:context=".view.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -18,18 +19,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/pg_2"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/button_reg_r"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_lite"
+            android:textColor="@color/button_dark"
             android:text="reg" />
 
         <Button
             android:id="@+id/button_auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/button_lite"
+            android:textColor="@color/button_dark"
+            android:strokeColor="@color/button_dark"
             android:text="auto" />
     </LinearLayout>
 

@@ -15,5 +15,8 @@
     <color name="gcolor_1">#1E8CA3A2</color>
     <color name="gcolor_2">#4F3284B1</color>
 
+    <color name="button_lite">#eae5b9</color>
+    <color name="button_dark">#d3b37e</color>
+
 
 </resources>

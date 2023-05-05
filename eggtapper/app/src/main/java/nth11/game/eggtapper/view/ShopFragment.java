@@ -79,6 +79,7 @@ public class ShopFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -103,9 +104,44 @@ public class ShopFragment extends Fragment {
             }
             return false;
         });
-        view.findViewById(R.id.incubatorUp_profit).setOnClickListener(v -> model.onIncUpProf());
-        view.findViewById(R.id.toolUp_force).setOnClickListener(v -> model.onToolUpForce());
-        view.findViewById(R.id.incubatorUp_force).setOnClickListener(v -> model.onIncUpForce());
+
+//        view.findViewById(R.id.incubatorUp_profit).setOnClickListener(v -> model.onIncUpProf());
+//
+
+        view.findViewById(R.id.incubatorUp_profit).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                onMyButtonClick(view.findViewById(R.id.incubatorUp_profit));
+                model.onIncUpProf();
+                return true;
+            }
+            return false;
+        });
+
+//
+//        view.findViewById(R.id.toolUp_force).setOnClickListener(v -> model.onToolUpForce());
+//
+        view.findViewById(R.id.toolUp_force).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                onMyButtonClick(view.findViewById(R.id.toolUp_force));
+                model.onToolUpForce();
+                return true;
+            }
+            return false;
+        });
+
+
+//
+//        view.findViewById(R.id.incubatorUp_force).setOnClickListener(v -> model.onIncUpForce());
+//
+        view.findViewById(R.id.incubatorUp_force).setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                onMyButtonClick(view.findViewById(R.id.incubatorUp_force));
+                model.onIncUpForce();
+                return true;
+            }
+            return false;
+        });
+//
     }
 
     public void onMyButtonClick(LinearLayout btn) {

@@ -35,7 +35,7 @@ public class Egg {
         return strength <= 0;
     }
 
-    public int strengthChecker(){
+    public   int strengthChecker(){ // ? synchronized
         long strengthInPercent = getPercentStrenght();
         if (strengthInPercent>96){
             return R.drawable.egg_stage_0;

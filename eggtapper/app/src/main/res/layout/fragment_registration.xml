@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:addStatesFromChildren="true"
-        android:background="#D505D2"
+        android:background="@color/pg_2"
         android:orientation="vertical">
 
         <EditText
