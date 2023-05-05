@@ -20,7 +20,7 @@ public class Player {
     public void setMoney(GameCurrency money) {
         this.money = money;
     }
-    public void  addMoney(GameCurrency moneyAdd){
+    public synchronized  void  addMoney(GameCurrency moneyAdd){ //!synchronized
         this.money = this.money.add(moneyAdd);
         this.money.prefixUpdate();
     }
@@ -28,7 +28,7 @@ public class Player {
         this.money = this.money.subtract(spendMoney);
         this.money.prefixUpdate();
     }
-    public void  addMoney(){
+    public synchronized  void  addMoney(){ //!
         this.money = this.money.add(new GameCurrency(1,' '));
         this.money.prefixUpdate();
     }

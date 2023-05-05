@@ -179,7 +179,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         }
 
         player.addMoney(player.getTool().getProfitability());
+        uiState.getValue().setFragmentActive(null);
         uiUpdate();
+    }
+    public void closeFragment(){
+        uiState.getValue().setFragmentActive(null);
     }
 
     public boolean onAnimalTap() {
@@ -225,6 +229,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         newProfitCost.prefixUpdate();
 
         updateTool(coast, player.getTool().getTapForce(), newProfitValue, player.getTool().getCoastForce(), newProfitCost, 0, 1);
+        uiUpdate();
     }
 
     public void onToolUpForce() {
@@ -237,6 +242,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         newForceCost.prefixUpdate();
 
         updateTool(coast, newForceValue, player.getTool().getProfitability(), newForceCost, player.getTool().getCoastProfit(), 1, 0);
+        uiUpdate();
     }
 
     public void onIncUpProf() {
@@ -276,7 +282,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         TapTool newTool = new TapTool(tapForce, profitability, coastForce, coastProfit, player.getTool().getUpCountProf() + profCountUp, player.getTool().getUpCountForce() + forceContUp);//
         player.setTool(newTool);
-        uiState.getValue().setFragmentActive(null);
+//        uiState.getValue().setFragmentActive(null);
 
         uiUpdate();
     }
@@ -287,7 +293,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         Log.e("Incubator count:", incubator.getUpCountForce() + " ");
 
         incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() + profCountUp, incubator.getUpCountForce() + forceCountUp);
-        uiState.getValue().setFragmentActive(null);
+//        uiState.getValue().setFragmentActive(null);
         Log.i("upInc", incubator.getProfitability().getFormattedValue() + "$ " + incubator.getTapForce() + "F");
 
         uiUpdate();
@@ -401,6 +407,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         } else {
             uiState.setValue(new UiState(player.getMoney(), clickEgg.getPercentStrenght(), tt.getProfitability(), tt.getTapForce(), tt.getCoastProfit(), tt.getCoastForce(), uiState.getValue().getFragmentActive(), incubator.getProfitability(), incubator.getTapForce(), incubator.getCoastProfit(), incubator.getCoastForce(), 0, clickEgg.strengthChecker()));
         }
+
     }
 
     public void uiUpdateAuto() {

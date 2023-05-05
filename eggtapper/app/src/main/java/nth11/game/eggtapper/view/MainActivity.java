@@ -9,18 +9,23 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.viewModel.UiState;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -47,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView txtMoney;
     private TextView txtMoneyPerSec;
     private ImageView egg;
+
+    private LinearLayout viewAria;
     private ImageView animal;
     private long lastClickTime = 0;
 
@@ -88,14 +95,14 @@ public class MainActivity extends AppCompatActivity {
         egg = findViewById(R.id.egg);
         animal = findViewById(R.id.animal);
 
+        viewAria = findViewById(R.id.mainLayout);
+
 
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
 
-            textCount.setText(uiState.getStrenght() + " ");
-            progressBar.setProgress((int) uiState.getStrenght());
-            txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
-            txtMoneyPerSec.setText(uiState.getIncubatorProfit().getFormattedValue() + " per sec");
+//
+            updateText( uiState);
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
                 animal.setImageBitmap(model.getAnimal().getBitmap());
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 animal.setImageBitmap(null);
             }
+            Log.i("!!!!!!!!!!!!!!!!!!!!!!!!","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             setFragment(uiState.getFragmentActive());
         });
 
@@ -134,7 +142,10 @@ public class MainActivity extends AppCompatActivity {
 //            if ( fl == null) return;
             model.toFragmentChange(fl);// !возможное отрицание
         });
+        viewAria.setOnClickListener(view -> {
+            model.closeFragment();
 
+        });
 
         // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
         egg.setOnTouchListener((view, motionEvent) -> {
@@ -185,17 +196,27 @@ public class MainActivity extends AppCompatActivity {
     Fragment lastFragment;
 
     private  void setFragment(Fragment flag) {
+
         model.saveAll(this);
         ft = fragmentManager.beginTransaction();
+
+        if (lastFragment != null) ft.remove(lastFragment);
 
         if (flag != null) {
             ft.replace(R.id.fragment_base, flag);
             lastFragment = flag;
 
-        } else if (lastFragment != null) {
+        }
+        else   if (lastFragment != null){
             ft.remove(lastFragment);
         }
         ft.commit();
+    }
+    public  void updateText(UiState uiState){
+        textCount.setText(uiState.getStrenght() + " ");
+        progressBar.setProgress((int) uiState.getStrenght());
+        txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
+        txtMoneyPerSec.setText(uiState.getIncubatorProfit().getFormattedValue() + " per sec");
     }
 
     private void viewAnimation(View view, boolean isDown, float size) {
@@ -241,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        dbHelper = new BDHelper(this);
     }
+
 
 
 }
