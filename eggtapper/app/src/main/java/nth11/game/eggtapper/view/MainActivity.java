@@ -9,17 +9,23 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.viewModel.UiState;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 
@@ -28,19 +34,26 @@ import nth11.game.eggtapper.viewModel.ViewModel;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public class MainActivity extends AppCompatActivity {
-    private FloatingActionButton shopBtn;
+    private final float EGG_SCALE = 1f;
+    private final float ANIMAL_SCALE = 2.2f;
+
+    private Button shopBtn;
     private FloatingActionButton settingBtn;
     private FrameLayout frameBase;
     private ProgressBar progressBar;
     private ViewModel model;
     private FragmentTransaction ft;
     private Fragment shopFragment;
+    private Fragment regFragment;
     private Fragment settingFragment;
     private FragmentManager fragmentManager;
 
     private TextView textCount;
     private TextView txtMoney;
+    private TextView txtMoneyPerSec;
     private ImageView egg;
+
+    private LinearLayout viewAria;
     private ImageView animal;
     private long lastClickTime = 0;
 
@@ -58,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
-//        model.loadAll(this);
+        model.loadAll(this);
 
 
 //        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
@@ -66,10 +79,12 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentManager = getSupportFragmentManager();
         shopFragment = model.getShopFragment();
+        regFragment = model.getRegFragment();
         settingFragment = model.getSettingsFragment();
 
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
+        txtMoneyPerSec = findViewById(R.id.counter_per_second);
 
         shopBtn = findViewById(R.id.shop_btn);
         settingBtn = findViewById(R.id.settings_btn);
@@ -80,38 +95,61 @@ public class MainActivity extends AppCompatActivity {
         egg = findViewById(R.id.egg);
         animal = findViewById(R.id.animal);
 
+        viewAria = findViewById(R.id.mainLayout);
+
 
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {
 
-            textCount.setText(uiState.getStrenght() + " ");
-            progressBar.setProgress((int) uiState.getStrenght());
-            txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
+//
+            updateText( uiState);
             egg.setImageResource(uiState.getEggTexture());
             if (model.getAnimal() != null) {   //проверку по хорошему во VM
                 animal.setImageBitmap(model.getAnimal().getBitmap());
-                animal.setScaleX(1);
-                animal.setScaleY(1);
+                animal.setScaleX(ANIMAL_SCALE);
+                animal.setScaleY(ANIMAL_SCALE);
             } else {
                 animal.setImageBitmap(null);
             }
+            Log.i("!!!!!!!!!!!!!!!!!!!!!!!!","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             setFragment(uiState.getFragmentActive());
         });
 
 
-        shopBtn.setOnClickListener(view -> {
-            Fragment fl = model.getUiState().getValue().getFragmentActive();
-            Log.i("CLICK", (fl == null) + " ---");
+        shopBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    Fragment fl = model.getUiState().getValue().getFragmentActive();
+                    Log.i("CLICK", (fl == null) + " ---");
 
-            if (fl != null) {
-                fl = null;
+                    if (fl != null) {
+                        fl = null;
 
-            } else {
-                fl = shopFragment;
-            }
+                    } else {
+                        fl = shopFragment;
+                    }
 //            if ( fl == null) return;
-            model.onShopClick(fl);// !возможное отрицание
+                    model.toFragmentChange(fl);// !возможное отрицание
+                }
+                return false;
+            }
         });
+
+
+//        shopBtn.setOnClickListener(view -> {
+//            Fragment fl = model.getUiState().getValue().getFragmentActive();
+//            Log.i("CLICK", (fl == null) + " ---");
+//
+//            if (fl != null) {
+//                fl = null;
+//
+//            } else {
+//                fl = shopFragment;
+//            }
+////            if ( fl == null) return;
+//            model.toFragmentChange(fl);// !возможное отрицание
+//        });
         settingBtn.setOnClickListener(view -> {
             Fragment fl = model.getUiState().getValue().getFragmentActive();
             Log.i("CLICK", (fl == null) + " ---");
@@ -123,30 +161,12 @@ public class MainActivity extends AppCompatActivity {
                 fl = settingFragment;
             }
 //            if ( fl == null) return;
-            model.onShopClick(fl);// !возможное отрицание
+            model.toFragmentChange(fl);// !возможное отрицание
         });
+        viewAria.setOnClickListener(view -> {
+            model.closeFragment();
 
-
-
-//        egg.setOnTouchListener((view, motionEvent) -> {
-//            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-//                model.onTap();
-//                if(  model.onAnimalTap() ){
-//                    animateEgg(animal, true);
-//                }
-//                animateEgg(view, true);
-//
-//
-//            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-//                if(  model.onAnimalTap() ){
-//                    animateEgg(animal, false);
-//                }
-//                animateEgg(view, false);
-//                return false;
-//            }
-//            return true;
-//        });
-
+        });
 
         // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
         egg.setOnTouchListener((view, motionEvent) -> {
@@ -165,22 +185,22 @@ public class MainActivity extends AppCompatActivity {
                         if (now - lastClickTime >= 10) { // Проверка времени между кликами
 
                             if (model.onAnimalTap()) {
-                                animateEgg(animal, true);
+                                viewAnimation(animal, true, ANIMAL_SCALE);
                             } else {
                                 model.onTap();
 
                             }
-                            animateEgg(view, true);
+                            viewAnimation(view, true, EGG_SCALE);
                         }
                         lastClickTime = now;
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
                         // отпускание пальца
-//                        if (model.onAnimalTap()) {
-//                            animateEgg(animal, false);
-//                        }
-                        animateEgg(view, false);
+                        if (model.onAnimalTap()) {
+                            viewAnimation(animal, false, ANIMAL_SCALE); // мб удалить
+                        }
+                        viewAnimation(view, false, EGG_SCALE);
                         break;
                     case MotionEvent.ACTION_MOVE:
 
@@ -196,36 +216,50 @@ public class MainActivity extends AppCompatActivity {
     //это логика только отображения - оставляем во View?
     Fragment lastFragment;
 
-    private void setFragment(Fragment flag) {
+    private  void setFragment(Fragment flag) {
+
+        model.saveAll(this);
         ft = fragmentManager.beginTransaction();
+
+        if (lastFragment != null) ft.remove(lastFragment);
 
         if (flag != null) {
             ft.replace(R.id.fragment_base, flag);
             lastFragment = flag;
 
-        } else if ( lastFragment!= null) {
+        }
+        else   if (lastFragment != null){
             ft.remove(lastFragment);
         }
         ft.commit();
     }
+    public  void updateText(UiState uiState){
+        textCount.setText(uiState.getStrenght() + " ");
+        progressBar.setProgress((int) uiState.getStrenght());
+        txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
+        txtMoneyPerSec.setText(uiState.getIncubatorProfit().getFormattedValue() + " per sec");
+    }
 
-    private void animateEgg(View view, boolean isDown) {
-        float scaleX = isDown ? 0.96f : 1f;
-        float scaleY = isDown ? 0.90f : 1.05f;
-        float translationY = isDown ? 50f : 0f; // расстояние, на которое яйцо опускается
+    private void viewAnimation(View view, boolean isDown, float size) {
+        float scaleX =  (isDown ? 0.995f * size : size);
+        float scaleY =  (isDown ? 0.98f * size : 1 * size);
+
+
+        float translationY = isDown ? 15f : 0f; // расстояние, на которое яйцо опускается
 
         view.animate()
-                .scaleX(scaleX)
+                .scaleX( scaleX)
                 .scaleY(scaleY)
                 .translationY(translationY)
                 .setDuration(0) // задержка при опускании больше, чем при поднятии
                 .withEndAction(() -> {
                     // обратная анимация, которая возвращает яйцо в исходное положение
                     view.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
+                            .scaleX((1f * size))
+                            .scaleY(1f * size)
                             .translationY(0f)
                             .setDuration(0);
+
                 });
     }
 
@@ -238,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        model.saveAll(this);
+        model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 
     }
@@ -249,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
 //        dbHelper = new BDHelper(this);
     }
+
 
 
 }

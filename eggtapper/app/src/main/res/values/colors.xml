@@ -12,8 +12,11 @@
     <color name="pg_2">#39AADD</color>
     <color name="pg_3">#FFEB3B</color>
 
-    <color name="gold_1">#E8B600</color>
-    <color name="gold_2">#DAE100</color>
+    <color name="gcolor_1">#1E8CA3A2</color>
+    <color name="gcolor_2">#4F3284B1</color>
+
+    <color name="button_lite">#eae5b9</color>
+    <color name="button_dark">#d3b37e</color>
 
 
 </resources>

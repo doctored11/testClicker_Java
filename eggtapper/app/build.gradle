@@ -31,6 +31,13 @@ android {
 
 dependencies {
 
+////     Room components
+//    implementation "androidx.room:room-runtime:2.5.1"
+//    annotationProcessor "androidx.room:room-compiler:2.5.1"
+//    // Lifecycle components
+//    implementation "androidx.lifecycle:lifecycle-extensions:2.5.1"
+//    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.5.1"
+
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

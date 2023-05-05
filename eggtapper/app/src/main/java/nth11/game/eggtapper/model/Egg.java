@@ -16,7 +16,7 @@ public class Egg {
         this.strength=strength;
         this.maxValue=strength;
     }
-    public void reduceStrength(long count){
+    public synchronized  void reduceStrength(long count){ //!synchronized
 
         if (count<0) count =1;
         this.strength-=count;
@@ -35,7 +35,7 @@ public class Egg {
         return strength <= 0;
     }
 
-    public int strengthChecker(){
+    public   int strengthChecker(){ // ? synchronized
         long strengthInPercent = getPercentStrenght();
         if (strengthInPercent>96){
             return R.drawable.egg_stage_0;
