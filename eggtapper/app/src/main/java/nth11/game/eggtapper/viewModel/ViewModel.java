@@ -215,7 +215,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return true;
     }
 
-    public void autoTap() {
+    public void autoTap() { //
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         long delay = incubator.getTimer();
         long period = incubator.getTimer();
@@ -374,6 +374,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         User user = new User(getUsername(), dbHelper.getPassword(getUsername()), player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce());
         dbHelper.updateUser(user);
+        dbHelper.saveLastLoggedInUser(getUsername());
     }
 
     public void loadAll(Context cont) {
@@ -383,7 +384,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         MyDbHelper dbHelper = new MyDbHelper(cont);
 
         if (Username == "default"){
-            setUsername(dbHelper.getLastUserName());
+            setUsername(dbHelper.getLastLoggedInUser());
         }
 
         if (!dbHelper.hasRecords()) {

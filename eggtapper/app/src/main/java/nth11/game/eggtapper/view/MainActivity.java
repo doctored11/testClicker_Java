@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textCount;
     private TextView txtMoney;
     private TextView txtMoneyPerSec;
+
+    private TextView txtUserName;
     private ImageView egg;
 
     private LinearLayout viewAria;
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        //создание этой вонючей ViewModel
+        //создание ViewModel
 
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
         txtMoneyPerSec = findViewById(R.id.counter_per_second);
+        txtUserName  = findViewById(R.id.text_user_name);
 
         shopBtn = findViewById(R.id.shop_btn);
         settingBtn = findViewById(R.id.settings_btn);
@@ -238,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setProgress((int) uiState.getStrenght());
         txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
         txtMoneyPerSec.setText(uiState.getIncubatorProfit().getFormattedValue() + " per sec");
+        txtUserName.setText(model.getUsername()+" ");
     }
 
     private void viewAnimation(View view, boolean isDown, float size) {
@@ -272,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 

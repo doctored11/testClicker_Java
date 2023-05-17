@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import nth11.game.eggtapper.model.MyDbHelper;
+import nth11.game.eggtapper.model.PassUtils;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class AuthFragment extends Fragment {
@@ -120,9 +121,10 @@ public class AuthFragment extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
 
                 String inputPassword = input.getText().toString();
+                String hashedInpPassword = PassUtils.hashPassword(inputPassword);
                 String passwordFromDb = dbHelper.getPassword(name);
 
-                if (passwordFromDb != null && passwordFromDb.equals(inputPassword)) {
+                if (passwordFromDb != null && passwordFromDb.equals(hashedInpPassword )) {
                     // Пароль верный, выполнить авторизацию Todo - реализовать!
                     model.setUsername(name);
                     Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
