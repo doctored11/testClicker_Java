@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -76,9 +78,12 @@ public class AuthFragment extends Fragment {
         while (cursor.moveToNext()) {
             String name = cursor.getString(cursor.getColumnIndexOrThrow(dbHelper.getColumnName()));
             LinearLayout userLayout = new LinearLayout(getContext());
+
+
+
             userLayout.setId(View.generateViewId());
-            userLayout.setBackgroundResource(android.R.color.white);
-            userLayout.setPadding(16, 16, 16, 16);
+            userLayout.setBackgroundResource(android.R.color.background_light);
+            userLayout.setPadding(24, 24, 24, 24);
             userLayout.setClickable(true);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -93,7 +98,19 @@ public class AuthFragment extends Fragment {
                 }
             });
 
+//            TextView textView = new TextView(getContext());
+
+            // Загружаем шрифт из ресурсов
+            Typeface typeface = ResourcesCompat.getFont(getContext(), R.font.videotype);
+
+// Создаем TextView и применяем шрифт
             TextView textView = new TextView(getContext());
+            textView.setTypeface(typeface);
+            textView.setText(name);
+
+
+
+
             textView.setText(name);
             userLayout.addView(textView);
 
@@ -125,7 +142,7 @@ public class AuthFragment extends Fragment {
                 String passwordFromDb = dbHelper.getPassword(name);
 
                 if (passwordFromDb != null && passwordFromDb.equals(hashedInpPassword )) {
-                    // Пароль верный, выполнить авторизацию Todo - реализовать!
+                    // Пароль верный, выполнить авторизацию
                     model.setUsername(name);
                     Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
                     model.loadAll(getContext());

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private final float ANIMAL_SCALE = 2.2f;
 
     private Button shopBtn;
-    private FloatingActionButton settingBtn;
+    private Button settingBtn;
     private FrameLayout frameBase;
     private ProgressBar progressBar;
     private ViewModel model;
@@ -276,7 +276,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         model.saveAll(this);
 //        dbHelper = new BDHelper(this);
 

@@ -116,7 +116,7 @@ public class TextureLoader {
         Bitmap buffer;
         Random random = new Random();
         int n = random.nextInt(101);
-        if (n < 10) {
+        if (n < 8) {
 
 //
 
@@ -130,7 +130,7 @@ public class TextureLoader {
             bitmapBody = getBitmap(context, "body", 1);
 
             if( random.nextInt(101) > 90 ){
-                bitmapDress = getBitmap(context, "dress", 7);
+                bitmapDress = getBitmap(context, "dress", 8);
             }else {
                 bitmapDress = getDefaultDress(context);
             }
@@ -144,21 +144,21 @@ public class TextureLoader {
             buffer = overlayBitmaps(buffer, bitmapWing);
 
             if( random.nextInt(101) > 55 ){
-                bitmapEye = getBitmap(context, "eye", 10);
+                bitmapEye = getBitmap(context, "eye", 17);
             }else {
                 bitmapEye = getDefaultEye(context);
             }
             buffer = overlayBitmaps(buffer, bitmapEye);
 
             if( random.nextInt(101) > 35 ){
-                bitmapHat = getBitmap(context, "head", 27);
+                bitmapHat = getBitmap(context, "head", 33);
             }else {
                 bitmapHat = getDefaultHat(context);
             }
             buffer = overlayBitmaps(buffer, bitmapHat);
 
             if( random.nextInt(101) > 40 ){
-                bitmapBeak = getBitmap(context, "beak", 14);
+                bitmapBeak = getBitmap(context, "beak", 20);
             }else {
                 bitmapBeak = getDefaultBeak(context);
             }

@@ -58,6 +58,7 @@
 
                     <TextView
                         android:id="@+id/text_toolUp_name_prof"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="match_parent"
                         android:layout_height="36dp"
                         android:layout_weight="3"
@@ -65,6 +66,7 @@
 
                     <TextView
                         android:id="@+id/text_toolUp_descr_prof"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
@@ -79,6 +81,7 @@
 
                     <TextView
                         android:id="@+id/text_toolUp_coast_prof"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -107,6 +110,7 @@
 
                 <LinearLayout
                     android:layout_width="172dp"
+
                     android:layout_height="match_parent"
                     android:layout_marginRight="10dp"
                     android:layout_weight="2"
@@ -115,6 +119,7 @@
 
                     <TextView
                         android:id="@+id/text_toolUp_name_force"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="3"
@@ -122,6 +127,7 @@
 
                     <TextView
                         android:id="@+id/text_toolUp_profit_descr"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
@@ -136,6 +142,7 @@
 
                     <TextView
                         android:id="@+id/text_toolUp_coast_force"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -173,6 +180,7 @@
 
                     <TextView
                         android:id="@+id/text_incubator_first_name_profit"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="match_parent"
                         android:layout_height="32dp"
                         android:layout_weight="3"
@@ -181,6 +189,7 @@
                     <TextView
 
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/videotype"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
                         android:text="@string/shop_incubator_profit_descr" />
@@ -194,6 +203,7 @@
 
                     <TextView
                         android:id="@+id/text_incubator_first_coast_prof"
+                        android:fontFamily="@font/videotype"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -232,6 +242,7 @@
                     <TextView
                         android:id="@+id/text_incubator_first_name_force"
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/videotype"
                         android:layout_height="36dp"
                         android:layout_weight="3"
                         android:text="@string/shop_incubator_force" />
@@ -239,6 +250,7 @@
                     <TextView
                         android:id="@+id/text_toolUp_force_descr"
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/videotype"
                         android:layout_height="wrap_content"
                         android:layout_weight="7"
                         android:text="@string/shop_incubator_force_descr" />
@@ -253,6 +265,7 @@
                     <TextView
                         android:id="@+id/text_incubator_first_coast_force"
                         android:layout_width="wrap_content"
+                        android:fontFamily="@font/videotype"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="" />
