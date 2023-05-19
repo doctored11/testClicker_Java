@@ -7,11 +7,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.viewModel.ViewModel;
@@ -46,6 +48,8 @@ public class SettingsFragment extends Fragment {
 
         Button authBtn = view.findViewById(R.id.button_auto);
         Fragment authFragment = model.getAuthorizationFragment();
+
+        LinearLayout empty = view.findViewById(R.id.empty_layout);
         regBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +62,12 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
 
                 model.toFragmentChange(authFragment);
+            }
+        });
+        empty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                model.onTap();
             }
         });
 

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#6B0EED"
+    android:background="@color/blue_500"
     tools:context=".RegFragment"
     android:clickable="true">
 
@@ -12,8 +12,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="658dp"
-        android:background="#E43671"
-        android:text="@string/hello_blank_fragment"
+        android:background="#00E43671"
         android:visibility="visible" />
 
     <LinearLayout
@@ -29,12 +28,14 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
+            android:fontFamily="@font/videotype"
             android:text="Name" />
 
         <EditText
             android:id="@+id/editTextTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/videotype"
             android:ems="10"
             android:inputType="textPassword" />
 
@@ -42,7 +43,10 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:backgroundTint="@color/button_lite"
+            android:fontFamily="@font/videotype"
+            android:text="Button"
+            android:textColor="@color/button_dark" />
     </LinearLayout>
 
 </FrameLayout>

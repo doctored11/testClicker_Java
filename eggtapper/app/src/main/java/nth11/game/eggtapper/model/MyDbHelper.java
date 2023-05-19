@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Calendar;
+
 public class MyDbHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -30,6 +32,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String COLUMN_COUNT_TAP_F = "count_tap_f";
     private static final String COLUMN_COUNT_INC_P = "count_inc_p";
     private static final String COLUMN_COUNT_INC_F = "count_inc_f";
+//
+    private static final String LAST_USER_TABLE_NAME = "LastUser";
+    private static final String COLUMN_LAST_USER_NAME = "lastUserName";
+    private static final String COLUMN_LAST_LOGOUT_TIME = "lastLogoutTime";
+
     public MyDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -55,6 +62,12 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 COLUMN_COUNT_INC_F + " INTEGER)";
 
         db.execSQL(sql);
+
+        // Таблица для последннего плользователя
+        String lastUserSql = "CREATE TABLE " + LAST_USER_TABLE_NAME + " (" +
+                COLUMN_LAST_USER_NAME + " TEXT, " +
+                COLUMN_LAST_LOGOUT_TIME + " INTEGER)";
+        db.execSQL(lastUserSql);
     }
 
 
@@ -235,6 +248,56 @@ public class MyDbHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return lastUserName;
+    }
+
+//
+// сохранение последнего авторизованного пользователя
+public void saveLastLoggedInUser(String username) {
+    SQLiteDatabase db = getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put(COLUMN_LAST_USER_NAME, username);
+
+    // получение  времени    TODO - потом производить вычисления с балансов afk ( при авторизации)
+    Calendar calendar = Calendar.getInstance();
+    long logoutTime = calendar.getTimeInMillis();
+    values.put(COLUMN_LAST_LOGOUT_TIME, logoutTime);
+
+    db.insert(LAST_USER_TABLE_NAME, null, values);
+    db.close();
+}
+
+    //
+    public String getLastLoggedInUser() {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT " + COLUMN_LAST_USER_NAME +
+                " FROM " + LAST_USER_TABLE_NAME +
+                " ORDER BY " + COLUMN_LAST_LOGOUT_TIME + " DESC" +
+                " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        String lastUser = null;
+        if (cursor.moveToFirst()) {
+            lastUser = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAST_USER_NAME));
+        }
+        cursor.close();
+        db.close();
+        return lastUser;
+    }
+
+    //
+    public long getLastLogoutTime() {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT " + COLUMN_LAST_LOGOUT_TIME +
+                " FROM " + LAST_USER_TABLE_NAME +
+                " ORDER BY " + COLUMN_LAST_LOGOUT_TIME + " DESC" +
+                " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        long lastLogoutTime = 0;
+        if (cursor.moveToFirst()) {
+            lastLogoutTime = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_LAST_LOGOUT_TIME));
+        }
+        cursor.close();
+        db.close();
+        return lastLogoutTime;
     }
 
 

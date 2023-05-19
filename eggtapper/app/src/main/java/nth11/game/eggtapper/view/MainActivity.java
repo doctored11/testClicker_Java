@@ -9,20 +9,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.viewModel.UiState;
@@ -38,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final float ANIMAL_SCALE = 2.2f;
 
     private Button shopBtn;
-    private FloatingActionButton settingBtn;
+    private Button settingBtn;
     private FrameLayout frameBase;
     private ProgressBar progressBar;
     private ViewModel model;
@@ -51,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textCount;
     private TextView txtMoney;
     private TextView txtMoneyPerSec;
+
+    private TextView txtUserName;
     private ImageView egg;
 
     private LinearLayout viewAria;
@@ -67,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         //отключаем темную тему от греха подальше ( возможно временно)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        //создание этой вонючей ViewModel
+        //создание ViewModel
 
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
@@ -85,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         textCount = findViewById(R.id.text_count);
         txtMoney = findViewById(R.id.money_txt);
         txtMoneyPerSec = findViewById(R.id.counter_per_second);
+        txtUserName  = findViewById(R.id.text_user_name);
 
         shopBtn = findViewById(R.id.shop_btn);
         settingBtn = findViewById(R.id.settings_btn);
@@ -238,30 +237,35 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setProgress((int) uiState.getStrenght());
         txtMoney.setText(getString(R.string.txt_money) + " " + uiState.getMoney().getFormattedValue());
         txtMoneyPerSec.setText(uiState.getIncubatorProfit().getFormattedValue() + " per sec");
+        txtUserName.setText(model.getUsername()+" ");
     }
+
+    private ViewPropertyAnimator currentAnimator;
 
     private void viewAnimation(View view, boolean isDown, float size) {
-        float scaleX =  (isDown ? 0.995f * size : size);
-        float scaleY =  (isDown ? 0.98f * size : 1 * size);
+        if (currentAnimator != null) {
+            currentAnimator.cancel();
+        }
 
+        float scaleX = (isDown ? 0.995f * size : size);
+        float scaleY = (isDown ? 0.98f * size : 1 * size);
+        float translationY = isDown ? 15f : 0f;
 
-        float translationY = isDown ? 15f : 0f; // расстояние, на которое яйцо опускается
-
-        view.animate()
-                .scaleX( scaleX)
+        currentAnimator = view.animate()
+                .scaleX(scaleX)
                 .scaleY(scaleY)
                 .translationY(translationY)
-                .setDuration(0) // задержка при опускании больше, чем при поднятии
+                .setDuration(0)
                 .withEndAction(() -> {
-                    // обратная анимация, которая возвращает яйцо в исходное положение
+                    // Обратная анимация, которая возвращает яйцо в исходное положение
                     view.animate()
-                            .scaleX((1f * size))
+                            .scaleX(1f * size)
                             .scaleY(1f * size)
-                            .translationY(0f)
-                            .setDuration(0);
-
+                            .setDuration(0)
+                            .withEndAction(() -> currentAnimator = null);
                 });
     }
+
 
     protected void onDestroy() {
         super.onDestroy();

@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import nth11.game.eggtapper.model.MyDbHelper;
+import nth11.game.eggtapper.model.PassUtils;
 import nth11.game.eggtapper.model.User;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
@@ -61,11 +62,12 @@ public class RegFragment extends Fragment {
             public void onClick(View v) {
                 String name = nameEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
+                String hashedPassword = PassUtils.hashPassword(password);
 
                 if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
                     ContentValues values = new ContentValues();
                     values.put(dbHelper.getColumnName(), name);
-                    values.put(dbHelper.getColumnPassword(), password);
+                    values.put(dbHelper.getColumnPassword(), hashedPassword);
 
                     // Вставляем новую запись в таблицу
                     long newRowId = db.insert(dbHelper.getTableName(), null, values);
@@ -76,10 +78,11 @@ public class RegFragment extends Fragment {
 //                          //в таблицу кладем начального пользователя.
                         //Todo перенести из этого "View" класса
                         MyDbHelper dbHelper = new MyDbHelper(getContext());
-                        User user = new User(name, password);
+                        User user = new User(name, hashedPassword);
                         dbHelper.updateUser(user);
-                        model.loadAll(getContext());
+                        model.saveAll(getContext());
                         model.setUsername(name);
+                        model.loadAll(getContext());
                     } else {
                         Toast.makeText(getContext(), "Registration failed", Toast.LENGTH_SHORT).show();
                     }

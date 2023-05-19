@@ -1,15 +1,19 @@
 package nth11.game.eggtapper.viewModel;
 
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Vibrator;
 import android.util.Log;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -18,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import nth11.game.eggtapper.AuthFragment;
 import nth11.game.eggtapper.RegFragment;
 import nth11.game.eggtapper.model.MyDbHelper;
+import nth11.game.eggtapper.model.SoundPlayer;
 import nth11.game.eggtapper.model.User;
 import nth11.game.eggtapper.view.SettingsFragment;
 import nth11.game.eggtapper.model.GameCurrency;
@@ -156,14 +161,23 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
+    private SoundPlayer soundPlayer;
+
     public void onTap() {
+
         uiState.getValue().setFragmentActive(null);// - для быстрого  закрытия магазина и тд
         uiUpdate(); //
 
+        soundPlayer = new SoundPlayer(context);
+        soundPlayer.playSound("click");
+        vibrate(context,10);
+
         if (animal != null && clickEgg.statusChecker()) {
+
             Log.i("outTap", "_tapOut_" + (animal != null) + " " + clickEgg.statusChecker());
             return;
         }
+
 
 
         Log.e("onTap", player.getTool().getProfitability().getFormattedValue() + " " + uiState.getValue().getMoney().getFormattedValue());
@@ -173,6 +187,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         }
 
         if (clickEgg.statusChecker() && animal == null) {
+            vibrate(context,45);
             Log.i("++++++++++++=onTap", " RESTART( ");
             tapRestartScene();
         }
@@ -193,11 +208,18 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public boolean onAnimalTap() {
         if (animal == null || !clickEgg.statusChecker()) return false;
 
+        uiState.getValue().setFragmentActive(null);// - для быстрого  закрытия магазина и тд
+        uiUpdate(); //
+
         Log.e("_____________________________________onBirdTap", player.getTool().getProfitability().getFormattedValue() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + uiState.getValue().getMoney().getFormattedValue());
 //        if (context != null && firstStart) {
 //            firstStart = false;
 //            textureSet(context);
 //        }
+
+        soundPlayer = new SoundPlayer(context);
+        soundPlayer.playSound("duck_quack");
+        vibrate(context,15);
 
         if (!animal.statusChecker()) animal.reduceStrength();
 
@@ -215,7 +237,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return true;
     }
 
-    public void autoTap() {
+    public void autoTap() { //
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         long delay = incubator.getTimer();
         long period = incubator.getTimer();
@@ -374,6 +396,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         User user = new User(getUsername(), dbHelper.getPassword(getUsername()), player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce());
         dbHelper.updateUser(user);
+        dbHelper.saveLastLoggedInUser(getUsername());
     }
 
     public void loadAll(Context cont) {
@@ -383,7 +406,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         MyDbHelper dbHelper = new MyDbHelper(cont);
 
         if (Username == "default"){
-            setUsername(dbHelper.getLastUserName());
+            setUsername(dbHelper.getLastLoggedInUser());
         }
 
         if (!dbHelper.hasRecords()) {
@@ -394,12 +417,30 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         User user = dbHelper.getUser(getUsername());
         if (user == null) return;
 
+//
+        long lastLogoutTime = dbHelper.getLastLogoutTime();
+        int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
+        GameCurrency afkProfit  = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
+
+//
+
 
         player.setMoney(user.getMoney());
+        player.addMoney(afkProfit);
         TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
         player.setTool(nt);
         incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
 
+    }
+
+    public int getMinutesSinceLastLogout(long lastLogoutTime) {
+        Calendar currentTime = Calendar.getInstance();
+        long currentTimeMillis = currentTime.getTimeInMillis();
+
+        long timeDifferenceMillis = currentTimeMillis - lastLogoutTime;
+        int minutesDifference = (int) (timeDifferenceMillis / (60 * 1000));
+
+        return minutesDifference;
     }
 
 
@@ -505,6 +546,15 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return (long) (Math.random() * (upperBound - lowerBound + 1) + lowerBound);
 //        Math.random() * (max - min + 1) + min)
     }
+
+    private Vibrator vibrator;
+    private void vibrate(Context context, long time) {
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator.hasVibrator()) {
+            vibrator.vibrate(time);
+        }
+    }
+
 
 
 }

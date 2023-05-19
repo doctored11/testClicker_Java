@@ -16,7 +16,7 @@ public class Egg {
         this.strength=strength;
         this.maxValue=strength;
     }
-    public synchronized  void reduceStrength(long count){ //!synchronized
+    public  void reduceStrength(long count){ //!synchronized
 
         if (count<0) count =1;
         this.strength-=count;
