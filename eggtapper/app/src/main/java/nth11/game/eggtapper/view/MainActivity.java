@@ -9,20 +9,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import nth11.game.eggtapper.R;
 import nth11.game.eggtapper.viewModel.UiState;
@@ -244,28 +240,32 @@ public class MainActivity extends AppCompatActivity {
         txtUserName.setText(model.getUsername()+" ");
     }
 
+    private ViewPropertyAnimator currentAnimator;
+
     private void viewAnimation(View view, boolean isDown, float size) {
-        float scaleX =  (isDown ? 0.995f * size : size);
-        float scaleY =  (isDown ? 0.98f * size : 1 * size);
+        if (currentAnimator != null) {
+            currentAnimator.cancel();
+        }
 
+        float scaleX = (isDown ? 0.995f * size : size);
+        float scaleY = (isDown ? 0.98f * size : 1 * size);
+        float translationY = isDown ? 15f : 0f;
 
-        float translationY = isDown ? 15f : 0f; // расстояние, на которое яйцо опускается
-
-        view.animate()
-                .scaleX( scaleX)
+        currentAnimator = view.animate()
+                .scaleX(scaleX)
                 .scaleY(scaleY)
                 .translationY(translationY)
-                .setDuration(0) // задержка при опускании больше, чем при поднятии
+                .setDuration(0)
                 .withEndAction(() -> {
-                    // обратная анимация, которая возвращает яйцо в исходное положение
+                    // Обратная анимация, которая возвращает яйцо в исходное положение
                     view.animate()
-                            .scaleX((1f * size))
+                            .scaleX(1f * size)
                             .scaleY(1f * size)
-                            .translationY(0f)
-                            .setDuration(0);
-
+                            .setDuration(0)
+                            .withEndAction(() -> currentAnimator = null);
                 });
     }
+
 
     protected void onDestroy() {
         super.onDestroy();
