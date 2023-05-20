@@ -425,7 +425,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void createBdDefUser(Context context) {
         MyDbHelper dbHelper = new MyDbHelper(context);
-//        dbHelper.addDefaultUser(); //todo
+        dbHelper.addDefaultUser(); //todo
     }
 
     public void loadAll(Context cont) {

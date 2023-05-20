@@ -143,7 +143,7 @@ public class MyDbHelper {
 
 
     public void getUser(String username, GetUserCallback callback) {
-        AsyncTask<String, Void, User> getUserTask = new AsyncTask<String, Void, User>() {
+        @SuppressLint("StaticFieldLeak") AsyncTask<String, Void, User> getUserTask = new AsyncTask<String, Void, User>() {
             @Override
             protected User doInBackground(String... usernames) {
                 // Ваш код для получения пользователя из базы данных
