@@ -3,6 +3,8 @@ package nth11.game.eggtapper.model;
 
 import android.view.View;
 
+import androidx.room.Ignore;
+
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class User {
@@ -18,12 +20,25 @@ public class User {
     private long incubatorForce;
     private GameCurrency incubatorProfit;
     private GameCurrency incubatorUpCoastprofit;
+
+    public void setIncubatorUpCoastprofit(GameCurrency incubatorUpCoastprofit) {
+        this.incubatorUpCoastprofit = incubatorUpCoastprofit;
+    }
+
+    public void setIncubatorUpCoastForce(GameCurrency incubatorUpCoastForce) {
+        this.incubatorUpCoastForce = incubatorUpCoastForce;
+    }
+
     private GameCurrency incubatorUpCoastForce;
     private long countTapP;
     private long countTapF;
     private long countIncP;
     private long countIncF;
+    public User() {
 
+    }
+
+    @Ignore
     public User(String name, String password, GameCurrency money, long strength,
                 long toolForce, GameCurrency toolProfit, GameCurrency toolUpCoastProfit,
                 GameCurrency toolUpCoastForce, long incubatorForce, GameCurrency incubatorProfit,
@@ -46,6 +61,7 @@ public class User {
         this.countIncF = countIncF;
 
     }
+    @Ignore
     public User(String name, String password) {
         this.name = name;
         this.password = password;

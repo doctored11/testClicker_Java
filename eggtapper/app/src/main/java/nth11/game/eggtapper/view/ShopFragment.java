@@ -147,7 +147,7 @@ public class ShopFragment extends Fragment {
     public void onMyButtonClick(LinearLayout btn) {
         Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.animation1);
         btn.startAnimation(anim);
-        // Добавьте код, который должен выполняться при нажатии на кнопку здесь
+
     }
 
 

@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import nth11.game.eggtapper.R;
+import nth11.game.eggtapper.model.MyDbHelper;
 import nth11.game.eggtapper.viewModel.UiState;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint({"ClickableViewAccessibility", "MissingInflatedId"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)  {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         model = new ViewModelProvider(this).get(ViewModel.class);
         model.setContext(this);
+
+        model.createBdDefUser(this);
         model.loadAll(this);
 
 
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         fl = shopFragment;
                     }
-//            if ( fl == null) return;
+
                     model.toFragmentChange(fl);// !возможное отрицание
                 }
                 return false;
@@ -136,19 +139,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-//        shopBtn.setOnClickListener(view -> {
-//            Fragment fl = model.getUiState().getValue().getFragmentActive();
-//            Log.i("CLICK", (fl == null) + " ---");
-//
-//            if (fl != null) {
-//                fl = null;
-//
-//            } else {
-//                fl = shopFragment;
-//            }
-////            if ( fl == null) return;
-//            model.toFragmentChange(fl);// !возможное отрицание
-//        });
+        shopBtn.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    Fragment fl = model.getUiState().getValue().getFragmentActive();
+                    Log.i("CLICK", (fl == null) + " ---");
+
+                    if (fl != null) {
+                        fl = null;
+
+                    } else {
+                        fl = shopFragment;
+                    }
+//            if ( fl == null) return;
+                    model.toFragmentChange(fl);// !возможное отрицание
+                }
+                return false;
+            }
+        });
         settingBtn.setOnClickListener(view -> {
             Fragment fl = model.getUiState().getValue().getFragmentActive();
             Log.i("CLICK", (fl == null) + " ---");
@@ -217,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
 
     private  void setFragment(Fragment flag) {
 
-        model.saveAll(this);
+//        model.saveAll(this);
         ft = fragmentManager.beginTransaction();
 
         if (lastFragment != null) ft.remove(lastFragment);

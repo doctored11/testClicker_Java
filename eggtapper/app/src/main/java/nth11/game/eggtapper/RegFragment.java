@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import nth11.game.eggtapper.model.GetUserCallback;
 import nth11.game.eggtapper.model.MyDbHelper;
 import nth11.game.eggtapper.model.PassUtils;
 import nth11.game.eggtapper.model.User;
@@ -53,9 +55,7 @@ public class RegFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.editTextTextPassword);
         registerButton = view.findViewById(R.id.button);
 
-        // Открываем или создаем базу данных
-        MyDbHelper dbHelper = new MyDbHelper(getContext());
-        db = dbHelper.getWritableDatabase();
+
 
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,26 +63,25 @@ public class RegFragment extends Fragment {
                 String name = nameEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
                 String hashedPassword = PassUtils.hashPassword(password);
+                Log.i("REG_PASS INPUT", hashedPassword+" !!!!!!!!!! Name "+name );
 
                 if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(password)) {
-                    ContentValues values = new ContentValues();
-                    values.put(dbHelper.getColumnName(), name);
-                    values.put(dbHelper.getColumnPassword(), hashedPassword);
+
+
+                    MyDbHelper dbHelper = new MyDbHelper(getContext());
+
 
                     // Вставляем новую запись в таблицу
-                    long newRowId = db.insert(dbHelper.getTableName(), null, values);
 
-                    if (newRowId > -1) {
 
-                        Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
-//                          //в таблицу кладем начального пользователя.
-                        //Todo перенести из этого "View" класса
-                        MyDbHelper dbHelper = new MyDbHelper(getContext());
-                        User user = new User(name, hashedPassword);
-                        dbHelper.updateUser(user);
-                        model.saveAll(getContext());
+                    if (!dbHelper. isUsernameExists(name)) {
+                        User user = new User(name,hashedPassword);
+                            dbHelper.addUser(user);
+                        if (!dbHelper. isUsernameExists(name)) Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
+
                         model.setUsername(name);
                         model.loadAll(getContext());
+                        model.saveAll(getContext());
                     } else {
                         Toast.makeText(getContext(), "Registration failed", Toast.LENGTH_SHORT).show();
                     }
@@ -97,8 +96,7 @@ public class RegFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        // Закрываем базу данных при уничтожении фрагмента
-        db.close();
+
         super.onDestroy();
     }
 }

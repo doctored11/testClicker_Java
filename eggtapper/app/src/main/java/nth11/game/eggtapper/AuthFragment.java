@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +22,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import nth11.game.eggtapper.model.MyDbHelper;
 import nth11.game.eggtapper.model.PassUtils;
+import nth11.game.eggtapper.model.PasswordCallback;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class AuthFragment extends Fragment {
@@ -53,33 +57,15 @@ public class AuthFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_auth, container, false);
         LinearLayout usersList = view.findViewById(R.id.users_list);
 
-        // Получаем доступ к базе данных
-        dbHelper = new MyDbHelper(getContext());
-//
-//        MyDbHelper dbHelper = new MyDbHelper(getContext());
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-
-        // Формируем запрос для получения всех записей из таблицы пользователей
-        String[] projection = {dbHelper.getColumnName()};
-        String sortOrder = dbHelper.getColumnName() + " ASC";
-        Cursor cursor = db.query(
-                dbHelper.getTableName(),
-                projection,
-                null,
-                null,
-                null,
-                null,
-                sortOrder
-        );
+        MyDbHelper dbHelper = new MyDbHelper(getContext());
 
         // Перебираем все записи и выводим их на экран
-        int i = 1;
-        while (cursor.moveToNext()) {
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(dbHelper.getColumnName()));
+        int i = 0;
+        List<String> names = dbHelper.getUsers();
+        Log.i("NAMES_NAMES", names + " _________________)___________");
+        while (i < names.size()) {
+            String name = names.get(i);
             LinearLayout userLayout = new LinearLayout(getContext());
-
-
 
             userLayout.setId(View.generateViewId());
             userLayout.setBackgroundResource(android.R.color.background_light);
@@ -109,8 +95,6 @@ public class AuthFragment extends Fragment {
             textView.setText(name);
 
 
-
-
             textView.setText(name);
             userLayout.addView(textView);
 
@@ -120,11 +104,11 @@ public class AuthFragment extends Fragment {
 //
 
 //
-        cursor.close();
-        dbHelper.close();
+
 //
         return view;
     }
+
     private void showPasswordDialog(String name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Enter password for " + name);
@@ -137,21 +121,36 @@ public class AuthFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                String inputPassword = input.getText().toString();
+                String inputPassword = input.getText().toString().trim();
                 String hashedInpPassword = PassUtils.hashPassword(inputPassword);
-                String passwordFromDb = dbHelper.getPassword(name);
+//                String passwordFromDb = dbHelper.getPassword(name);
 
-                if (passwordFromDb != null && passwordFromDb.equals(hashedInpPassword )) {
-                    // Пароль верный, выполнить авторизацию
-                    model.setUsername(name);
-                    Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
-                    model.loadAll(getContext());
 
-                } else {
-                    // Пароль неверный, показать сообщение об ошибке
-                    Toast.makeText(getContext(), "Password is incorrect", Toast.LENGTH_SHORT).show();
+                MyDbHelper dbHelper = new MyDbHelper(getContext());
+                dbHelper.getPassword(name, new PasswordCallback() {    //todo
+                    @Override
+                    public void onPasswordReceived(String password) {
 
-                }
+                        String passwordFromDb = password;
+                        Log.i("AUTH_PASS BD_________", passwordFromDb+" !!!!!!!!!! Name "+ name);
+                        Log.i("AUTH_PASS INPUT", hashedInpPassword+" !!!!!!!!!!");
+
+
+                        if (passwordFromDb != null && passwordFromDb.equals(hashedInpPassword)) {
+                            // Пароль верный, выполнить авторизацию
+                            model.setUsername(name);
+                            Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
+                            model.loadAll(getContext());
+
+                        } else {
+                            // Пароль неверный, показать сообщение об ошибке
+                            Toast.makeText(getContext(), "Password is incorrect", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+
             }
         });
 
