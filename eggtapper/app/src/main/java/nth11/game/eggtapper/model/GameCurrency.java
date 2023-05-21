@@ -6,6 +6,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     private double value; // Значение валюты
     private char prefix; // Приставка, означающая единицы измерения
 
+
     // Конструктор
     public GameCurrency(double value, char prefix) {
         this.value = value;
@@ -43,7 +44,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
     public  void  prefixUpdate() {
         Log.e("степень при попытке апдейта: ", this.getDegreeByPrefix() + " число " + this.value + this.getFormattedValue());
-        if (this.value > 999) {
+        if (this.value >=Math.pow(10,this.getDegreeByPrefix())) {
             prefixUp();
             return;
         }
@@ -58,7 +59,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     public void prefixUp() {
         Log.e("prefUp: ", " prefUp!");
         Log.d("до Up", this.getFormattedValue() + " - _ -" );
-        while (this.value > 999) {
+        while (this.value >=Math.pow(10,this.getDegreeByPrefix())) {
             this.setPrefix(getPrefixByDegree(getDegreeByPrefix() + 3));
             Log.e("степеньь_____", this.getDegreeByPrefix() + "  ");
             Log.e("валуе _____", this.value + "  ");
@@ -69,6 +70,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
         }
 
         Log.d("после  Up", this.getFormattedValue() + " -_-" );
+
     }
 
     public void prefixDown() {
@@ -143,6 +145,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
             bg.prefixUpdate();
             return bg;
         }
+        this.prefixUpdate();
         GameCurrency bg = new GameCurrency(this.getValue()*simpleMultiplayer, this.prefix);
         bg.prefixUpdate();
         Log.i("после: ", bg.getFormattedValue()+ " ");
@@ -260,4 +263,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     public int compareTo(GameCurrency second) {
         return 0;
     }
+
+
+
 }

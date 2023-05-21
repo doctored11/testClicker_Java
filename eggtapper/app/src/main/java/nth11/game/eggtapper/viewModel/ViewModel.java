@@ -377,7 +377,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public void setContext(Context context) {
         this.context = context;
         dbHelper = new MyDbHelper(context);
-        loadAll(context);
+
     }
 
     public Player getPlayer() {
@@ -420,12 +420,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         User user = new User(getUsername(), "", player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
         dbHelper.updateUser(user);
         Log.i("Save", "--3 " + player.getMoney().getFormattedValue());
-//        dbHelper.saveLastLoggedInUser(getUsername());
+        dbHelper.saveLastLoggedInUser(getUsername());
     }
 
     public void createBdDefUser(Context context) {
         MyDbHelper dbHelper = new MyDbHelper(context);
-        dbHelper.addDefaultUser(); //todo
+//        dbHelper.addDefaultUser(); //todo
     }
 
     public void loadAll(Context cont) {
@@ -439,16 +439,17 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //        MyDbHelper dbHelper = new MyDbHelper();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
-
-        if (Username == "default") {
-            setUsername("username");
-        }
-
-
         if (dbHelper.getUsers().size() < 1) { //todo - мб ошибка
             Fragment registrFragment = getRegFragment();
             toFragmentChange(registrFragment);
         }
+
+        if (Username == "default") {
+            setUsername(dbHelper.getLastLoggedInUser());
+        }
+
+
+
         Log.i("LOAD ", "+2");
         if (getUsername() == null) return;
         Log.i("LOAD ", "+3 " + getUsername());

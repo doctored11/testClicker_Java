@@ -193,7 +193,9 @@ public class MainActivity extends AppCompatActivity {
                         if (now - lastClickTime >= 10) { // Проверка времени между кликами
 
                             if (model.onAnimalTap()) {
+                                Log.i("ANIMAL TAP","_______ANIMAL TAP Нажал_______");
                                 viewAnimation(animal, true, ANIMAL_SCALE);
+                               break;
                             } else {
                                 model.onTap();
 
@@ -206,7 +208,9 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_POINTER_UP:
                         // отпускание пальца
                         if (model.onAnimalTap()) {
+                            Log.i("ANIMAL TAP","_______ANIMAL TAP Отпустил_______");
                             viewAnimation(animal, false, ANIMAL_SCALE); // мб удалить
+                            break;
                         }
                         viewAnimation(view, false, EGG_SCALE);
                         break;

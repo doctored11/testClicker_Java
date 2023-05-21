@@ -151,7 +151,7 @@ public class MyDbHelper {
                 db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
 
                 if (db == null) {
-                    addDefaultUser();
+//                    addDefaultUser();
                     return null;
                 }
 
@@ -236,29 +236,29 @@ public class MyDbHelper {
 
     ////
 // сохранение последнего авторизованного пользователя
-//    public void saveLastLoggedInUser(String username) {
-//        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
-//
-//        Calendar calendar = Calendar.getInstance();
-//        long logoutTime = calendar.getTimeInMillis();
-//        LastUser lastUser = new LastUser(1);
-//        lastUser.setUsername(username);
-//        lastUser.setLastLogoutTime(logoutTime);
-//        dblUser.lastUserDao().saveLastLoggedInUser(lastUser);
-//    }
-//
-//    public String getLastLoggedInUser() {
-//        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
-//
-//
-//        return dblUser.lastUserDao().getLastLoggedInUser();
-//    }
-//
-//    public long getLastLogoutTime() {
-//        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
-//        return dblUser.lastUserDao().getLastLogoutTime();
-//    }
-//
+    public void saveLastLoggedInUser(String username) {
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
+
+        Calendar calendar = Calendar.getInstance();
+        long logoutTime = calendar.getTimeInMillis();
+        LastUser lastUser = new LastUser(1);
+        lastUser.setUsername(username);
+        lastUser.setLastLogoutTime(logoutTime);
+        dblUser.lastUserDao().saveLastLoggedInUser(lastUser);
+    }
+
+    public String getLastLoggedInUser() {
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
+
+
+        return dblUser.lastUserDao().getLastLoggedInUser();
+    }
+
+    public long getLastLogoutTime() {
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
+        return dblUser.lastUserDao().getLastLogoutTime();
+    }
+
 
 
 }
