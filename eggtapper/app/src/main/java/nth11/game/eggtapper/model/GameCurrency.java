@@ -59,7 +59,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     public void prefixUp() {
         Log.e("prefUp: ", " prefUp!");
         Log.d("до Up", this.getFormattedValue() + " - _ -" );
-        while (this.value >=Math.pow(10,this.getDegreeByPrefix())) {
+        while (this.value >=999) {
             this.setPrefix(getPrefixByDegree(getDegreeByPrefix() + 3));
             Log.e("степеньь_____", this.getDegreeByPrefix() + "  ");
             Log.e("валуе _____", this.value + "  ");

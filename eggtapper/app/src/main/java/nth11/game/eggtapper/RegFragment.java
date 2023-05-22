@@ -50,7 +50,7 @@ public class RegFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
-
+        model.saveAll(getContext());
         nameEditText = view.findViewById(R.id.editTextTextPersonName);
         passwordEditText = view.findViewById(R.id.editTextTextPassword);
         registerButton = view.findViewById(R.id.button);
@@ -60,6 +60,7 @@ public class RegFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                model.saveAll(getContext());
                 String name = nameEditText.getText().toString().trim();
                 String password = passwordEditText.getText().toString().trim();
                 String hashedPassword = PassUtils.hashPassword(password);
@@ -74,10 +75,10 @@ public class RegFragment extends Fragment {
                     // Вставляем новую запись в таблицу
 
 
-                    if (!dbHelper. isUsernameExists(name)) {
+                    if (!dbHelper.isUsernameExists(name)) {
                         User user = new User(name,hashedPassword);
                             dbHelper.addUser(user);
-                        if (!dbHelper. isUsernameExists(name)) Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
+                        if (!dbHelper.isUsernameExists(name)) Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
 
                         model.setUsername(name);
                         model.loadAll(getContext());

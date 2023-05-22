@@ -58,6 +58,7 @@ public class AuthFragment extends Fragment {
         LinearLayout usersList = view.findViewById(R.id.users_list);
 
         MyDbHelper dbHelper = new MyDbHelper(getContext());
+        model.saveAll(getContext());
 
         // Перебираем все записи и выводим их на экран
         int i = 0;
@@ -110,6 +111,7 @@ public class AuthFragment extends Fragment {
     }
 
     private void showPasswordDialog(String name) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Enter password for " + name);
 

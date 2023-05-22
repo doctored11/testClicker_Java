@@ -458,7 +458,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         dbHelper.getUser(getUsername(), new GetUserCallback() {
             @Override
             public void onUserReceived(User user1) {
-                // Выполните нужные операции с полученным пользователем
+                //
                 Log.i("LOAD ", "+3.5 " + user1.getMoney().getFormattedValue());
                 User user = user1;
                 if (user == null) return;
