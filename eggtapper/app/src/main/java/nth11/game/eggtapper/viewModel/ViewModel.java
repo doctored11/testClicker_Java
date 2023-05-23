@@ -381,7 +381,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 User user = new User(getUsername(), password, player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
                 dbHelper.updateUser(user);
                 Log.i("Save","3 " +  player.getMoney().getFormattedValue());
-                loadAll(cont);
+                dbHelper.saveLastLoggedInUser(getUsername());
 
             }
         });
@@ -389,10 +389,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //
 
 
-        User user = new User(getUsername(), "", player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
-        dbHelper.updateUser(user);
-
-        dbHelper.saveLastLoggedInUser(getUsername());
+//        loadAll(cont);
     }
 
     public void createBdDefUser(Context context) {
