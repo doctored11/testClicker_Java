@@ -1,14 +1,23 @@
 package nth11.game.eggtapper.model;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.room.Room;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
-public class MyDbHelper extends SQLiteOpenHelper {
+public class MyDbHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "MyDb";
@@ -32,275 +41,222 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String COLUMN_COUNT_TAP_F = "count_tap_f";
     private static final String COLUMN_COUNT_INC_P = "count_inc_p";
     private static final String COLUMN_COUNT_INC_F = "count_inc_f";
-//
+    //
     private static final String LAST_USER_TABLE_NAME = "LastUser";
     private static final String COLUMN_LAST_USER_NAME = "lastUserName";
     private static final String COLUMN_LAST_LOGOUT_TIME = "lastLogoutTime";
+    Context context;
+    AppDatabase db;
+  AppDatabaseLast dblUser;
+
+
 
     public MyDbHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE " + TABLE_NAME + " (" +
-                COLUMN_NAME + " TEXT PRIMARY KEY, " +
-                COLUMN_PASSWORD + " TEXT, " +
-                COLUMN_MONEY + " INTEGER, " +
-                COLUMN_STRENGTH + " INTEGER, " +
-                COLUMN_TOOL_FORCE + " INTEGER, " +
-                COLUMN_TOOL_PROFIT + " INTEGER, " +
-                COLUMN_TOOL_UPCOAST_PROFIT + " INTEGER, " +
-                COLUMN_TOOL_UPCOAST_FORCE + " INTEGER, " +
-                COLUMN_INCUBATOR_FORCE + " INTEGER, " +
-                COLUMN_INCUBATOR_PROFIT + " INTEGER, " +
-                COLUMN_INCUBATOR_UPCOAST_PROFIT + " INTEGER, " +
-                COLUMN_INCUBATOR_UPCOAST_FORCE + " INTEGER, " +
-                COLUMN_COUNT_TAP_P + " INTEGER, " +
-                COLUMN_COUNT_TAP_F + " INTEGER, " +
-                COLUMN_COUNT_INC_P + " INTEGER, " +
-                COLUMN_COUNT_INC_F + " INTEGER)";
-
-        db.execSQL(sql);
-
-        // Таблица для последннего плользователя
-        String lastUserSql = "CREATE TABLE " + LAST_USER_TABLE_NAME + " (" +
-                COLUMN_LAST_USER_NAME + " TEXT, " +
-                COLUMN_LAST_LOGOUT_TIME + " INTEGER)";
-        db.execSQL(lastUserSql);
+        super();
+        this.context = context;
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
     }
 
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
-    }
-    public boolean addUser(User user) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_NAME, user.getName());
-        values.put(COLUMN_PASSWORD, user.getPassword());
-        values.put(COLUMN_MONEY, user.getMoney().getValue());
-        values.put(COLUMN_STRENGTH, user.getStrength());
-        values.put(COLUMN_TOOL_FORCE, user.getToolForce());
-        values.put(COLUMN_TOOL_PROFIT, user.getToolProfit().getValue());
-        values.put(COLUMN_TOOL_UPCOAST_PROFIT, user.getToolUpCoastProfit().getValue());
-        values.put(COLUMN_TOOL_UPCOAST_FORCE, user.getToolUpCoastForce().getValue());
-        values.put(COLUMN_INCUBATOR_FORCE, user.getIncubatorForce());
-        values.put(COLUMN_INCUBATOR_PROFIT, user.getIncubatorProfit().getValue());
-        values.put(COLUMN_INCUBATOR_UPCOAST_PROFIT, user.getIncubatorUpCoastProfit().getValue());
-        values.put(COLUMN_INCUBATOR_UPCOAST_FORCE, user.getIncubatorUpCoastForce().getValue());
-        values.put(COLUMN_COUNT_TAP_P, user.getCountTapP());
-        values.put(COLUMN_COUNT_TAP_F, user.getCountTapF());
-        values.put(COLUMN_COUNT_INC_P, user.getCountIncP());
-        values.put(COLUMN_COUNT_INC_F, user.getCountIncF());
-        long result = db.insert(TABLE_NAME, null, values);
-        db.close();
-        return result != -1;
-    }
-
-    public boolean updateUser(User user) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_PASSWORD, user.getPassword());
-        values.put(COLUMN_MONEY, user.getMoney().getFormattedValue());
-        values.put(COLUMN_STRENGTH, user.getStrength());
-        values.put(COLUMN_TOOL_FORCE, user.getToolForce());
-        values.put(COLUMN_TOOL_PROFIT, user.getToolProfit().getFormattedValue());
-        values.put(COLUMN_TOOL_UPCOAST_PROFIT, user.getToolUpCoastProfit().getFormattedValue());
-        values.put(COLUMN_TOOL_UPCOAST_FORCE, user.getToolUpCoastForce().getFormattedValue());
-        values.put(COLUMN_INCUBATOR_FORCE, user.getIncubatorForce());
-        values.put(COLUMN_INCUBATOR_PROFIT, user.getIncubatorProfit().getFormattedValue());
-        values.put(COLUMN_INCUBATOR_UPCOAST_PROFIT, user.getIncubatorUpCoastProfit().getFormattedValue());
-        values.put(COLUMN_INCUBATOR_UPCOAST_FORCE, user.getIncubatorUpCoastForce().getFormattedValue());
-        values.put(COLUMN_COUNT_TAP_P, user.getCountTapP());
-        values.put(COLUMN_COUNT_TAP_F, user.getCountTapF());
-        values.put(COLUMN_COUNT_INC_P, user.getCountIncP());
-        values.put(COLUMN_COUNT_INC_F, user.getCountIncF());
-        int result = db.update(TABLE_NAME, values, COLUMN_NAME + " = ?", new String[]{user.getName()});
-        db.close();
-        return result > 0;
+    public void onCreate(Context context) {
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").build();
     }
 
 
-    public String getPassword(String username) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void onUpgrade(User user) {
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
+        new AsyncTask<User, Void, Void>() {
 
-        String[] projection = {COLUMN_PASSWORD};
-        String selection = COLUMN_NAME + " = ?";
-        String[] selectionArgs = {username};
+            @Override
+            protected Void doInBackground(User... users) {
+                User user = users[0];
+                BdUser bdUser = new BdUser(user.getName(), user.getPassword(), user.getMoney().getFormattedValue(), (int) user.getStrength(), (int) user.getToolForce(), user.getToolProfit().getFormattedValue(), user.getToolUpCoastProfit().getFormattedValue(), user.getToolUpCoastForce().getFormattedValue(), (int) user.getIncubatorForce(), user.getIncubatorProfit().getFormattedValue(), user.getIncubatorUpCoastProfit().getFormattedValue(), user.getIncubatorUpCoastForce().getFormattedValue(), (int) user.getCountTapP(), (int) user.getCountTapF(), (int) user.getCountIncP(), (int) user.getCountIncF());
 
-        Cursor cursor = db.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
-
-        String password = null;
-        if (cursor.moveToNext()) {
-            password = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD));
-        }
-
-        cursor.close();
-        db.close();
-
-        return password;
+                Log.e("name", user.getName());
+                db.userDao().updateUser(bdUser);
+                return null;
+            }
+        }.execute(user);
     }
+
+    public void addUser(User user) {
+        new AsyncTask<User, Void, Void>() {
+            @Override
+            protected Void doInBackground(User... users) {
+                User user = users[0];
+                BdUser bdUser = new BdUser(user.getName(), user.getPassword(), user.getMoney().getFormattedValue(), (int) user.getStrength(), (int) user.getToolForce(), user.getToolProfit().getFormattedValue(), user.getToolUpCoastProfit().getFormattedValue(), user.getToolUpCoastForce().getFormattedValue(), (int) user.getIncubatorForce(), user.getIncubatorProfit().getFormattedValue(), user.getIncubatorUpCoastProfit().getFormattedValue(), user.getIncubatorUpCoastForce().getFormattedValue(), (int) user.getCountTapP(), (int) user.getCountTapF(), (int) user.getCountIncP(), (int) user.getCountIncF());
+                db.userDao().addUser(bdUser);
+                return null;
+            }
+        }.execute(user);
+    }
+
+    public void updateUser(User user) {
+        onUpgrade(user);
+    }
+
+    public boolean isUsernameExists(String username) {
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "Users").allowMainThreadQueries().build();
+        BdUser bdUser = db.userDao().getUser(username);
+        return bdUser != null;
+    }
+
+    public int getRegisteredUserCount() {
+        this.db = Room.databaseBuilder(context, AppDatabase.class, "Users").allowMainThreadQueries().build();
+        List<BdUser> userList = db.userDao().getAllUsers();
+        return userList.size();
+    }
+
+
+    public void getPassword(String username, PasswordCallback callback) {
+        @SuppressLint("StaticFieldLeak") AsyncTask<String, Void, String> getPasswordTask = new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... usernames) {
+                String username = usernames[0];
+                db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
+                return db.userDao().getPasswordByName(username);
+            }
+
+            @Override
+            protected void onPostExecute(String password) {
+                //  метод обратного вызова и передаем полученный пароль
+                callback.onPasswordReceived(password);
+            }
+        };
+
+        getPasswordTask.execute(username);
+    }
+
+
     public static String getColumnName() {
         return COLUMN_NAME;
     }
+
     public static String getColumnPassword() {
         return COLUMN_PASSWORD;
     }
+
     public static String getTableName() {
         return TABLE_NAME;
     }
 
 
-    public User getUser(String username) {
-        SQLiteDatabase db = this.getReadableDatabase();
+    public void getUser(String username, GetUserCallback callback) {
+        @SuppressLint("StaticFieldLeak") AsyncTask<String, Void, User> getUserTask = new AsyncTask<String, Void, User>() {
+            @Override
+            protected User doInBackground(String... usernames) {
+                // Ваш код для получения пользователя из базы данных
+                String username = usernames[0];
+                db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
 
-        String[] projection = {
-                COLUMN_PASSWORD,
-                COLUMN_MONEY,
-                COLUMN_STRENGTH,
-                COLUMN_TOOL_FORCE,
-                COLUMN_TOOL_PROFIT,
-                COLUMN_TOOL_UPCOAST_PROFIT,
-                COLUMN_TOOL_UPCOAST_FORCE,
-                COLUMN_INCUBATOR_FORCE,
-                COLUMN_INCUBATOR_PROFIT,
-                COLUMN_INCUBATOR_UPCOAST_PROFIT,
-                COLUMN_INCUBATOR_UPCOAST_FORCE,
-                COLUMN_COUNT_TAP_P,
-                COLUMN_COUNT_TAP_F,
-                COLUMN_COUNT_INC_P,
-                COLUMN_COUNT_INC_F
+                if (db == null) {
+//                    addDefaultUser();
+                    return null;
+                }
+
+                BdUser bdUser = db.userDao().getUser(username);
+                User user = new User(bdUser.getName(), bdUser.getPassword(), GameCurrency.parse(bdUser.getMoney()), bdUser.getStrength(),
+                        bdUser.getToolForce(), GameCurrency.parse(bdUser.getToolProfit()), GameCurrency.parse(bdUser.getToolUpCoastProfit()),
+                        GameCurrency.parse(bdUser.getToolUpCoastForce()), bdUser.getIncubatorForce(), GameCurrency.parse(bdUser.getIncubatorProfit()),
+                        GameCurrency.parse(bdUser.getIncubatorUpCoastProfit()), GameCurrency.parse(bdUser.getIncubatorUpCoastForce()),
+                        bdUser.getCountTapP(), bdUser.getCountTapF(), bdUser.getCountIncP(), bdUser.getCountIncF());
+
+                return user;
+            }
+
+            @Override
+            protected void onPostExecute(User user) {
+                // Передаем полученного пользователя в обратный вызов
+                callback.onUserReceived(user);
+            }
         };
-        String selection = COLUMN_NAME + " = ?";
-        String[] selectionArgs = {username};
 
-        Cursor cursor = db.query(
-                TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
-        );
+        getUserTask.execute(username);
+    }
 
-        User user = null;
-        if (cursor.moveToNext()) {
-            String password = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD));
-            String money = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_MONEY));
-            long strength = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_STRENGTH));
-            long toolForce = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_TOOL_FORCE));
-            String toolProfit = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOOL_PROFIT));
-            String toolUpCoastProfit = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOOL_UPCOAST_PROFIT));
-            String toolUpCoastForce = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TOOL_UPCOAST_FORCE));
-            long incubatorForce = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_INCUBATOR_FORCE));
-            String incubatorProfit = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INCUBATOR_PROFIT));
-            String incubatorUpCoastProfit = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INCUBATOR_UPCOAST_PROFIT));
-            String incubatorUpCoastForce = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_INCUBATOR_UPCOAST_FORCE));
 
-            long toolTapP = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COUNT_TAP_P));
-            long toolTapF = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COUNT_TAP_F));
-            long incTapP = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COUNT_INC_P));
-            long incTapF = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_COUNT_INC_F));
-//            User(String name, String password, GameCurrency money, long strength,
-//            long toolForce, GameCurrency toolProfit, GameCurrency toolUpCoastProfit,
-//                    GameCurrency toolUpCoastForce, long incubatorForce, GameCurrency incubatorProfit,
-//                    GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, long countTapP, long countTapF, long countIncP, long countIncF ) {
-
-                user = new User(username, password, GameCurrency.parse(money), strength, toolForce,
-                    GameCurrency.parse(toolProfit), GameCurrency.parse(toolUpCoastProfit), GameCurrency.parse(toolUpCoastForce),
-                    incubatorForce, GameCurrency.parse(incubatorProfit), GameCurrency.parse(incubatorUpCoastProfit),
-                    GameCurrency.parse(incubatorUpCoastForce),toolTapP,toolTapF,incTapP,incTapF);
+    public List<String> getUsers() {
+        db = Room.databaseBuilder(context, AppDatabase.class, "Users").allowMainThreadQueries().build();
+        if (db == null) {
+            return Collections.emptyList();
         }
 
-        cursor.close();
-        db.close();
-        return user;
-    }
-    public boolean hasRecords() {
-        SQLiteDatabase db = getReadableDatabase();
-        String[] columns = {COLUMN_NAME}; // используем любую колонку для запроса
-        Cursor cursor = db.query(TABLE_NAME, columns, null, null, null, null, null);
-        boolean hasRecords = cursor.moveToFirst(); // true, если есть запись, false - если пустая
-        cursor.close();
-        db.close();
-        return hasRecords;
-    }
-    public String getLastUserName() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
-        int nameIndex = cursor.getColumnIndex(COLUMN_NAME);
-        String lastUserName = null;
-        while (cursor.moveToNext()) {
-            lastUserName = cursor.getString(nameIndex);
+        UserDao userDao = db.userDao();
+
+
+        List<String> userNames = Collections.emptyList();
+        try {
+            if (userDao.getAllUsers().size() > 0) {
+                userNames = userDao.getAllUserNames();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        cursor.close();
-        db.close();
-        return lastUserName;
+
+        return userNames;
     }
 
-//
+    public void addDefaultUser() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
+                if (db != null) {
+                    UserDao userDao = db.userDao();
+                    if (userDao != null) {
+                        BdUser user = new BdUser("username", "password", "102", 10, 5, "20", "30", "40", 0, "0", "70", "80", 0, 0, 0, 0);
+                        userDao.addUser(user);
+                    }
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+
+    public void getDefaultUser() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                db = Room.databaseBuilder(context, AppDatabase.class, "Users").build();
+                if (db != null) {
+                    UserDao userDao = db.userDao();
+                    if (userDao != null) {
+                        BdUser user = new BdUser("username", "password", "103", 10, 5, "20", "30", "40", 50, "0", "70", "80", 0, 0, 0, 0);
+                        userDao.addUser(user);
+                    }
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+
+
 // сохранение последнего авторизованного пользователя
-public void saveLastLoggedInUser(String username) {
-    SQLiteDatabase db = getWritableDatabase();
-    ContentValues values = new ContentValues();
-    values.put(COLUMN_LAST_USER_NAME, username);
+    public void saveLastLoggedInUser(String username) {
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
 
-    // получение  времени    TODO - потом производить вычисления с балансов afk ( при авторизации)
-    Calendar calendar = Calendar.getInstance();
-    long logoutTime = calendar.getTimeInMillis();
-    values.put(COLUMN_LAST_LOGOUT_TIME, logoutTime);
+        Calendar calendar = Calendar.getInstance();
+        long logoutTime = calendar.getTimeInMillis();
+        LastUser lastUser = new LastUser(1);
+        lastUser.setUsername(username);
+        lastUser.setLastLogoutTime(logoutTime);
+        dblUser.lastUserDao().saveLastLoggedInUser(lastUser);
+    }
 
-    db.insert(LAST_USER_TABLE_NAME, null, values);
-    db.close();
-}
-
-    //
     public String getLastLoggedInUser() {
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT " + COLUMN_LAST_USER_NAME +
-                " FROM " + LAST_USER_TABLE_NAME +
-                " ORDER BY " + COLUMN_LAST_LOGOUT_TIME + " DESC" +
-                " LIMIT 1";
-        Cursor cursor = db.rawQuery(query, null);
-        String lastUser = null;
-        if (cursor.moveToFirst()) {
-            lastUser = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LAST_USER_NAME));
-        }
-        cursor.close();
-        db.close();
-        return lastUser;
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
+
+
+        return dblUser.lastUserDao().getLastLoggedInUser();
     }
 
-    //
     public long getLastLogoutTime() {
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT " + COLUMN_LAST_LOGOUT_TIME +
-                " FROM " + LAST_USER_TABLE_NAME +
-                " ORDER BY " + COLUMN_LAST_LOGOUT_TIME + " DESC" +
-                " LIMIT 1";
-        Cursor cursor = db.rawQuery(query, null);
-        long lastLogoutTime = 0;
-        if (cursor.moveToFirst()) {
-            lastLogoutTime = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_LAST_LOGOUT_TIME));
-        }
-        cursor.close();
-        db.close();
-        return lastLogoutTime;
+        dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();
+        return dblUser.lastUserDao().getLastLogoutTime();
     }
-
-
 
 
 

@@ -51,6 +51,7 @@ public class UiState {
         this.eggTexture = eggTexture;
     }
     public Fragment getFragmentActive() {
+
         return fragmentActive;
     }
 

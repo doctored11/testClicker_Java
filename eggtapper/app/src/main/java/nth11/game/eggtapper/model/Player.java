@@ -1,5 +1,7 @@
 package nth11.game.eggtapper.model;
 
+import android.util.Log;
+
 public class Player {
     private GameCurrency money;
     private TapTool tool;
@@ -21,6 +23,7 @@ public class Player {
         this.money = money;
     }
     public synchronized  void  addMoney(GameCurrency moneyAdd){ //!synchronized
+        Log.i("добавляем", moneyAdd.getFormattedValue()+" ");
         this.money = this.money.add(moneyAdd);
         this.money.prefixUpdate();
     }

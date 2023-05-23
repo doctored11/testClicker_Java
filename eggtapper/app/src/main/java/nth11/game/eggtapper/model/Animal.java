@@ -53,6 +53,6 @@ public class Animal {
         return strength <= 0;
     }
 
-//    будут еще поля - тест
+
 
 }

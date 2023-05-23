@@ -18,8 +18,6 @@ public class TextureLoader {
 
 
             Bitmap resultBitmap = getRndSkin(context);
-
-            // Делаем необходимые изменения в битмапе
             BitmapEditor.changeWhiteToRandomAsync(resultBitmap, new BitmapEditor.OnCompleteListener() {
                 @Override
                 public void onComplete(Bitmap bitmap) {
@@ -34,17 +32,16 @@ public class TextureLoader {
 
     }
 
-    public static Bitmap overlayBitmaps(Bitmap bitmap1, Bitmap bitmap2) {
-        // Создаем новый битмап с размерами одного из исходных битмапов
+    public static Bitmap overlayBitmaps(Bitmap bitmap1, Bitmap bitmap2) {//!gh
+        //Складываем 2 битмапа
+
+        // создаем новый битмап
         Bitmap resultBitmap = Bitmap.createBitmap(bitmap1.getWidth(), bitmap1.getHeight(), bitmap1.getConfig());
 
-        // Создаем канвас на базе результирующего битмапа
+        // Создаем канвас на  результирующем битмапе
         Canvas canvas = new Canvas(resultBitmap);
-
-        // Рисуем первый битмап на канвасе
+        // рисуем битмапы на канвасе
         canvas.drawBitmap(bitmap1, 0, 0, null);
-
-        // Рисуем второй битмап на канвасе с нужными координатами смещения
         canvas.drawBitmap(bitmap2, 0, 0, null);
 
         return resultBitmap;

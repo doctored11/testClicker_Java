@@ -6,6 +6,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     private double value; // Значение валюты
     private char prefix; // Приставка, означающая единицы измерения
 
+
     // Конструктор
     public GameCurrency(double value, char prefix) {
         this.value = value;
@@ -42,8 +43,8 @@ public class GameCurrency implements Comparable<GameCurrency> {
     }
 
     public  void  prefixUpdate() {
-        Log.e("степень при попытке апдейта: ", this.getDegreeByPrefix() + " число " + this.value + this.getFormattedValue());
-        if (this.value > 999) {
+
+        if (this.value >=Math.pow(10,this.getDegreeByPrefix())) {
             prefixUp();
             return;
         }
@@ -56,32 +57,28 @@ public class GameCurrency implements Comparable<GameCurrency> {
     }
 
     public void prefixUp() {
-        Log.e("prefUp: ", " prefUp!");
-        Log.d("до Up", this.getFormattedValue() + " - _ -" );
-        while (this.value > 999) {
-            this.setPrefix(getPrefixByDegree(getDegreeByPrefix() + 3));
-            Log.e("степеньь_____", this.getDegreeByPrefix() + "  ");
-            Log.e("валуе _____", this.value + "  ");
 
+        while (this.value >=999) {
+            this.setPrefix(getPrefixByDegree(getDegreeByPrefix() + 3));
             int degree = this.getDegreeByPrefix() - 3 < 3 ? 3 : this.getDegreeByPrefix() - 3;
             this.setValue(this.value / (Math.pow(10, (degree))));
-            Log.e("числшоо _____", this.getFormattedValue() + "  ");
+
         }
 
-        Log.d("после  Up", this.getFormattedValue() + " -_-" );
+
+
     }
 
     public void prefixDown() {
-        Log.e("prefDown: ", " prefDown!");
-        //последовательность важна (нв)
-//        this.value *= (Math.pow(10, this.getDegreeByPrefix()));
-//        this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
-
-        if (this.value < 1 && this.value!=0 ) {
+        if ( this.value==0)  { //? внимание
+            this.setValue(0);
+            this.setPrefix(getPrefixByDegree(0));
+        }
+        if (this.value < 1  && this.value!=0  ) { //&& this.value!=0
             int degree = this.getDegreeByPrefix()<=3? 3:this.getDegreeByPrefix()-3 ;
             this.setValue(this.value * (Math.pow(10, (degree))));
             this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
-            Log.i("after pref down : ", this.getFormattedValue() + " ---");
+
             prefixDown();
 
         }
@@ -91,19 +88,13 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
 
     public  GameCurrency add(GameCurrency second) {
-        Log.e("Сложенние ",  "Начало ");
-//        this.prefixUpdate(); //Todo - возможно надо но почему то вызывает ошибку - разобраться !!!
-//        second.prefixUpdate();
-        if (compare(this, second)){
-            Log.e("Сложенние ",  "первое>=");
 
+        if (compare(this, second)){
             int buffDegree = this.getDegreeDifference(second);
             return new GameCurrency(this.value * Math.pow(10, buffDegree) + second.value, second.prefix);
 
-
         }
         else {
-            Log.e("Сложенние ",  "второt<");
             int buffDegree = second.getDegreeDifference(this);
             return new GameCurrency(second.value * Math.pow(10, buffDegree) + this.value, this.prefix);
         }
@@ -111,41 +102,35 @@ public class GameCurrency implements Comparable<GameCurrency> {
     }
 
     public GameCurrency subtract(GameCurrency second) {
-        Log.e("Вычет ",  "Начало вычета");
 
         this.prefixUpdate(); //важное обновление.
         second.prefixUpdate();
-        Log.e("Вычет ",  this.getFormattedValue()+ "  " +second.getFormattedValue());
+
         if (!compare(this, second)) return this;
         if (this.prefix == second.prefix) {
-            Log.e("Вычет ","успешно - одинаковые префиксы ");
             return new GameCurrency((this.value - second.value), this.prefix);
         }
 
         if (this.getDegreeByPrefix() - second.getDegreeByPrefix() <= 9) {
-            Log.e("Вычет ","успешно - разные префиксы <=9 ");
 
-//            return new GameCurrency(this.value * Math.pow(10, this.getDegreeByPrefix()) - second.value, second.prefix);
             int buffDegree = this.getDegreeDifference(second);
                return new GameCurrency(this.value * Math.pow(10, buffDegree) - second.value, second.prefix);
 
 
         }
-        Log.e("Вычет ","успешно - разные префиксы >9 ");
         return this; // если разница супер большая - то не вычетаем - пофиг)
 
     }
 
     public GameCurrency simpleMultiplay(double simpleMultiplayer){
-        Log.e("Умножение :", "возможны ошибки при больших значениях множителя! "+ simpleMultiplayer +", до = " + this.getFormattedValue());
         if(Double.MAX_VALUE/simpleMultiplayer < this.value ){ //? проверить знак < >
             GameCurrency bg = new GameCurrency((Double.MAX_VALUE*0.99), this.prefix);
             bg.prefixUpdate();
             return bg;
         }
+        this.prefixUpdate();
         GameCurrency bg = new GameCurrency(this.getValue()*simpleMultiplayer, this.prefix);
         bg.prefixUpdate();
-        Log.i("после: ", bg.getFormattedValue()+ " ");
         return bg;
 
 
@@ -156,7 +141,6 @@ public class GameCurrency implements Comparable<GameCurrency> {
         int fN = this.getDegreeByPrefix();
         int sN = second.getDegreeByPrefix();
         return fN-sN;
-
     }
 
 
@@ -166,9 +150,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
 
 
-    //  вспомогательныt методs
-
-
+    //  вспомогательные методs
     private int getDegreeByPrefix() {
         switch (this.prefix) {
             case 'T':
@@ -232,7 +214,6 @@ public class GameCurrency implements Comparable<GameCurrency> {
             prefix = Character.toUpperCase(lastChar);
         }
 
-        Log.i("Пaрсинг денег: ",new GameCurrency(value, prefix).getFormattedValue() +"__________________________________________________________________________" );
         return new GameCurrency(value, prefix);
     }
 
@@ -260,4 +241,7 @@ public class GameCurrency implements Comparable<GameCurrency> {
     public int compareTo(GameCurrency second) {
         return 0;
     }
+
+
+
 }

@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class PassUtils {
 
-    private static final String SALT = "my_salt"; // Используем соль для дополнительной защиты
+    private static final String SALT = "ssalt11";
 
     public static String hashPassword(String password) {
         String saltedPassword = SALT + password;

@@ -95,7 +95,7 @@ public class ShopFragment extends Fragment {
             ((TextView) view.findViewById(R.id.text_incubator_first_coast_force)).setText("$ = " + uiState.getIncubatorUpCoastForce().getFormattedValue());
         });
 
-        // Находим кнопки и назначаем обработчики нажатия
+        //
         view.findViewById(R.id.toolUp_profit).setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 onMyButtonClick(view.findViewById(R.id.toolUp_profit));
@@ -105,8 +105,7 @@ public class ShopFragment extends Fragment {
             return false;
         });
 
-//        view.findViewById(R.id.incubatorUp_profit).setOnClickListener(v -> model.onIncUpProf());
-//
+
 
         view.findViewById(R.id.incubatorUp_profit).setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -118,8 +117,7 @@ public class ShopFragment extends Fragment {
         });
 
 //
-//        view.findViewById(R.id.toolUp_force).setOnClickListener(v -> model.onToolUpForce());
-//
+
         view.findViewById(R.id.toolUp_force).setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 onMyButtonClick(view.findViewById(R.id.toolUp_force));
@@ -131,8 +129,8 @@ public class ShopFragment extends Fragment {
 
 
 //
-//        view.findViewById(R.id.incubatorUp_force).setOnClickListener(v -> model.onIncUpForce());
-//
+
+
         view.findViewById(R.id.incubatorUp_force).setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 onMyButtonClick(view.findViewById(R.id.incubatorUp_force));
@@ -141,13 +139,13 @@ public class ShopFragment extends Fragment {
             }
             return false;
         });
-//
+
     }
 
     public void onMyButtonClick(LinearLayout btn) {
         Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.animation1);
         btn.startAnimation(anim);
-        // Добавьте код, который должен выполняться при нажатии на кнопку здесь
+
     }
 
 

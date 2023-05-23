@@ -15,7 +15,7 @@ public class SoundPlayer {
     public void playSound(String fileName) {
         int soundResourceId = context.getResources().getIdentifier(fileName, "raw", context.getPackageName());
         if (soundResourceId == 0) {
-            // Файл звука не найден
+            // Файл не найден
             return;
         }
 
