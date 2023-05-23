@@ -365,20 +365,23 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return player;
     }
 
-    public void saveAll(Context cont) {
+    public synchronized   void saveAll(Context cont) {
+        Log.i("Save","Start");
 
         // Получаем доступ к базе данных
         MyDbHelper dbHelper = new MyDbHelper(cont);
-
+        Log.i("Save","1");
         if (getUsername() == null) return;
-
+        Log.i("Save","2");
 
         dbHelper.getPassword(getUsername(), new PasswordCallback() {    //todo
             @Override
             public void onPasswordReceived(String password) {
+                Log.i("Save","3");
                 User user = new User(getUsername(), password, player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
                 dbHelper.updateUser(user);
-
+                Log.i("Save","3 " +  player.getMoney().getFormattedValue());
+                loadAll(cont);
 
             }
         });
@@ -394,10 +397,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void createBdDefUser(Context context) {
         MyDbHelper dbHelper = new MyDbHelper(context);
-//        dbHelper.addDefaultUser(); //todo
+        dbHelper.addDefaultUser(); //todo
     }
 
-    public void loadAll(Context cont) {
+    public synchronized void loadAll(Context cont) {
+        Log.i("Load","Start");
+        Log.i("Load","1");
 
         MyDbHelper dbHelper = new MyDbHelper(context);
 
@@ -409,24 +414,24 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         if (Username == "default") {
             setUsername(dbHelper.getLastLoggedInUser());
         }
-
+        Log.i("Load","2");
 
 
 
         if (getUsername() == null) return;
 
-
+        Log.i("Load","3");
 
         dbHelper.getUser(getUsername(), new GetUserCallback() {
             @Override
             public void onUserReceived(User user1) {
                 //
-
+                Log.i("Load","4");
                 User user = user1;
                 if (user == null) return;
-
+                Log.i("Load","5");
                 player.setMoney(user.getMoney());
-
+                Log.i("Load","5 " +user.getMoney().getFormattedValue() );
 
 //
                 long lastLogoutTime = dbHelper.getLastLogoutTime();
@@ -439,10 +444,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
                 player.addMoney(afkProfit);
 //
+
+                Log.i("Load","6");
                 TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
                 player.setTool(nt);
                 incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
-
+                Log.i("Load","7");
             }
         });
 

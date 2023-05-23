@@ -1,0 +1,26 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <set>
+            <translate
+                android:duration="200"
+                android:fromYDelta="0%"
+                android:toYDelta="20%" />
+            <alpha
+                android:duration="200"
+                android:fromAlpha="1.0"
+                android:toAlpha="0.7" />
+        </set>
+    </item>
+    <item>
+        <set>
+            <translate
+                android:duration="200"
+                android:fromYDelta="20%"
+                android:toYDelta="0%" />
+            <alpha
+                android:duration="200"
+                android:fromAlpha="0.7"
+                android:toAlpha="1.0" />
+        </set>
+    </item>
+</selector>

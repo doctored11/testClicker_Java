@@ -288,10 +288,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.i("PAUSE","Pause");
         model.saveAll(this);
+
 //        dbHelper = new BDHelper(this);
 
     }
+
 
     @Override
     protected void onResume() {
