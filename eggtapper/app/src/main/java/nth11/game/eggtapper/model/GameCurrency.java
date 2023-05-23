@@ -75,11 +75,11 @@ public class GameCurrency implements Comparable<GameCurrency> {
 
     public void prefixDown() {
         Log.e("prefDown: ", " prefDown!");
-        //последовательность важна (нв)
-//        this.value *= (Math.pow(10, this.getDegreeByPrefix()));
-//        this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));
-
-        if (this.value < 1 && this.value!=0 ) {
+        if ( this.value==0)  { //? внимание
+            this.setValue(0);
+            this.setPrefix(getPrefixByDegree(0));
+        }
+        if (this.value < 1  && this.value!=0  ) { //&& this.value!=0
             int degree = this.getDegreeByPrefix()<=3? 3:this.getDegreeByPrefix()-3 ;
             this.setValue(this.value * (Math.pow(10, (degree))));
             this.setPrefix(getPrefixByDegree(getDegreeByPrefix() - 3));

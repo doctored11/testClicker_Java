@@ -89,12 +89,10 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         createIncubator();
 
-//Log.e("0000","0000");
-//        getSavedAll();
 
         autoTap();
         createEgg(getRandomStrenght());
-        Log.e("random", getRandomStrenght() + "_");
+
     }
 
     public ShopFragment getShopFragment() {
@@ -127,7 +125,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createAnimal() {
-        Log.e("Animal", "Create");
+
         if (!solveAnimalSpawn(999000l)) {
             eggDefender = false;
             return;
@@ -176,12 +174,10 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         if (animal != null && clickEgg.statusChecker()) {
 
-            Log.i("outTap", "_tapOut_" + (animal != null) + " " + clickEgg.statusChecker());
             return;
         }
 
 
-        Log.e("onTap", player.getTool().getProfitability().getFormattedValue() + " " + uiState.getValue().getMoney().getFormattedValue());
         if (context != null && firstStart) {
             firstStart = false;
             textureSet(context);
@@ -189,7 +185,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         if (clickEgg.statusChecker() && animal == null) {
             vibrate(context, 45);
-            Log.i("++++++++++++=onTap", " RESTART( ");
+
             tapRestartScene();
         }
 
@@ -213,11 +209,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         uiState.getValue().setFragmentActive(null);// - для быстрого  закрытия магазина и тд
         uiUpdate(); //
 
-        Log.e("_____________________________________onBirdTap", player.getTool().getProfitability().getFormattedValue() + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! " + uiState.getValue().getMoney().getFormattedValue());
-//        if (context != null && firstStart) {
-//            firstStart = false;
-//            textureSet(context);
-//        }
 
         soundPlayer = new SoundPlayer(context);
         soundPlayer.playSound("duck_quack");
@@ -229,9 +220,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             tapRestartScene();
         }
 
-//        if (!eggDefender) {
-
-//
 
         player.addMoney(player.getTool().getProfitability().simpleMultiplay(10));
 
@@ -277,11 +265,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         GameCurrency coast = incubator.getCoastProfit();
         if (!GameCurrency.compare(player.getMoney(), coast)) return;
 
-        Log.d("onInc count", incubator.getUpCountProf() + " ");
         GameCurrency newProfitCost = (BASE_INCUBATOR_PROFIT_PRICE.simpleMultiplay(Math.pow(BASE_INCUBATOR_PROFIT_MULTIPLAER, incubator.getUpCountProf())));
-//        Log.i("profit do:" , incubator.getProfitability().getFormattedValue() + "$");
         GameCurrency newProfitValue = (incubator.getProfitability().add(new GameCurrency(3, ' ')));
-//        Log.i("profit after:" , newProfitValue.getFormattedValue() + "$");
 
         newProfitCost.prefixUpdate();
         newProfitValue.prefixUpdate();
@@ -318,19 +303,14 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private void updateIncubator(GameCurrency coast, long tapForce, GameCurrency profitability, GameCurrency coastForce, GameCurrency coastProfit, int timer, int forceCountUp, int profCountUp) {
         if (!GameCurrency.compare(player.getMoney(), coast)) return;
         player.spendMoney(coast);
-        Log.e("Incubator count:", incubator.getUpCountForce() + " ");
 
         incubator = new Incubator(tapForce, profitability, coastForce, coastProfit, timer, incubator.getUpCountProf() + profCountUp, incubator.getUpCountForce() + forceCountUp);
-//        uiState.getValue().setFragmentActive(null);
-        Log.i("upInc", incubator.getProfitability().getFormattedValue() + "$ " + incubator.getTapForce() + "F");
 
         uiUpdate();
     }
 
     public void toFragmentChange(Fragment fl) {
-        Log.i("Fragment", "ФрФрФр " + fl);
         MyDbHelper dbHelper = new MyDbHelper(context);
-        Log.e("_________-USERSЫ", dbHelper.getUsers().size() + " _)_)________________))))))))))))_____________");
         if (dbHelper.getRegisteredUserCount() < 1) { // если не зареган то не выпускаем из меню todo - мб ошибка
             Fragment registrFragment = getRegFragment();
             uiState.getValue().setFragmentActive(registrFragment);
@@ -358,7 +338,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public synchronized void textureSet(Context context) {
         if (animal == null) return;
-//        TextureLoader.loadTexture(context, animal.getSprite(), new OnBitmapReadyListener() {
+
         TextureLoader.loadTexture(context, new OnBitmapReadyListener() {
 
             @Override
@@ -368,7 +348,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
                 Log.e("!!!!", "Покрас картинки");
                 animal.setBitmap(bitmap);
                 eggDefender = false;
-                Log.i("защитник ", eggDefender + " ");
+
             }
         });
     }
@@ -386,30 +366,19 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void saveAll(Context cont) {
-        Log.i("++++SAVEALL+++", "________SSAVE______");
+
         // Получаем доступ к базе данных
         MyDbHelper dbHelper = new MyDbHelper(cont);
-        Log.i("Save", "--1");
-//        MyDbHelper dbHelper = new MyDbHelper(getContext());
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
         if (getUsername() == null) return;
-        Log.i("Save", "--2 " + getUsername());
 
-//         public User(String name, String password,
-//
-//         GameCurrency money, long strength,long toolForce,                                     GameCurrency toolProfit, GameCurrency toolUpCoastProfit,GameCurrency toolUpCoastForce,          long incubatorForce, GameCurrency incubatorProfit,GameCurrency incubatorUpCoastprofit, GameCurrency incubatorUpCoastForce, long countTapP, long countTapF, long countIncP, long countIncF ) {
-
-
-//
 
         dbHelper.getPassword(getUsername(), new PasswordCallback() {    //todo
             @Override
             public void onPasswordReceived(String password) {
-                Log.i("__--__--__ PASS",  " ____!!!!!!!!!!!!!!!PASS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                Log.i("__--__--__ PASS", password + " ____!!!!!!!!!!!!!!!PASS!!!!");
                 User user = new User(getUsername(), password, player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
                 dbHelper.updateUser(user);
-                Log.i("Save", "--3 " + player.getMoney().getFormattedValue());
+
 
             }
         });
@@ -419,7 +388,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         User user = new User(getUsername(), "", player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
         dbHelper.updateUser(user);
-        Log.i("Save", "--3 " + player.getMoney().getFormattedValue());
+
         dbHelper.saveLastLoggedInUser(getUsername());
     }
 
@@ -430,13 +399,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void loadAll(Context cont) {
 
-
-        Log.i("LOAD ", "++++++++LOAD+++++++++++++++++++++++++++++");
-
-        //ЕСЛИ ТАБЛИЦА ПУСТАЯ model.toFragmentChange(registrFragment);
-//"default"
-
-//        MyDbHelper dbHelper = new MyDbHelper();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         if (dbHelper.getUsers().size() < 1) { //todo - мб ошибка
@@ -450,30 +412,32 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
 
-        Log.i("LOAD ", "+2");
+
         if (getUsername() == null) return;
-        Log.i("LOAD ", "+3 " + getUsername());
+
 
 
         dbHelper.getUser(getUsername(), new GetUserCallback() {
             @Override
             public void onUserReceived(User user1) {
                 //
-                Log.i("LOAD ", "+3.5 " + user1.getMoney().getFormattedValue());
+
                 User user = user1;
                 if (user == null) return;
-                Log.i("LOAD ", "+4 " + user.getMoney().getFormattedValue());
-                Log.i("Восстановление ", "+++++++++++++++++++++++++++++++++++++");
-                Log.i("++++", "+++++++++++++++++++++++++++++++++++++");
+
                 player.setMoney(user.getMoney());
-                Log.i("Восстановление ", user.getMoney().getFormattedValue() + "");
+
 
 //
-//                long lastLogoutTime = dbHelper.getLastLogoutTime();
-//                int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
-//                GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
-//
-//                player.addMoney(afkProfit);
+                long lastLogoutTime = dbHelper.getLastLogoutTime();
+                Log.i("Времмя выхода", lastLogoutTime + " ");
+                int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
+                Log.i("разница во времени (мин)", minutesSinceLogout + " ");
+                GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
+                Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
+                afkProfit.prefixUpdate();
+                Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
+                player.addMoney(afkProfit);
 //
                 TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
                 player.setTool(nt);
@@ -526,12 +490,12 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         long buffer = (long) eggStrength / 20000;
         //TODO сделать зависимость от прочности
         boolean boolbuf = (random.nextInt(101) < 42);
-        Log.e("solve", buffer + " " + boolbuf);
+
         return boolbuf;
     }
 
     public void tapRestartScene() {
-        Log.i("restart", "__restart");
+
 
         animal = null;
         eggDefender = true;
@@ -541,9 +505,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         if (context != null) {
             textureSet(context);
         }
-        Log.i("restart", "---до начисление монет ---");
+
         player.addMoney(player.getTool().getProfitability().simpleMultiplay(100));//временное решение
-        Log.i("restart", "---монеты добавлены---");
+
 
         createEgg(getRandomStrenght());
 
@@ -552,29 +516,28 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     private class AutoTapTask implements Runnable {
         @Override
         public void run() {
-            Log.i("Autotap", "___-Autotap!");
+
             if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
-                Log.i("++++++++++++=onAutoTap", " RESTART( ");
                 tapRestartScene();
             }
 
             if (clickEgg != null && !eggDefender) {
-                Log.i("++++++++++++=onAutoTap", " 1 ");
+
                 clickEgg.reduceStrength(incubator.getTapForce());
                 player.addMoney(incubator.getProfitability());
             }
             if (player != null && (animal == null || !clickEgg.statusChecker())) {
-                Log.i("++++++++++++=onAutoTap", " 2 ");
+
                 player.addMoney(incubator.getProfitability());
             }
             if (player != null && (animal != null && clickEgg.statusChecker())) {
-                Log.i("++++++++++++=onAutoTap", " 3 ");
+
                 player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
                 animal.reduceStrength(0.05);
             }
 
             if (animal != null && animal.statusChecker()) {
-                Log.i("++++++++++++=onAutoTap", " 4 ");
+
                 tapRestartScene();
             }
             uiUpdateAuto();
@@ -598,7 +561,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public static long getRandomNumber(long lowerBound, long upperBound) {
         Random random = new Random();
-        Log.i("random", Math.random() + " " + Math.random() + " " + Math.random() + " " + Math.random() + " " + Math.random() + " " + Math.random());
         return (long) (Math.random() * (upperBound - lowerBound + 1) + lowerBound);
 //        Math.random() * (max - min + 1) + min)
     }

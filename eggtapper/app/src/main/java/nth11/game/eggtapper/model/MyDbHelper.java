@@ -183,8 +183,7 @@ public class MyDbHelper {
         }
 
         UserDao userDao = db.userDao();
-//        BdUser user = new BdUser("username", "password", "101", 10, 5, "20", "30", "40", 0, "0", "70", "80", 0, 0, 0, 0);
-//        userDao.addUser(user);
+
 
         List<String> userNames = Collections.emptyList();
         try {
@@ -234,7 +233,7 @@ public class MyDbHelper {
     }
 
 
-    ////
+
 // сохранение последнего авторизованного пользователя
     public void saveLastLoggedInUser(String username) {
         dblUser = Room.databaseBuilder(context, AppDatabaseLast.class, "LastUser").allowMainThreadQueries().build();

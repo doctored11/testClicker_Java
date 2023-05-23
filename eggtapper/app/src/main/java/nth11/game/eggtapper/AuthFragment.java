@@ -63,7 +63,7 @@ public class AuthFragment extends Fragment {
         // Перебираем все записи и выводим их на экран
         int i = 0;
         List<String> names = dbHelper.getUsers();
-        Log.i("NAMES_NAMES", names + " _________________)___________");
+
         while (i < names.size()) {
             String name = names.get(i);
             LinearLayout userLayout = new LinearLayout(getContext());
@@ -134,8 +134,8 @@ public class AuthFragment extends Fragment {
                     public void onPasswordReceived(String password) {
 
                         String passwordFromDb = password;
-                        Log.i("AUTH_PASS BD_________", passwordFromDb+" !!!!!!!!!! Name "+ name);
-                        Log.i("AUTH_PASS INPUT", hashedInpPassword+" !!!!!!!!!!");
+
+
 
 
                         if (passwordFromDb != null && passwordFromDb.equals(hashedInpPassword)) {

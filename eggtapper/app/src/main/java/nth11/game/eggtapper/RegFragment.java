@@ -72,9 +72,7 @@ public class RegFragment extends Fragment {
                     MyDbHelper dbHelper = new MyDbHelper(getContext());
 
 
-                    // Вставляем новую запись в таблицу
-
-
+                    // втавляем запись в таблицу
                     if (!dbHelper.isUsernameExists(name)) {
                         User user = new User(name,hashedPassword);
                             dbHelper.addUser(user);

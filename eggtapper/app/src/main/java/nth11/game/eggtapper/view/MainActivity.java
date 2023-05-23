@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 animal.setImageBitmap(null);
             }
-            Log.i("!!!!!!!!!!!!!!!!!!!!!!!!","!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
             setFragment(uiState.getFragmentActive());
         });
 
@@ -123,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     Fragment fl = model.getUiState().getValue().getFragmentActive();
-                    Log.i("CLICK", (fl == null) + " ---");
 
                     if (fl != null) {
                         fl = null;
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     Fragment fl = model.getUiState().getValue().getFragmentActive();
-                    Log.i("CLICK", (fl == null) + " ---");
+
 
                     if (fl != null) {
                         fl = null;
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         });
         settingBtn.setOnClickListener(view -> {
             Fragment fl = model.getUiState().getValue().getFragmentActive();
-            Log.i("CLICK", (fl == null) + " ---");
+
 
             if (fl != null) {
                 fl = null;
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        // обработка касаний( мультитач) ну это же взаимодействие с пользователем - нормально во view наверное
+        // обработка касаний( мультитач)
         egg.setOnTouchListener((view, motionEvent) -> {
             int pointerCount = motionEvent.getPointerCount();
             for (int i = 0; i < pointerCount; i++) {
@@ -190,10 +189,10 @@ public class MainActivity extends AppCompatActivity {
                     case MotionEvent.ACTION_POINTER_DOWN:
                         // нажатие пальца
                         long now = System.currentTimeMillis();
-                        if (now - lastClickTime >= 10) { // Проверка времени между кликами
+                        if (now - lastClickTime >= 10) { // проверка времени между кликами
 
                             if (model.onAnimalTap()) {
-                                Log.i("ANIMAL TAP","_______ANIMAL TAP Нажал_______");
+                                //нажал
                                 viewAnimation(animal, true, ANIMAL_SCALE);
                                break;
                             } else {
@@ -206,10 +205,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_POINTER_UP:
-                        // отпускание пальца
+
                         if (model.onAnimalTap()) {
-                            Log.i("ANIMAL TAP","_______ANIMAL TAP Отпустил_______");
-                            viewAnimation(animal, false, ANIMAL_SCALE); // мб удалить
+                            // отпустил палец
+                            viewAnimation(animal, false, ANIMAL_SCALE);
                             break;
                         }
                         viewAnimation(view, false, EGG_SCALE);
@@ -225,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //это логика только отображения - оставляем во View?
+    //это логика только отображения\
     Fragment lastFragment;
 
     private  void setFragment(Fragment flag) {
@@ -270,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                 .translationY(translationY)
                 .setDuration(0)
                 .withEndAction(() -> {
-                    // Обратная анимация, которая возвращает яйцо в исходное положение
+                    // Обратная анимация -возвращает "картинку" в исходное положение
                     view.animate()
                             .scaleX(1f * size)
                             .scaleY(1f * size)
