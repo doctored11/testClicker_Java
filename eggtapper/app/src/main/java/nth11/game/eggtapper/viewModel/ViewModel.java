@@ -79,19 +79,19 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     public ViewModel() {
-
+        long rndStrength = getRandomStrenght();
 
         createPlayer();
 
-        createAnimal();
+        createAnimal(rndStrength);
 
         createFragments();
 
         createIncubator();
 
-
         autoTap();
-        createEgg(getRandomStrenght());
+
+        createEgg(rndStrength);
 
     }
 
@@ -124,9 +124,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         if (context != null) loadAll(context);
     }
 
-    public void createAnimal() {
+    public void createAnimal(long strength) {
 
-        if (!solveAnimalSpawn(999000l)) {
+        if (!solveAnimalSpawn(strength)) {
             eggDefender = false;
             return;
         }
@@ -283,7 +283,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         long newForceValue = (incubator.getTapForce() + 1);
         newForceCost.prefixUpdate();
 
-
         updateIncubator(coast, newForceValue, incubator.getProfitability(), newForceCost, incubator.getCoastProfit(), incubator.getTimer(), 1, 0);
     }
 
@@ -310,6 +309,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void toFragmentChange(Fragment fl) {
+        saveAll(context);//todo !!!
         MyDbHelper dbHelper = new MyDbHelper(context);
         if (dbHelper.getRegisteredUserCount() < 1) { // если не зареган то не выпускаем из меню todo - мб ошибка
             Fragment registrFragment = getRegFragment();
@@ -365,23 +365,29 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return player;
     }
 
-    public synchronized   void saveAll(Context cont) {
-        Log.i("Save","Start");
+    public synchronized void saveAll(Context cont) {
+        Log.i("Save", "Start");
 
+
+        if(cont == null) return;
         // Получаем доступ к базе данных
         MyDbHelper dbHelper = new MyDbHelper(cont);
-        Log.i("Save","1");
-        if (getUsername() == null) return;
-        Log.i("Save","2");
+
+
+        Log.i("Save", "1");
+        if (dbHelper.getUsers().size() < 1)return;
+        if (getUsername() == null ) return;
+        Log.i("Save", "2");
 
         dbHelper.getPassword(getUsername(), new PasswordCallback() {    //todo
             @Override
             public void onPasswordReceived(String password) {
-                Log.i("Save","3");
+                Log.i("Save", "3");
                 User user = new User(getUsername(), password, player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
                 dbHelper.updateUser(user);
-                Log.i("Save","3 " +  player.getMoney().getFormattedValue());
-                loadAll(cont);
+                Log.i("Save", "3 " + player.getMoney().getFormattedValue());
+                Log.i("Save", "4");
+                dbHelper.saveLastLoggedInUser(getUsername());
 
             }
         });
@@ -389,75 +395,67 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //
 
 
-        User user = new User(getUsername(), "", player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
-        dbHelper.updateUser(user);
-
-        dbHelper.saveLastLoggedInUser(getUsername());
     }
 
     public void createBdDefUser(Context context) {
         MyDbHelper dbHelper = new MyDbHelper(context);
-        dbHelper.addDefaultUser(); //todo
+//        dbHelper.addDefaultUser(); //todo
     }
 
-    public synchronized void loadAll(Context cont) {
-        Log.i("Load","Start");
-        Log.i("Load","1");
+    public void loadAll(Context cont) {
+        Log.i("Load", "Start");
+        Log.i("Load", "1");
 
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         if (dbHelper.getUsers().size() < 1) { //todo - мб ошибка
             Fragment registrFragment = getRegFragment();
             toFragmentChange(registrFragment);
+            return;
         }
 
         if (Username == "default") {
             setUsername(dbHelper.getLastLoggedInUser());
         }
-        Log.i("Load","2");
-
+        Log.i("Load", "2");
 
 
         if (getUsername() == null) return;
 
-        Log.i("Load","3");
+        Log.i("Load", "3");
 
-        dbHelper.getUser(getUsername(), new GetUserCallback() {
-            @Override
-            public void onUserReceived(User user1) {
-                //
-                Log.i("Load","4");
-                User user = user1;
-                if (user == null) return;
-                Log.i("Load","5");
-                player.setMoney(user.getMoney());
-                Log.i("Load","5 " +user.getMoney().getFormattedValue() );
 
+//        ---
+        User user = dbHelper.getUserForce(Username);
+
+        if (user == null) return;
+        Log.i("Load", "5");
+        player.setMoney(user.getMoney());
+        Log.i("Load", "5 " + user.getMoney().getFormattedValue());
 //
-                long lastLogoutTime = dbHelper.getLastLogoutTime();
-                Log.i("Времмя выхода", lastLogoutTime + " ");
-                int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
-                Log.i("разница во времени (мин)", minutesSinceLogout + " ");
-                GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
-                Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
-                afkProfit.prefixUpdate();
-                Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
-                player.addMoney(afkProfit);
+        long lastLogoutTime = dbHelper.getLastLogoutTime();
+        Log.i("Времмя выхода", lastLogoutTime + " ");
+        int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
+        Log.i("разница во времени (мин)", minutesSinceLogout + " ");
+        GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
+        Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
+        afkProfit.prefixUpdate();
+        Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
+        player.addMoney(afkProfit);
 //
 
-                Log.i("Load","6");
-                TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
-                player.setTool(nt);
-                incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
-                Log.i("Load","7");
-            }
-        });
+        Log.i("Load", "6");
+        TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
+        player.setTool(nt);
+        incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
+        Log.i("Load", "7");
 
+//
 
 //
 
 
-    }
+}
 
 
     public int getMinutesSinceLastLogout(long lastLogoutTime) {
@@ -493,82 +491,89 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     public boolean solveAnimalSpawn(long eggStrength) {
+        if (eggStrength<=0) eggStrength=1000;
         Random random = new Random();
-        long buffer = (long) eggStrength / 20000;
+        long buffer = (eggStrength)/MAX_EGG_STRENGTH*100;
+        if (buffer>100) buffer = 100;
         //TODO сделать зависимость от прочности
-        boolean boolbuf = (random.nextInt(101) < 42);
+        if (random.nextInt((int)buffer+1) > 35) return true;
+        if (random.nextInt(100) > 95) return true; //оставим 5% шанс независимо от прочности
 
-        return boolbuf;
+        return false;
     }
 
     public void tapRestartScene() {
+
+
+
+
+        player.addMoney(player.getTool().getProfitability().simpleMultiplay(100));//временное решение
+
+        RestartScene();
+
+
+    }
+    public void RestartScene() {
 
 
         animal = null;
         eggDefender = true;
 
 
-        createAnimal();
+        createAnimal(getRandomStrenght());
         if (context != null) {
             textureSet(context);
         }
-
-        player.addMoney(player.getTool().getProfitability().simpleMultiplay(100));//временное решение
-
 
         createEgg(getRandomStrenght());
 
     }
 
-    private class AutoTapTask implements Runnable {
-        @Override
-        public void run() {
 
-            if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
-                tapRestartScene();
-            }
+private class AutoTapTask implements Runnable {
+    @Override
+    public void run() {
 
-            if (clickEgg != null && !eggDefender) {
-
-                clickEgg.reduceStrength(incubator.getTapForce());
-                player.addMoney(incubator.getProfitability());
-            }
-            if (player != null && (animal == null || !clickEgg.statusChecker())) {
-
-                player.addMoney(incubator.getProfitability());
-            }
-            if (player != null && (animal != null && clickEgg.statusChecker())) {
-
-                player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
-                animal.reduceStrength(0.05);
-            }
-
-            if (animal != null && animal.statusChecker()) {
-
-                tapRestartScene();
-            }
-            uiUpdateAuto();
+        if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
+            tapRestartScene();
         }
+
+        if (clickEgg != null && !eggDefender) {
+
+            clickEgg.reduceStrength(incubator.getTapForce());
+            player.addMoney(incubator.getProfitability());
+        }
+        if (player != null && (animal == null || !clickEgg.statusChecker())) {
+
+            player.addMoney(incubator.getProfitability());
+        }
+        if (player != null && (animal != null && clickEgg.statusChecker())) {
+
+            player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
+            animal.reduceStrength(0.05);
+        }
+
+        if (animal != null && animal.statusChecker()) {
+
+            tapRestartScene();
+        }
+        uiUpdateAuto();
     }
 
+}
+
     public long getRandomStrenght() {
-//        Log.e("сложность", player.getTool().getTapForce() + incubator.getTapForce() + "_ _");
-//        if (player.getTool().getTapForce() + incubator.getTapForce() < 10) {
-//            long max = (long) 10_000l;
-//            return getRandomNumber(MIN_EGG_STRENGTH, max);
-//        }
-//        if (player.getTool().getTapForce() + incubator.getTapForce() < 250) {
-//            long max = (long) Math.pow(MAX_EGG_STRENGTH, 1 / ((MAX_EGG_STRENGTH * 0.1 - player.getTool().getTapForce())));
-//            return getRandomNumber(MIN_EGG_STRENGTH, 200_000l);
-//        }
-//        return getRandomNumber(MIN_EGG_STRENGTH, MAX_EGG_STRENGTH); //Todo - вернуть это на "релизе"
-        return getRandomNumber(1_000, 3_000);
+//
+        long max = (long) ((long) uiState.getValue().getToolForce() * 1500L);
+        if (max>MAX_EGG_STRENGTH ||(long) uiState.getValue().getToolForce()>MAX_EGG_STRENGTH) max = MAX_EGG_STRENGTH;
+        return getRandomNumber(1_000L, max);
+//        return 1000L;
 
     }
 
     public static long getRandomNumber(long lowerBound, long upperBound) {
         Random random = new Random();
-        return (long) (Math.random() * (upperBound - lowerBound + 1) + lowerBound);
+        return (long) (Math.random() * (upperBound - lowerBound + 1L) + lowerBound);
 //        Math.random() * (max - min + 1) + min)
     }
 

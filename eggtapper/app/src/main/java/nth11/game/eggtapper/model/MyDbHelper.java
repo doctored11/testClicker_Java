@@ -141,7 +141,17 @@ public class MyDbHelper {
         return TABLE_NAME;
     }
 
+    public User getUserForce(String username) {
+        db = Room.databaseBuilder(context, AppDatabase.class, "Users").allowMainThreadQueries().build();
+        BdUser bdUser = db.userDao().getUser(username);
+        User user = new User(bdUser.getName(), bdUser.getPassword(), GameCurrency.parse(bdUser.getMoney()), bdUser.getStrength(),
+                bdUser.getToolForce(), GameCurrency.parse(bdUser.getToolProfit()), GameCurrency.parse(bdUser.getToolUpCoastProfit()),
+                GameCurrency.parse(bdUser.getToolUpCoastForce()), bdUser.getIncubatorForce(), GameCurrency.parse(bdUser.getIncubatorProfit()),
+                GameCurrency.parse(bdUser.getIncubatorUpCoastProfit()), GameCurrency.parse(bdUser.getIncubatorUpCoastForce()),
+                bdUser.getCountTapP(), bdUser.getCountTapF(), bdUser.getCountIncP(), bdUser.getCountIncF());
 
+        return user;
+    }
     public void getUser(String username, GetUserCallback callback) {
         @SuppressLint("StaticFieldLeak") AsyncTask<String, Void, User> getUserTask = new AsyncTask<String, Void, User>() {
             @Override

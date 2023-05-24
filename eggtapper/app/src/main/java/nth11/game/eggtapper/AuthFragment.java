@@ -136,13 +136,12 @@ public class AuthFragment extends Fragment {
                         String passwordFromDb = password;
 
 
-
-
                         if (passwordFromDb != null && passwordFromDb.equals(hashedInpPassword)) {
                             // Пароль верный, выполнить авторизацию
                             model.setUsername(name);
                             Toast.makeText(getContext(), "Password is correct", Toast.LENGTH_SHORT).show();
                             model.loadAll(getContext());
+                            model.RestartScene();
 
                         } else {
                             // Пароль неверный, показать сообщение об ошибке

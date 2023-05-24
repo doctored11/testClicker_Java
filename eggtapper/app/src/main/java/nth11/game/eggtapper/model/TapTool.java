@@ -20,7 +20,7 @@ public class TapTool {
     }
 
     public long getTapForce() {
-        return tapForce;
+        return (long) tapForce;
     }
 
     public GameCurrency getCoastForce() {
