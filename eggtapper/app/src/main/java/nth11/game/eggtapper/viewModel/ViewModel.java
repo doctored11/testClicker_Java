@@ -283,7 +283,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         long newForceValue = (incubator.getTapForce() + 1);
         newForceCost.prefixUpdate();
 
-
         updateIncubator(coast, newForceValue, incubator.getProfitability(), newForceCost, incubator.getCoastProfit(), incubator.getTimer(), 1, 0);
     }
 
@@ -485,17 +484,29 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     public boolean solveAnimalSpawn(long eggStrength) {
+        if (eggStrength<=0) eggStrength=1000;
         Random random = new Random();
         long buffer = (eggStrength*100)/MAX_EGG_STRENGTH*100;
         if (buffer>100) buffer = 100;
         //TODO сделать зависимость от прочности
-        if (random.nextInt((int)buffer) > 35) return true;
+        if (random.nextInt((int)buffer+1) > 35) return true;
         if (random.nextInt(100) > 95) return true; //оставим 5% шанс независимо от прочности
 
         return false;
     }
 
     public void tapRestartScene() {
+
+
+
+
+        player.addMoney(player.getTool().getProfitability().simpleMultiplay(100));//временное решение
+
+        RestartScene();
+
+
+    }
+    public void RestartScene() {
 
 
         animal = null;
@@ -507,12 +518,10 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
             textureSet(context);
         }
 
-        player.addMoney(player.getTool().getProfitability().simpleMultiplay(100));//временное решение
-
-
         createEgg(getRandomStrenght());
 
     }
+
 
 private class AutoTapTask implements Runnable {
     @Override
