@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this);
 
         model.createBdDefUser(this);
-        model.loadAll(this);
+
 
 
 //        Log.e("Тест Валют: " , money3.getFormattedValue() + " ");
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewAria = findViewById(R.id.mainLayout);
 
+        model.loadAll(this);
 
         //Подписка на изменения uiState из viewModel
         model.getUiState().observe(this, uiState -> {

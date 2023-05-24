@@ -80,7 +80,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public ViewModel() {
 
-
         createPlayer();
 
         createAnimal();
@@ -365,22 +364,23 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         return player;
     }
 
-    public synchronized   void saveAll(Context cont) {
-        Log.i("Save","Start");
+    public synchronized void saveAll(Context cont) {
+        Log.i("Save", "Start");
 
         // Получаем доступ к базе данных
         MyDbHelper dbHelper = new MyDbHelper(cont);
-        Log.i("Save","1");
+        Log.i("Save", "1");
         if (getUsername() == null) return;
-        Log.i("Save","2");
+        Log.i("Save", "2");
 
         dbHelper.getPassword(getUsername(), new PasswordCallback() {    //todo
             @Override
             public void onPasswordReceived(String password) {
-                Log.i("Save","3");
+                Log.i("Save", "3");
                 User user = new User(getUsername(), password, player.getMoney(), clickEgg.getStrenght(), player.getTool().getTapForce(), player.getTool().getProfitability(), player.getTool().getCoastProfit(), player.getTool().getCoastForce(), incubator.getTapForce(), incubator.getProfitability(), incubator.getCoastProfit(), incubator.getCoastForce(), player.getTool().getUpCountProf(), player.getTool().getUpCountForce(), incubator.getUpCountProf(), incubator.getUpCountForce()); //todo
                 dbHelper.updateUser(user);
-                Log.i("Save","3 " +  player.getMoney().getFormattedValue());
+                Log.i("Save", "3 " + player.getMoney().getFormattedValue());
+                Log.i("Save", "4");
                 dbHelper.saveLastLoggedInUser(getUsername());
 
             }
@@ -389,7 +389,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //
 
 
-//        loadAll(cont);
     }
 
     public void createBdDefUser(Context context) {
@@ -397,9 +396,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         dbHelper.addDefaultUser(); //todo
     }
 
-    public synchronized void loadAll(Context cont) {
-        Log.i("Load","Start");
-        Log.i("Load","1");
+    public void loadAll(Context cont) {
+        Log.i("Load", "Start");
+        Log.i("Load", "1");
 
         MyDbHelper dbHelper = new MyDbHelper(context);
 
@@ -411,50 +410,79 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         if (Username == "default") {
             setUsername(dbHelper.getLastLoggedInUser());
         }
-        Log.i("Load","2");
-
+        Log.i("Load", "2");
 
 
         if (getUsername() == null) return;
 
-        Log.i("Load","3");
+        Log.i("Load", "3");
 
-        dbHelper.getUser(getUsername(), new GetUserCallback() {
-            @Override
-            public void onUserReceived(User user1) {
-                //
-                Log.i("Load","4");
-                User user = user1;
-                if (user == null) return;
-                Log.i("Load","5");
-                player.setMoney(user.getMoney());
-                Log.i("Load","5 " +user.getMoney().getFormattedValue() );
 
+//        ---
+        User user = dbHelper.getUserForce(Username);
+
+        if (user == null) return;
+        Log.i("Load", "5");
+        player.setMoney(user.getMoney());
+        Log.i("Load", "5 " + user.getMoney().getFormattedValue());
 //
-                long lastLogoutTime = dbHelper.getLastLogoutTime();
-                Log.i("Времмя выхода", lastLogoutTime + " ");
-                int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
-                Log.i("разница во времени (мин)", minutesSinceLogout + " ");
-                GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
-                Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
-                afkProfit.prefixUpdate();
-                Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
-                player.addMoney(afkProfit);
+        long lastLogoutTime = dbHelper.getLastLogoutTime();
+        Log.i("Времмя выхода", lastLogoutTime + " ");
+        int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
+        Log.i("разница во времени (мин)", minutesSinceLogout + " ");
+        GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
+        Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
+        afkProfit.prefixUpdate();
+        Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
+        player.addMoney(afkProfit);
 //
 
-                Log.i("Load","6");
-                TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
-                player.setTool(nt);
-                incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
-                Log.i("Load","7");
-            }
-        });
-
+        Log.i("Load", "6");
+        TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
+        player.setTool(nt);
+        incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
+        Log.i("Load", "7");
 
 //
 
 
-    }
+//        dbHelper.getUser(getUsername(), new GetUserCallback() {
+////            @Override
+//            public synchronized void  onUserReceived(User user1) {
+//                //
+//                dbHelper.getUser(Username,);
+//                Log.i("Load","4");
+//                User user = user1;
+//                if (user == null) return;
+//                Log.i("Load","5");
+//                player.setMoney(user.getMoney());
+//                Log.i("Load","5 " +user.getMoney().getFormattedValue() );
+////
+//                long lastLogoutTime = dbHelper.getLastLogoutTime();
+//                Log.i("Времмя выхода", lastLogoutTime + " ");
+//                int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
+//                Log.i("разница во времени (мин)", minutesSinceLogout + " ");
+//                GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
+//                Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
+//                afkProfit.prefixUpdate();
+//                Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
+//                player.addMoney(afkProfit);
+////
+//
+//                Log.i("Load","6");
+//                TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
+//                player.setTool(nt);
+//                incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
+//                Log.i("Load","7");
+//
+//            }
+//    });
+
+
+//
+
+
+}
 
 
     public int getMinutesSinceLastLogout(long lastLogoutTime) {
@@ -517,36 +545,37 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     }
 
-    private class AutoTapTask implements Runnable {
-        @Override
-        public void run() {
+private class AutoTapTask implements Runnable {
+    @Override
+    public void run() {
 
-            if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
-                tapRestartScene();
-            }
-
-            if (clickEgg != null && !eggDefender) {
-
-                clickEgg.reduceStrength(incubator.getTapForce());
-                player.addMoney(incubator.getProfitability());
-            }
-            if (player != null && (animal == null || !clickEgg.statusChecker())) {
-
-                player.addMoney(incubator.getProfitability());
-            }
-            if (player != null && (animal != null && clickEgg.statusChecker())) {
-
-                player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
-                animal.reduceStrength(0.05);
-            }
-
-            if (animal != null && animal.statusChecker()) {
-
-                tapRestartScene();
-            }
-            uiUpdateAuto();
+        if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
+            tapRestartScene();
         }
+
+        if (clickEgg != null && !eggDefender) {
+
+            clickEgg.reduceStrength(incubator.getTapForce());
+            player.addMoney(incubator.getProfitability());
+        }
+        if (player != null && (animal == null || !clickEgg.statusChecker())) {
+
+            player.addMoney(incubator.getProfitability());
+        }
+        if (player != null && (animal != null && clickEgg.statusChecker())) {
+
+            player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
+            animal.reduceStrength(0.05);
+        }
+
+        if (animal != null && animal.statusChecker()) {
+
+            tapRestartScene();
+        }
+        uiUpdateAuto();
     }
+
+}
 
     public long getRandomStrenght() {
 //        Log.e("сложность", player.getTool().getTapForce() + incubator.getTapForce() + "_ _");
