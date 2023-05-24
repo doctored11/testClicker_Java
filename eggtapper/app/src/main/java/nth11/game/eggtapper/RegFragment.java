@@ -50,7 +50,7 @@ public class RegFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
-        model.saveAll(getContext());
+
         nameEditText = view.findViewById(R.id.editTextTextPersonName);
         passwordEditText = view.findViewById(R.id.editTextTextPassword);
         registerButton = view.findViewById(R.id.button);

@@ -89,8 +89,8 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
         createIncubator();
 
-
         autoTap();
+
         createEgg(rndStrength);
 
     }
@@ -309,6 +309,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void toFragmentChange(Fragment fl) {
+        saveAll(context);//todo !!!
         MyDbHelper dbHelper = new MyDbHelper(context);
         if (dbHelper.getRegisteredUserCount() < 1) { // если не зареган то не выпускаем из меню todo - мб ошибка
             Fragment registrFragment = getRegFragment();
@@ -367,10 +368,15 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public synchronized void saveAll(Context cont) {
         Log.i("Save", "Start");
 
+
+        if(cont == null) return;
         // Получаем доступ к базе данных
         MyDbHelper dbHelper = new MyDbHelper(cont);
+
+
         Log.i("Save", "1");
-        if (getUsername() == null) return;
+        if (dbHelper.getUsers().size() < 1)return;
+        if (getUsername() == null ) return;
         Log.i("Save", "2");
 
         dbHelper.getPassword(getUsername(), new PasswordCallback() {    //todo
@@ -393,7 +399,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public void createBdDefUser(Context context) {
         MyDbHelper dbHelper = new MyDbHelper(context);
-        dbHelper.addDefaultUser(); //todo
+//        dbHelper.addDefaultUser(); //todo
     }
 
     public void loadAll(Context cont) {
@@ -405,6 +411,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         if (dbHelper.getUsers().size() < 1) { //todo - мб ошибка
             Fragment registrFragment = getRegFragment();
             toFragmentChange(registrFragment);
+            return;
         }
 
         if (Username == "default") {
