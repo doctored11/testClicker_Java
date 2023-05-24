@@ -493,7 +493,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     public boolean solveAnimalSpawn(long eggStrength) {
         if (eggStrength<=0) eggStrength=1000;
         Random random = new Random();
-        long buffer = (eggStrength*100)/MAX_EGG_STRENGTH*100;
+        long buffer = (eggStrength)/MAX_EGG_STRENGTH*100;
         if (buffer>100) buffer = 100;
         //TODO сделать зависимость от прочности
         if (random.nextInt((int)buffer+1) > 35) return true;
