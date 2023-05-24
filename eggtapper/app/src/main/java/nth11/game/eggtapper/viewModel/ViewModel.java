@@ -79,10 +79,11 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     public ViewModel() {
+        long rndStrength = getRandomStrenght();
 
         createPlayer();
 
-        createAnimal();
+        createAnimal(rndStrength);
 
         createFragments();
 
@@ -90,7 +91,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
         autoTap();
-        createEgg(getRandomStrenght());
+        createEgg(rndStrength);
 
     }
 
@@ -123,9 +124,9 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         if (context != null) loadAll(context);
     }
 
-    public void createAnimal() {
+    public void createAnimal(long strength) {
 
-        if (!solveAnimalSpawn(999000l)) {
+        if (!solveAnimalSpawn(strength)) {
             eggDefender = false;
             return;
         }
@@ -445,40 +446,6 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 //
 
-
-//        dbHelper.getUser(getUsername(), new GetUserCallback() {
-////            @Override
-//            public synchronized void  onUserReceived(User user1) {
-//                //
-//                dbHelper.getUser(Username,);
-//                Log.i("Load","4");
-//                User user = user1;
-//                if (user == null) return;
-//                Log.i("Load","5");
-//                player.setMoney(user.getMoney());
-//                Log.i("Load","5 " +user.getMoney().getFormattedValue() );
-////
-//                long lastLogoutTime = dbHelper.getLastLogoutTime();
-//                Log.i("Времмя выхода", lastLogoutTime + " ");
-//                int minutesSinceLogout = getMinutesSinceLastLogout(lastLogoutTime);
-//                Log.i("разница во времени (мин)", minutesSinceLogout + " ");
-//                GameCurrency afkProfit = (user.getIncubatorProfit().simpleMultiplay(120)).simpleMultiplay(minutesSinceLogout); //получаем профит в минуту и *minutesSinceLogout
-//                Log.i("Прибыльность инкубатора", user.getIncubatorProfit().getFormattedValue() + " ");
-//                afkProfit.prefixUpdate();
-//                Log.e("afkProfit", afkProfit.getFormattedValue() + " ");
-//                player.addMoney(afkProfit);
-////
-//
-//                Log.i("Load","6");
-//                TapTool nt = new TapTool(user.getToolForce(), user.getToolProfit(), user.getToolUpCoastForce(), user.getToolUpCoastProfit(), user.getCountTapP(), user.getCountTapF());
-//                player.setTool(nt);
-//                incubator = new Incubator(user.getIncubatorForce(), user.getIncubatorProfit(), user.getIncubatorUpCoastForce(), user.getIncubatorUpCoastProfit(), 500, user.getCountIncP(), user.getCountIncF());
-//                Log.i("Load","7");
-//
-//            }
-//    });
-
-
 //
 
 
@@ -519,11 +486,13 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
     public boolean solveAnimalSpawn(long eggStrength) {
         Random random = new Random();
-        long buffer = (long) eggStrength / 20000;
+        long buffer = (eggStrength*100)/MAX_EGG_STRENGTH*100;
+        if (buffer>100) buffer = 100;
         //TODO сделать зависимость от прочности
-        boolean boolbuf = (random.nextInt(101) < 42);
+        if (random.nextInt((int)buffer) > 35) return true;
+        if (random.nextInt(100) > 95) return true; //оставим 5% шанс независимо от прочности
 
-        return boolbuf;
+        return false;
     }
 
     public void tapRestartScene() {
@@ -533,7 +502,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         eggDefender = true;
 
 
-        createAnimal();
+        createAnimal(getRandomStrenght());
         if (context != null) {
             textureSet(context);
         }
@@ -578,23 +547,17 @@ private class AutoTapTask implements Runnable {
 }
 
     public long getRandomStrenght() {
-//        Log.e("сложность", player.getTool().getTapForce() + incubator.getTapForce() + "_ _");
-//        if (player.getTool().getTapForce() + incubator.getTapForce() < 10) {
-//            long max = (long) 10_000l;
-//            return getRandomNumber(MIN_EGG_STRENGTH, max);
-//        }
-//        if (player.getTool().getTapForce() + incubator.getTapForce() < 250) {
-//            long max = (long) Math.pow(MAX_EGG_STRENGTH, 1 / ((MAX_EGG_STRENGTH * 0.1 - player.getTool().getTapForce())));
-//            return getRandomNumber(MIN_EGG_STRENGTH, 200_000l);
-//        }
-//        return getRandomNumber(MIN_EGG_STRENGTH, MAX_EGG_STRENGTH); //Todo - вернуть это на "релизе"
-        return getRandomNumber(1_000, 3_000);
+//
+        long max = (long) ((long) uiState.getValue().getToolForce() * 1500L);
+        if (max>MAX_EGG_STRENGTH ||(long) uiState.getValue().getToolForce()>MAX_EGG_STRENGTH) max = MAX_EGG_STRENGTH;
+        return getRandomNumber(1_000L, max);
+//        return 1000L;
 
     }
 
     public static long getRandomNumber(long lowerBound, long upperBound) {
         Random random = new Random();
-        return (long) (Math.random() * (upperBound - lowerBound + 1) + lowerBound);
+        return (long) (Math.random() * (upperBound - lowerBound + 1L) + lowerBound);
 //        Math.random() * (max - min + 1) + min)
     }
 
