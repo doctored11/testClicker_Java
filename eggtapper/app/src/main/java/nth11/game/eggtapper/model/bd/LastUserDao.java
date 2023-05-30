@@ -1,4 +1,4 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.bd;
 
 import androidx.room.Dao;
 import androidx.room.Insert;

@@ -1,6 +1,8 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.entities;
 
 import android.util.Log;
+
+import nth11.game.eggtapper.model.currency.GameCurrency;
 
 public class Player {
     private GameCurrency money;

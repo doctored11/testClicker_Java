@@ -1,6 +1,4 @@
-package nth11.game.eggtapper.model;
-
-import android.util.Log;
+package nth11.game.eggtapper.model.currency;
 
 public class GameCurrency implements Comparable<GameCurrency> {
     private double value; // Значение валюты

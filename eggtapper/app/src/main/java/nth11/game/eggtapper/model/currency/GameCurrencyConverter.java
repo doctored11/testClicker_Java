@@ -1,4 +1,4 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.currency;
 
 import androidx.room.TypeConverter;
 

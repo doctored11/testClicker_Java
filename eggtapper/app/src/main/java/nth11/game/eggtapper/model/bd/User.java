@@ -1,10 +1,9 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.bd;
 
-
-import android.view.View;
 
 import androidx.room.Ignore;
 
+import nth11.game.eggtapper.model.currency.GameCurrency;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class User {

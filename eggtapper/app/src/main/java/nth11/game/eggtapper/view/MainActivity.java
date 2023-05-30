@@ -21,7 +21,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import nth11.game.eggtapper.R;
-import nth11.game.eggtapper.model.MyDbHelper;
 import nth11.game.eggtapper.viewModel.UiState;
 import nth11.game.eggtapper.viewModel.ViewModel;
 

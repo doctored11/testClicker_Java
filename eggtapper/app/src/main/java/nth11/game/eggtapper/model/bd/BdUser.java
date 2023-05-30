@@ -1,13 +1,12 @@
-package nth11.game.eggtapper.model;
-
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+package nth11.game.eggtapper.model.bd;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
+
+import nth11.game.eggtapper.model.currency.GameCurrency;
 
 @Entity(tableName = "Accounts",
         indices = {@Index(value = {"name"}, unique = true)}

@@ -4,7 +4,7 @@ package nth11.game.eggtapper.viewModel;
 import androidx.fragment.app.Fragment;
 
 import nth11.game.eggtapper.R;
-import nth11.game.eggtapper.model.GameCurrency;
+import nth11.game.eggtapper.model.currency.GameCurrency;
 
 public class UiState {
     //    private final int FIRST_TEX = R.drawable.egg1;
