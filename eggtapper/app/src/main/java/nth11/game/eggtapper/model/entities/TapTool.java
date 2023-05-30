@@ -1,4 +1,6 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.entities;
+
+import nth11.game.eggtapper.model.currency.GameCurrency;
 
 public class TapTool {
     private long tapForce;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Vibrator;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -19,20 +18,19 @@ import java.util.concurrent.TimeUnit;
 
 import nth11.game.eggtapper.AuthFragment;
 import nth11.game.eggtapper.RegFragment;
-import nth11.game.eggtapper.model.GetUserCallback;
-import nth11.game.eggtapper.model.MyDbHelper;
-import nth11.game.eggtapper.model.PasswordCallback;
-import nth11.game.eggtapper.model.SoundPlayer;
-import nth11.game.eggtapper.model.User;
+import nth11.game.eggtapper.model.bd.MyDbHelper;
+import nth11.game.eggtapper.model.bd.PasswordCallback;
+import nth11.game.eggtapper.model.resourcehandlers.SoundPlayer;
+import nth11.game.eggtapper.model.bd.User;
 import nth11.game.eggtapper.view.SettingsFragment;
-import nth11.game.eggtapper.model.GameCurrency;
-import nth11.game.eggtapper.model.Animal;
+import nth11.game.eggtapper.model.currency.GameCurrency;
+import nth11.game.eggtapper.model.entities.Animal;
 //import nth11.game.eggtapper.model.BDHelper;
-import nth11.game.eggtapper.model.Egg;
-import nth11.game.eggtapper.model.Incubator;
-import nth11.game.eggtapper.model.Player;
-import nth11.game.eggtapper.model.TapTool;
-import nth11.game.eggtapper.model.TextureLoader;
+import nth11.game.eggtapper.model.entities.Egg;
+import nth11.game.eggtapper.model.entities.Incubator;
+import nth11.game.eggtapper.model.entities.Player;
+import nth11.game.eggtapper.model.entities.TapTool;
+import nth11.game.eggtapper.model.resourcehandlers.TextureLoader;
 import nth11.game.eggtapper.view.ShopFragment;
 
 //
@@ -42,7 +40,7 @@ import nth11.game.eggtapper.view.ShopFragment;
 public class ViewModel extends androidx.lifecycle.ViewModel {
     public final long MIN_EGG_STRENGTH = 1000l;
     //    public final long MAX_EGG_STRENGTH = 100_000_000_000_000l; //хз сколько надеюсь не очень много
-    public final long MAX_EGG_STRENGTH = 25_000l; //хз сколько надеюсь не очень много
+    public final long MAX_EGG_STRENGTH = 200_000l; //хз сколько надеюсь не очень много
 
 
     public static final GameCurrency BASE_TAPTOOL_FORCECLICK_PRICE = new GameCurrency(100, ' ');
@@ -125,7 +123,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
     public void createAnimal(long strength) {
-
+        Log.e("Strength", strength + " _  _  _");
         if (!solveAnimalSpawn(strength)) {
             eggDefender = false;
             return;
@@ -369,14 +367,14 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
         Log.i("Save", "Start");
 
 
-        if(cont == null) return;
+        if (cont == null) return;
         // Получаем доступ к базе данных
         MyDbHelper dbHelper = new MyDbHelper(cont);
 
 
         Log.i("Save", "1");
-        if (dbHelper.getUsers().size() < 1)return;
-        if (getUsername() == null ) return;
+        if (dbHelper.getUsers().size() < 1) return;
+        if (getUsername() == null) return;
         Log.i("Save", "2");
 
         dbHelper.getPassword(getUsername(), new PasswordCallback() {    //todo
@@ -455,7 +453,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 //
 
 
-}
+    }
 
 
     public int getMinutesSinceLastLogout(long lastLogoutTime) {
@@ -491,20 +489,20 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     public boolean solveAnimalSpawn(long eggStrength) {
-        if (eggStrength<=0) eggStrength=1000;
+        if (eggStrength <= 0) eggStrength = 1000;
         Random random = new Random();
-        long buffer = (eggStrength)/MAX_EGG_STRENGTH*100;
-        if (buffer>100) buffer = 100;
+        double buffer = (double) eggStrength / MAX_EGG_STRENGTH * 100;
+        if (buffer > 100) buffer = 100;
         //TODO сделать зависимость от прочности
-        if (random.nextInt((int)buffer+1) > 35) return true;
+        Log.e("buffer", buffer+ " _ _ _");
         if (random.nextInt(100) > 95) return true; //оставим 5% шанс независимо от прочности
+        if (random.nextInt( 100) < buffer) return true;
+
 
         return false;
     }
 
     public void tapRestartScene() {
-
-
 
 
         player.addMoney(player.getTool().getProfitability().simpleMultiplay(100));//временное решение
@@ -513,6 +511,7 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
 
 
     }
+
     public void RestartScene() {
 
 
@@ -530,43 +529,47 @@ public class ViewModel extends androidx.lifecycle.ViewModel {
     }
 
 
-private class AutoTapTask implements Runnable {
-    @Override
-    public void run() {
+    private class AutoTapTask implements Runnable {
+        @Override
+        public void run() {
 
-        if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
-            tapRestartScene();
+            if (clickEgg != null && clickEgg.statusChecker() && animal == null) {
+                tapRestartScene();
+            }
+
+            if (clickEgg != null && !eggDefender) {
+
+                clickEgg.reduceStrength(incubator.getTapForce());
+                player.addMoney(incubator.getProfitability());
+            }
+            if (player != null && (animal == null || !clickEgg.statusChecker())) {
+
+                player.addMoney(incubator.getProfitability());
+            }
+            if (player != null && (animal != null && clickEgg.statusChecker())) {
+
+                player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
+                animal.reduceStrength(0.05);
+            }
+
+            if (animal != null && animal.statusChecker()) {
+
+                tapRestartScene();
+            }
+            uiUpdateAuto();
         }
 
-        if (clickEgg != null && !eggDefender) {
-
-            clickEgg.reduceStrength(incubator.getTapForce());
-            player.addMoney(incubator.getProfitability());
-        }
-        if (player != null && (animal == null || !clickEgg.statusChecker())) {
-
-            player.addMoney(incubator.getProfitability());
-        }
-        if (player != null && (animal != null && clickEgg.statusChecker())) {
-
-            player.addMoney(incubator.getProfitability().simpleMultiplay(0.1));
-            animal.reduceStrength(0.05);
-        }
-
-        if (animal != null && animal.statusChecker()) {
-
-            tapRestartScene();
-        }
-        uiUpdateAuto();
     }
-
-}
 
     public long getRandomStrenght() {
 //
+        long min = 1000L;
         long max = (long) ((long) uiState.getValue().getToolForce() * 1500L);
-        if (max>MAX_EGG_STRENGTH ||(long) uiState.getValue().getToolForce()>MAX_EGG_STRENGTH) max = MAX_EGG_STRENGTH;
-        return getRandomNumber(1_000L, max);
+        if (max > MAX_EGG_STRENGTH || (long) uiState.getValue().getToolForce() > MAX_EGG_STRENGTH)
+            max = MAX_EGG_STRENGTH;
+        if (uiState.getValue().getToolForce() * 40L > min)
+            min = uiState.getValue().getToolForce() * 50L;
+        return getRandomNumber(min, max);
 //        return 1000L;
 
     }

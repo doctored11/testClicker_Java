@@ -1,15 +1,12 @@
 package nth11.game.eggtapper.view;
 
-import android.animation.Animator;
-import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import nth11.game.eggtapper.R;
-import nth11.game.eggtapper.model.GameCurrency;
+import nth11.game.eggtapper.model.currency.GameCurrency;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

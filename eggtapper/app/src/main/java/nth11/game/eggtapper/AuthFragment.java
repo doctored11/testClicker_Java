@@ -2,8 +2,6 @@ package nth11.game.eggtapper;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -13,7 +11,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +21,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import nth11.game.eggtapper.model.MyDbHelper;
-import nth11.game.eggtapper.model.PassUtils;
-import nth11.game.eggtapper.model.PasswordCallback;
+import nth11.game.eggtapper.model.bd.MyDbHelper;
+import nth11.game.eggtapper.model.bd.PassUtils;
+import nth11.game.eggtapper.model.bd.PasswordCallback;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 public class AuthFragment extends Fragment {

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import nth11.game.eggtapper.model.GameCurrency;
+import nth11.game.eggtapper.model.currency.GameCurrency;
 
 public class GameCurrencyTest {
     @Test

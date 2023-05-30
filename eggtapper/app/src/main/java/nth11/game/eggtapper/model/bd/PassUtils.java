@@ -1,4 +1,4 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.bd;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

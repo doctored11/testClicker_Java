@@ -1,6 +1,5 @@
 package nth11.game.eggtapper;
 
-import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
@@ -17,10 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import nth11.game.eggtapper.model.GetUserCallback;
-import nth11.game.eggtapper.model.MyDbHelper;
-import nth11.game.eggtapper.model.PassUtils;
-import nth11.game.eggtapper.model.User;
+import nth11.game.eggtapper.model.bd.MyDbHelper;
+import nth11.game.eggtapper.model.bd.PassUtils;
+import nth11.game.eggtapper.model.bd.User;
 import nth11.game.eggtapper.viewModel.ViewModel;
 
 

@@ -1,21 +1,17 @@
-package nth11.game.eggtapper.model;
+package nth11.game.eggtapper.model.bd;
 
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.room.Room;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
+import nth11.game.eggtapper.model.currency.GameCurrency;
 
 public class MyDbHelper {
 

@@ -106,7 +106,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="5"
                         android:fontFamily="@font/videotype"
-                        android:text="TextView" />
+                        android:text="TextView"
+                        android:paddingLeft="10dp"/>
 
                     <TextView
                         android:id="@+id/text_count"
